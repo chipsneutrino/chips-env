@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: continuumio/miniconda3
+
+%files
+    chips-conda.yml
+
+%environment
+    PATH=/opt/conda/envs/$(head -1 chips-conda.yml | cut -d' ' -f2)/bin:$PATH
+
+%post
+    # Get the date so we can timestamp the creation of the container
+    NOW=`date`
+    echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+
+    # Setup the conda environment
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc
+    echo "source activate $(head -1 chips-conda.yml | cut -d' ' -f2)" > ~/.bashrc
+    /opt/conda/bin/conda env create -f chips-conda.yml
+
+%runscript
+    echo "chips-conda container was created $NOW"
+
+%labels
+    Author j.tingey.16@ucl.ac.uk
+    Version v1.0.0
+
+%help
+    This is a container packaging the conda environment required for the CHIPS CVN software
