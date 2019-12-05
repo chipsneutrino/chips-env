@@ -108,10 +108,11 @@ Stage: build
     rm geant4.9.4.p02.tar.gz
     mkdir geant4-build
     cd geant4-build
-    cmake /opt/geant4.9.4.p02/
+    cmake -DGEANT4_INSTALL_DATA=ON /opt/geant4.9.4.p02/
     make -j4
     make install
     cd /opt
+    cp /opt/geant4-build/outputs/runtime/geant4-9.4.2.sh /usr/local/bin/geant4.sh
     rm -rf geant4-build geant4.9.4.p02
 
     # GLoBES Setup
