@@ -16,8 +16,8 @@ dependencies:
   - root-dependencies 
   - root_base
   - tensorflow-gpu
+  - uproot
+  - bunch
   - pip
   - pip:
-    - bunch
     - keras-vis
-    - parameter-sherpa
