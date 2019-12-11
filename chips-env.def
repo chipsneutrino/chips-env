@@ -130,7 +130,6 @@ Stage: build
     echo "chips-env container was created $NOW"
 
 %labels
-    Author j.tingey.16@ucl.ac.uk
     Version v1.0.0
 
 %help
