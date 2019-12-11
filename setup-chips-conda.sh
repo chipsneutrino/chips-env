@@ -25,7 +25,7 @@ else
     conda env create -f chips-conda.yml
 
     # Clean the miniconda install
-    conda clean --all
+    conda clean --all -y
 
     # Make sure the base environement is not enabled by default
     conda config --set auto_activate_base false
