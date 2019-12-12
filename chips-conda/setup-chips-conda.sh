@@ -7,7 +7,7 @@ then
 else
     # We want to install this in the chips-env directory
     echo "We need to install miniconda and the chips-conda environment!"
-    echo "Are you in the chips-env directory and want to continue?"
+    echo "Are you in the chips-env/chips-conda directory and want to continue?"
     echo "Press any key to continue..."
     read key
 

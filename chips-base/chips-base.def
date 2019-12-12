@@ -108,7 +108,7 @@ Stage: build
     rm geant4.9.4.p02.tar.gz
     mkdir geant4-build
     cd geant4-build
-    cmake -DGEANT4_INSTALL_DATA=ON /opt/geant4.9.4.p02/
+    cmake -DGEANT4_VERBOSE_CODE=OFF /opt/geant4.9.4.p02/
     make -j4
     make install
     cd /opt
@@ -127,7 +127,7 @@ Stage: build
     rm -rf globes-3.0.11
 
 %runscript
-    echo "chips-env container was created $NOW"
+    echo "chips-base container was created $NOW"
 
 %labels
     Version v1.0.0

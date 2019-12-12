@@ -1,3 +1,3 @@
-miniconda/
-chips-env.sif
-chips-conda.sif
+chips-conda/miniconda/
+chips-conda/chips-conda.sif
+chips-base/chips-base.sif
