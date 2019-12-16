@@ -1,4 +1,4 @@
 chips-conda/miniconda/
-chips-conda/chips-conda.sif
-chips-base/chips-base.sif
+*sif
 chips-base/software/
+*pyc
