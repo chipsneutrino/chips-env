@@ -25,8 +25,8 @@
 # distribution. This option is in particular important for the WLS
 # 3. The last option means all the QE are applied at the detector
 # Good for the low energy running. 
-#/WCSim/PMTQEMethod     Stacking_Only 
-/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
+/WCSim/PMTQEMethod     Stacking_Only 
+#/WCSim/PMTQEMethod     Stacking_And_SensitiveDetector
 #/WCSim/PMTQEMethod     SensitiveDetector_Only
 
 # turn on or off the collection efficiency (05/27/11 XQ)
