@@ -3,9 +3,9 @@
 
     "gen_job_size": 100000,
     "gen_select_size": 1000,
-    "numu_xsec": "/unix/chips/software/chips-env/chips-base/config/numu_water_xsec.xml",
-    "nuel_xsec": "/unix/chips/software/chips-env/chips-base/config/nuel_water_xsec.xml",
-    "spec_file": "/unix/chips/software/chips-env/chips-base/config/input-flux.root",
+    "numu_xsec": "/unix/chips/software/chips-env/chips-base/config/genie_numu_water_xsec.xml",
+    "nuel_xsec": "/unix/chips/software/chips-env/chips-base/config/genie_nuel_water_xsec.xml",
+    "spec_file": "/unix/chips/software/chips-env/chips-base/config/genie_input_flux.root",
 
     "cosmic_config": "/unix/chips/software/chips-env/chips-base/config/cry_default.conf",
     "cosmic_geom": "chips5",
@@ -13,5 +13,5 @@
     "reco": "/unix/chips/software/chips-env/chips-base/scripts/reco.C",
     "map": "/unix/chips/software/chips-env/chips-base/scripts/map.C",
 
-    "chips_1200_sk1pe": "/unix/chips/software/chips-env/chips-base/config/chips-sim/chips_1200_sk1pe.mac"
+    "chips_1200_sk1pe": "/unix/chips/software/chips-env/chips-base/config/chips-sim/sim_chips_1200_sk1pe.mac"
 }

@@ -38,7 +38,7 @@ class Selector:
 		self.Cleanup()		# Cleanup temporary file created
 
 	def ApplyFilter(self):
-		temp = open(os.path.join(self.m_inputDir, "temp.temp"),'w') # Open a temporary file to hold the passed events
+		temp = open(os.path.join(self.m_outputDir, "temp.temp"),'w') # Open a temporary file to hold the passed events
 
 		# Event counters    
 		events = 0
@@ -130,6 +130,7 @@ class Selector:
 		temp.close() # Close the temporary file of passed events
 
 	def MakePlots(self):
+		print("Making Plots...") 
 		# Open the file to hold the plots
 		plotsFile = TFile(self.m_plotPath, "RECREATE")
 
@@ -190,7 +191,7 @@ class Selector:
 				h_parType[i].GetXaxis().SetBinLabel(j, parNames[j-1])
 				h_parTypePassed[i].GetXaxis().SetBinLabel(j, parNames[j-1])
 
-		temp = open(os.path.join(self.m_inputDir, "temp.temp"), 'r') # Open the temporary file holding the passed events
+		temp = open(os.path.join(self.m_outputDir, "temp.temp"), 'r') # Open the temporary file holding the passed events
 		lines = temp.readlines()
 		event = [] # Define array to hold the events for a specific event we find
 		for line in lines:
@@ -214,7 +215,7 @@ class Selector:
 						particle = int(evtLine.split(' ')[2])
 						energy = float(evtLine.split(' ')[3])
 
-						if particle in [311, -311, 321, -321, 411, 421, 3122, 3112, 3222, 3212, 8016, 4212, 4122, 4222]:
+						if particle in [130, 311, -311, 321, -321, 411, 421, 3122, 3112, 3222, 3212, 8016, 4212, 4122, 4222]:
 							particle = -1
 
 						h_parType[evtTypes.index(evtType)].Fill(parTypes.index(particle))
@@ -262,7 +263,7 @@ class Selector:
 		thisfile = []
 		eventCounter = 0
 		fileCount = 0
-		with open(os.path.join(self.m_inputDir, "temp.temp")) as f:
+		with open(os.path.join(self.m_outputDir, "temp.temp")) as f:
 			lines = f.readlines()
 			for line in lines:
 				thisfile.append(line)
@@ -272,7 +273,7 @@ class Selector:
 
 					# Reached the number of events for a sim file, therefore, close and open a new one
 					outputName = "filtered_" + str(fileCount).zfill(3) + ".vec"
-					with open(os.path.join(self.m_inputDir, outputName),'w') as fout:
+					with open(os.path.join(self.m_outputDir, outputName),'w') as fout:
 						for line in thisfile:
 							fout.write(line)
 					eventCounter = 0
@@ -282,8 +283,8 @@ class Selector:
 		print("Total files created -> %s" % fileCount)
 				
 	def Cleanup(self):
-		os.remove(os.path.join(self.m_inputDir, "temp.temp"))
-		print("Deleted temp file %s" % os.path.join(self.m_inputDir, "temp.temp"))
+		os.remove(os.path.join(self.m_outputDir, "temp.temp"))
+		print("Deleted temp file %s" % os.path.join(self.m_outputDir, "temp.temp"))
 
 '''
 

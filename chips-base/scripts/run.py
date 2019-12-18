@@ -23,6 +23,7 @@ class CHIPSRunner:
         os.mkdir(path.join(self.prod_dir, "gen/filtered/"))
         os.mkdir(path.join(self.prod_dir, "sim/"))
         os.mkdir(path.join(self.prod_dir, "map/"))
+        os.mkdir(path.join(self.prod_dir, "tf/"))
         os.mkdir(path.join(self.prod_dir, "reco/"))
         os.mkdir(path.join(self.prod_dir, "plots/"))
         os.mkdir(path.join(self.prod_dir, "scripts/"))
@@ -30,6 +31,7 @@ class CHIPSRunner:
         os.mkdir(path.join(self.prod_dir, "scripts/filter/"))
         os.mkdir(path.join(self.prod_dir, "scripts/sim/"))
         os.mkdir(path.join(self.prod_dir, "scripts/map/"))
+        os.mkdir(path.join(self.prod_dir, "scripts/tf/"))
         os.mkdir(path.join(self.prod_dir, "scripts/reco/"))
 
     def blank_script(self, name):
@@ -234,7 +236,7 @@ def main():
     if args.make:
         runner.make_dir()
     elif args.gen:
-        if args.type == "cosmic":
+        if args.particle == "cosmic":
             runner.gen_cosmic(args.events)
         else:
             runner.gen_beam(args.events, args.particle, args.type)
