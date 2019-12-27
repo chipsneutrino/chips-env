@@ -13,7 +13,7 @@ RUN apt-get update && \
 COPY setup.sh /opt
 RUN chmod +x /opt/setup.sh && ./opt/setup.sh
 
-# Just echo the name when the container is run
+# When the container is run we call the start script
 COPY start.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/start.sh
 ENTRYPOINT ["start.sh"]

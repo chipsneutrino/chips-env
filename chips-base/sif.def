@@ -6,8 +6,8 @@ Stage: build
     name chips-base
 
 %files
-    start.sh /usr/local/bin/
-    setup.sh /opt
+    /home/josh/phd/chips-env/chips-base/start.sh /usr/local/bin/
+    /home/josh/phd/chips-env/chips-base/setup.sh /opt
 
 %post
     # Install chips-base software requirements using apt
