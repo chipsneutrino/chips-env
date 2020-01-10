@@ -2,3 +2,4 @@ chips-conda/miniconda/
 *sif
 chips-base/software/
 *pyc
+*deps/
