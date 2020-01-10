@@ -119,15 +119,18 @@ class Selector:
 						if not thresholdPass:
 							threshold_cut_events += 1
 
-		print("#####################################") 
-		print("Events -> %s" % events)     
-		print("Passed Events -> %s" % passed_events) 
-		print("Type Cut Events -> %s" % types_cut_events) 
-		print("Particle Cut Events -> %s" % particles_cut_events) 
-		print("Threshold Cut Events -> %s" % threshold_cut_events)     
-		print("#####################################") 
-
 		temp.close() # Close the temporary file of passed events
+
+		name, ext = os.path.splitext(self.m_plotPath)
+		name += ".txt"
+		with open(name, "w") as file: 
+			file.write("Events: " + str(events)) 
+			file.write("\nPassed: " + str(passed_events)) 
+			file.write("\nType Cut: " + str(types_cut_events)) 
+			file.write("\nParticle Cut: " + str(particles_cut_events)) 
+			file.write("\nThreshold Cut: " + str(threshold_cut_events)) 
+
+		print("Saved filter summary to " + name)     
 
 	def MakePlots(self):
 		print("Making Plots...") 
@@ -153,13 +156,15 @@ class Selector:
 		# 92 	= kNCDIS 
 		# 97 	= kCCCoh 
 		# 98 	= kElastic 
-		evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 91, 92, 96, 97, 98]
+		# 100   = Cosmic Muon
+		evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 91, 92, 96, 97, 98, 100]
 		evtNames = ["Other", "CCQE", "NCQE", 
 					"CCNuPtoLPPiPlus", "CCNuNtoLPPiZero",
 					"CCNuNtoLNPiPlus", "NCNuPtoNuPPiZero", 
 					"NCNuPtoNuNPiPlus","NCNuNtoNuNPiZero", 
 					"NCNuNtoNuPPiMinus", "CCDIS", 
-					"NCDIS", "NCCoh", "CCCoh", "ElasticScattering"]
+					"NCDIS", "NCCoh", "CCCoh", "ElasticScattering",
+					"CosmicMuon"]
 
 		# Particle types and names
 		parTypes = [11,    -11,   12,     13,    -13,   14,     111,   211,   -211,  2212,     2112,      22,       -1]
@@ -183,10 +188,10 @@ class Selector:
 		h_parType = []
 		h_parTypePassed = []
 		for i in range(len(evtTypes)):
-			h_nuEnergy.append(TH1F(("h_nuEnergy_"+str(evtTypes[i])), ("Neutrino Energy for type "+str(evtTypes[i])), 150, 0, 15000))
-			h_parNum.append(TH1F(("h_parNum_" + str(evtTypes[i])), ("Number of particles for type " + str(evtTypes[i])), 20, 0, 20))
-			h_parType.append(TH1F(("h_parType_" + str(evtTypes[i])), ("Number of particles for type " + str(evtTypes[i])), len(parTypes), 0, len(parTypes)))
-			h_parTypePassed.append(TH1F(("h_parTypePassed_" + str(evtTypes[i])), ("Number of particles Passed for type " + str(evtTypes[i])), len(parTypes), 0, len(parTypes)))
+			h_nuEnergy.append(TH1F(("h_nuEnergy_"+evtNames[i]), ("Neutrino Energy for type "+evtNames[i]), 150, 0, 15000))
+			h_parNum.append(TH1F(("h_parNum_"+evtNames[i]), ("Number of particles for type "+evtNames[i]), 20, 0, 20))
+			h_parType.append(TH1F(("h_parType_"+evtNames[i]), ("Number of particles for type "+evtNames[i]), len(parTypes), 0, len(parTypes)))
+			h_parTypePassed.append(TH1F(("h_parTypePassed_"+evtNames[i]), ("Number of particles Passed for type "+evtNames[i]), len(parTypes), 0, len(parTypes)))
 			for j in range(1, len(parTypes)+1):
 				h_parType[i].GetXaxis().SetBinLabel(j, parNames[j-1])
 				h_parTypePassed[i].GetXaxis().SetBinLabel(j, parNames[j-1])
@@ -215,7 +220,7 @@ class Selector:
 						particle = int(evtLine.split(' ')[2])
 						energy = float(evtLine.split(' ')[3])
 
-						if particle in [130, 311, -311, 321, -321, 411, 421, 3122, 3112, 3222, 3212, 8016, 4212, 4122, 4222]:
+						if particle in [-12, 130, 311, -311, 321, -321, 411, 421, 431, -2212, -2112, 3122, 3112, -3122, 3222, 3212, 8016, 4212, 4122, 4222]:
 							particle = -1
 
 						h_parType[evtTypes.index(evtType)].Fill(parTypes.index(particle))
@@ -247,12 +252,24 @@ class Selector:
 					
 				h_parNum[evtTypes.index(evtType)].Fill(numParticles)
 
+		h_intTypeSearch.GetXaxis().SetTitle("Interaction Type Code")
+		h_intTypeSearch.GetYaxis().SetTitle("Frequency")
 		h_intTypeSearch.Write()
+		h_intType.GetXaxis().SetTitle("Interaction Type")
+		h_intType.GetYaxis().SetTitle("Frequency")
 		h_intType.Write()
 		for i in range(len(evtTypes)):
+			h_nuEnergy[i].GetXaxis().SetTitle("Neutrino Energy [GeV]")
+			h_nuEnergy[i].GetYaxis().SetTitle("Frequency")
 			h_nuEnergy[i].Write()
+			h_parNum[i].GetXaxis().SetTitle("Number of Particles Above Threshold")
+			h_parNum[i].GetYaxis().SetTitle("Frequency")
 			h_parNum[i].Write()
+			h_parType[i].GetXaxis().SetTitle("Particle Type")
+			h_parType[i].GetYaxis().SetTitle("Frequency")
 			h_parType[i].Write()
+			h_parTypePassed[i].GetXaxis().SetTitle("Particle Type Above Threshold")
+			h_parTypePassed[i].GetYaxis().SetTitle("Frequency")
 			h_parTypePassed[i].Write()
 		temp.close()
 		plotsFile.Close()
@@ -285,65 +302,3 @@ class Selector:
 	def Cleanup(self):
 		os.remove(os.path.join(self.m_outputDir, "temp.temp"))
 		print("Deleted temp file %s" % os.path.join(self.m_outputDir, "temp.temp"))
-
-'''
-
-void cosmicPlots()
-{
-	std::string fileName = "../data/cosmics_default_20000_chips5.vec";
-
-	TH1D* hMuonEnergy = new TH1D("hMuonEnergy","",100,0,100);
-	hMuonEnergy->GetXaxis()->SetTitle("True Muon Energy / GeV");
-	hMuonEnergy->GetXaxis()->CenterTitle(1);
-
-	TH1D* hMuonAngle = new TH1D("hMuonAngle","",50,-1,0);
-	hMuonAngle->GetXaxis()->SetTitle("True Muon Angle Cosine");
-	hMuonAngle->GetXaxis()->CenterTitle(1);
-
-	TH2D* hMuonVertex = new TH2D("hMuonVertex","",50,-3000,3000,50,-3000,3000);
-	hMuonVertex->GetXaxis()->SetTitle("Muon Position X / cm");
-	hMuonVertex->GetXaxis()->CenterTitle(1);
-	hMuonVertex->GetYaxis()->SetTitle("Muon Position Y / cm");
-	hMuonVertex->GetYaxis()->CenterTitle(1);
-
-	// Open the .vec file to read the lines
-	std::ifstream infile(fileName.c_str(), std::ifstream::in);
-	std::string tString = "";
-	while(getline(infile,tString))
-	{
-		if(tString.find("track") != std::string::npos) // Is this a track line?
-		{
-			double energy, dx, dy, dz;
-			int pdg, real;
-			std::string dollar, track;
-
-			std::stringstream tStream; // Use a stream to read into the variables
-			tStream << tString;
-			tStream >> dollar >> track >> pdg >> energy >> dx >> dy >> dz >> real;
-
-			if(pdg == 13) // Just look at the muons
-			{
-				hMuonEnergy->Fill(energy / 1000.);
-				hMuonAngle->Fill(dz);
-			} 
-		}
-		else if(tString.find("vertex") != std::string::npos) // Is this a vertex line?
-		{
-			double x,y,z,t;
-			std::string dollar, vertex;
-
-			std::stringstream tStream; // Use a stream to read into the variables
-			tStream << tString;
-			tStream >> dollar >> vertex >> x >> y >> z >> t;
-
-			hMuonVertex->Fill(x,y);
-		}
-	}
-
-	TFile * mainOutput = new TFile("../data/cosmics_default_20000_chips5.root", "RECREATE");
-	hMuonEnergy->Write();
-	hMuonAngle->Write();
-	hMuonVertex->Write();
-	mainOutput->Close();
-}
-'''

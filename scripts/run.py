@@ -37,7 +37,6 @@ class CHIPSRunner:
     def blank_script(self, name):
         script = open(name, "w")
         script.write("#!/bin/bash\n")
-        script.write("source " + self.config["setup"] + "\n")
         return script
 
     def gen_beam(self, events, particle, type):
@@ -50,6 +49,7 @@ class CHIPSRunner:
             script_name = path.join(self.prod_dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
+            script.write("source " + self.config["gen_setup"] + "\n")
             if particle == "numu":
                 spec = self.config["spec_file"] + ",spectrum-numu"
                 pid = 14
@@ -66,7 +66,7 @@ class CHIPSRunner:
             script.write("cd " + path.join(self.prod_dir, "scripts/gen/") + "\n")
             script.write("mkdir gen" + str(i) + "\n")
             script.write("cd gen" + str(i)+ "\n")
-            script.write("gevgen -n " + str(self.config["gen_job_size"]) + " -s -e 0.5,5 -p " + str(pid) + 
+            script.write("gevgen -n " + str(self.config["gen_job_size"]) + " -s -e 0.5,15 -p " + str(pid) + 
                         " -t 1000080160[0.95],1000010010[0.05] -r 0 -f " + spec + " > /dev/null" + "\n")
             script.write("gntpc -i gntp.0.ghep.root -f nuance_tracker -o " + output_name + " > /dev/null" + "\n")
             script.write("mv " + output_name + " " + path.join(self.prod_dir, "gen/all/", output_name) + "\n")
@@ -86,16 +86,17 @@ class CHIPSRunner:
             script_name = path.join(self.prod_dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
-            script.write("cosmicGen " + self.config["cosmic_config"] + " " + str(events) + " " + 
+            script.write("source " + self.config["gen_setup"] + "\n")
+            script.write("cosmicGen " + self.config["cosmic_config"] + " " + str(self.config["gen_job_size"]) + " " + 
                          self.config["cosmic_geom"] + " > " + path.join(self.prod_dir, "gen/all/", output_name))
             script.close()
-            jobs.write("qsub -q medium " + script_name + "\n")
+            jobs.write("qsub -q long " + script_name + "\n")
 
     def filter(self):
         print("Running Filter...")
         input_dir = path.join(self.prod_dir, "gen/all/")	
         output_dir = path.join(self.prod_dir, "gen/filtered/")
-        plot_path = path.join(self.prod_dir, "plots/filtered_plots.root")
+        plot_path = path.join(self.prod_dir, "plots/filtered.root")
 
         req_particles = [] # Require certain particle
         req_types = [] # Require certain interaction types
@@ -104,7 +105,7 @@ class CHIPSRunner:
                             self.config["gen_select_size"], req_particles, req_types)
         selector.Run()
 
-    def sim(self, geom):
+    def sim_beam(self, geom, num):
         print("Creating Simulation Scripts...")
         jobs = open(path.join(self.prod_dir, "scripts/" + geom + "_sim.sh"), "w") # Open the job submission script
         jobs.write("#!/bin/sh")
@@ -112,16 +113,23 @@ class CHIPSRunner:
         if not os.path.isdir(path.join(self.prod_dir, "sim/", geom)):
             os.mkdir(path.join(self.prod_dir, "sim/", geom))
 
+        count = 0
         for f in os.listdir(path.join(self.prod_dir, "gen/filtered/")):
+            if count >= int(num):
+                break
             name, ext = path.splitext(f)
             base = path.basename(name)
             script_name = path.join(self.prod_dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
             mac_name = path.join(self.prod_dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
+            script.write("source " + self.config["base_setup"] + "\n")
+            script.write("source " + self.config["sim_setup"] + "\n")
             script.write("cd $WCSIMHOME\n")
             script.write("WCSim -g " + self.config[geom] + " " + mac_name)
             script.close()	
+
+            rand = int(base[-3:])
 
             mac = open(mac_name, "w")
             text = ("/run/verbose 0\n"
@@ -137,12 +145,62 @@ class CHIPSRunner:
                     "/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
-                    "/WCSim/random/seed 103 \n"
-                    "/run/beamOn 1000")	
+                    "/WCSim/random/seed " + str(rand) + "\n"
+                    "/run/beamOn " + str(self.config["gen_select_size"]) + "\n")	
             mac.write(text)
             mac.close()	
 
             jobs.write("\nqsub -q medium " + script_name)
+
+            count += 1
+
+    def sim_cosmic(self, geom, num):
+        print("Creating Simulation Scripts...")
+        jobs = open(path.join(self.prod_dir, "scripts/" + geom + "_sim.sh"), "w") # Open the job submission script
+        jobs.write("#!/bin/sh")
+
+        if not os.path.isdir(path.join(self.prod_dir, "sim/", geom)):
+            os.mkdir(path.join(self.prod_dir, "sim/", geom))
+
+        count = 0
+        for f in os.listdir(path.join(self.prod_dir, "gen/filtered/")):
+            if count >= int(num):
+                break
+            name, ext = path.splitext(f)
+            base = path.basename(name)
+            script_name = path.join(self.prod_dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
+            mac_name = path.join(self.prod_dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
+
+            script = self.blank_script(script_name)
+            script.write("source " + self.config["base_setup"] + "\n")
+            script.write("source " + self.config["sim_setup"] + "\n")
+            script.write("cd $WCSIMHOME\n")
+            script.write("WCSim -g " + self.config[geom] + " " + mac_name)
+            script.close()	
+
+            rand = int(base[-3:])
+
+            mac = open(mac_name, "w")
+            text = ("/run/verbose 0\n"
+                    "/tracking/verbose 0\n"
+                    "/hits/verbose 0\n"
+                    "/mygen/vecfile " + path.join(path.join(self.prod_dir, "gen/filtered/"), f) + "\n"
+                    "/mygen/useXAxisForBeam false\n"
+                    "/mygen/enableRandomVtx false\n"
+                    "/mygen/generator muline\n"
+                    "/WCSimIO/SaveRootFile true\n"
+                    "/WCSimIO/RootFile " + path.join(self.prod_dir, "sim/", geom, base + "_sim.root") + "\n"
+                    "/WCSimIO/SavePhotonNtuple false\n"
+                    "/WCSimIO/SaveEmissionProfile false\n"
+                    "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
+                    "/WCSim/random/seed " + str(rand) + "\n"
+                    "/run/beamOn " + str(self.config["gen_select_size"]) + "\n")
+            mac.write(text)
+            mac.close()	
+
+            jobs.write("\nqsub -q medium " + script_name)
+
+            count += 1
 
     def map(self, geom, category, pdg):
         print("Creating Mapping Scripts...")
@@ -157,6 +215,9 @@ class CHIPSRunner:
             base = path.basename(name)
             script_name = path.join(self.prod_dir, "scripts/map/", geom + "_" + base + "_map.sh")
             script = self.blank_script(script_name)
+            script.write("source " + self.config["base_setup"] + "\n")
+            script.write("source " + self.config["sim_setup"] + "\n")
+            script.write("source " + self.config["analysis_setup"] + "\n")
             script.write('root -l -q -b "' + self.config["map"] + '(' + r'\"' + path.join(self.prod_dir,"sim",geom,f) + 
                          r'\",' + r'\"' + path.join(self.prod_dir,"map",geom,base + "_map.root") +
                          r'\",' + str(self.config["gen_select_size"]) +
@@ -164,7 +225,7 @@ class CHIPSRunner:
                          r',' + str(pdg) + ')"')
             script.close()	
 
-            jobs.write("\nqsub -q medium " + script_name)
+            jobs.write("\nqsub -q short " + script_name)
 
     def reco(self, split, geom):
         print("Creating Reconstruction Scripts...")
@@ -198,7 +259,7 @@ def parse_args():
     parser.add_argument('-i', '--input', help='path to production dir')
     parser.add_argument('-j', '--json', help='path to json config file', 
                         default="../config/default_config.json")
-    parser.add_argument('-n', '--num', help='number of files to use', default=50)
+    parser.add_argument('-n', '--num', help='number of files to use', default=1000)
     parser.add_argument('--make', action = 'store_true')
 
     # Generate arguments
@@ -243,7 +304,10 @@ def main():
     elif args.filter:
         runner.filter()
     elif args.sim:
-        runner.sim(args.geom)
+        if args.particle == "cosmic":
+            runner.sim_cosmic(args.geom, args.num)
+        else:
+            runner.sim_beam(args.geom, args.num)
     elif args.map:
         runner.map(args.geom, int(args.cat), int(args.pdg))
     elif args.reco:
