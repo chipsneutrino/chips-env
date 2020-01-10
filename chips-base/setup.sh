@@ -151,8 +151,10 @@ else
     cd $INSTALLDIR
     rm -rf root-build root-source
 fi
-source root/bin/thisroot.sh
+cd root
+source bin/thisroot.sh
 export ROOTSYS=$INSTALLDIR/root
+cd $INSTALLDIR
 
 echo "chips-base setup done"
 
