@@ -1,0 +1,25 @@
+{
+    "gen_setup": "/unix/chips/software/chips-env/ucl-setup.sh",
+    "base_setup": "/unix/chips/software/chips-env/setup.sh",
+    "sim_setup": "/unix/chips/software/chips-sim/setup.sh",
+    "analysis_setup": "/unix/chips/software/chips-reco/setup.sh",
+    "gen_job_size": 100000,
+    "gen_select_size": 2000,
+    "numu_xsec": "/unix/chips/software/chips-env/run/config/genie_numu_water_xsec.xml",
+    "nuel_xsec": "/unix/chips/software/chips-env/run/config/genie_nuel_water_xsec.xml",
+    "spec_file": "/unix/chips/software/chips-env/run/config/genie_input_flux.root",
+
+    "cosmic_config": "/unix/chips/software/chips-env/run/config/cry_default.conf",
+    "cosmic_geom": "chips5",
+
+    "reco": "/unix/chips/software/chips-env/run/reco.C",
+    "map": "/unix/chips/software/chips-env/run/map.C",
+
+    "chips_1200_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_1200_sk1pe.mac",
+    "chips_1000_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_1000_sk1pe.mac",
+    "chips_800_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_800_sk1pe.mac",
+    "chips_600_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_600_sk1pe.mac",
+    "chips_400_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_400_sk1pe.mac",
+    "chips_275_sk1pe": "/unix/chips/software/chips-env/run/config/geom/chips_275_sk1pe.mac",
+    "chips_realistic_v1": "/unix/chips/software/chips-env/run/config/geom/chips_realistic_v1_sk1pe.mac"
+}

@@ -2,15 +2,16 @@
 
 CURRENTDIR=$(pwd)
 
-# If we don't have the software directory first make it and then cd into it
+# If we don't have the deps directory first make it and then cd into it
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-if [ ! -d "$DIR/software/" ]
-then
-    mkdir software 
-fi
 
-INSTALLDIR=$DIR/software
+INSTALLDIR=$DIR/deps
 cd $INSTALLDIR
+
+NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+
+echo "####################"
 
 # Pythia 6 setup
 if [ -d "$INSTALLDIR/pythia6/" ]
@@ -96,19 +97,58 @@ export LD_LIBRARY_PATH=$INSTALLDIR/gsl/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/gsl/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/gsl/bin:$PATH
 
-# CLHEP Setup
+# CRY Setup (Cosmic event generator)
+if [ -d "$INSTALLDIR/cry/" ]
+then
+    echo "CRY installed"
+else
+    echo "Installing CRY..."
+    wget https://nuclear.llnl.gov/simulation/cry_v1.7.tar.gz --no-check-certificate
+    tar -xzvf cry_v1.7.tar.gz
+    rm cry_v1.7.tar.gz
+    mv cry_v1.7/ cry/
+    cd cry/
+    make setup
+    make lib
+    cd $INSTALLDIR
+fi
+export CRYDIR=$INSTALLDIR/cry
+export CRYDATA=$INSTALLDIR/cry/data
+
+# GLoBES Setup (Detector sensitivity simulation)
+if [ -d "$INSTALLDIR/globes/" ]
+then
+    echo "GLoBES installed"
+else
+    echo "Installing GLoBES..."
+    wget https://www.mpi-hd.mpg.de/personalhomes/globes/download/globes-3.0.11.tar.gz --no-check-certificate
+    tar -xzvf globes-3.0.11.tar.gz
+    rm globes-3.0.11.tar.gz
+    mkdir globes
+    cd globes-3.0.11/
+    ./configure --prefix=$INSTALLDIR/globes
+    make
+    make install
+    cd $INSTALLDIR
+    rm -rf globes-3.0.11
+fi
+export LD_LIBRARY_PATH=$INSTALLDIR/globes/lib:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$INSTALLDIR/globes/include:$CPLUS_INCLUDE_PATH
+export PATH=$INSTALLDIR/globes/bin:$PATH
+
+# CLHEP Setup (Geant 4 dependency)
 if [ -d "$INSTALLDIR/clhep/" ]
 then
     echo "CLHEP installed"
 else
     echo "Installing CLHEP..."
-    wget http://www.hep.ucl.ac.uk/~jtingey/clhep-2.1.0.1.tgz
+    wget http://www.hep.ucl.ac.uk/~jtingey/clhep-2.1.0.1.tgz --no-check-certificate
     tar -xzvf clhep-2.1.0.1.tgz
     rm clhep-2.1.0.1.tgz
     mkdir clhep
     cd 2.1.0.1/CLHEP/
     ./configure --prefix=$INSTALLDIR/clhep
-    make -j4
+    make
     make install
     cd $INSTALLDIR
     rm -rf 2.1.0.1
@@ -117,35 +157,13 @@ export LD_LIBRARY_PATH=$INSTALLDIR/clhep/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/clhep/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/clhep/bin:$PATH
 
-# ROOT setup
-if [ -d "$INSTALLDIR/root/" ]
-then
-    echo "ROOT installed"
-else
-    echo "Installing ROOT..."
-    wget https://root.cern.ch/download/root_v5.34.38.source.tar.gz
-    tar -xzvf root_v5.34.38.source.tar.gz
-    rm root_v5.34.38.source.tar.gz
-    mv root root-source
-    mkdir root-build
-    mkdir root
-    cd root-build
-    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/root -Dgsl_shared=ON -DGSL_ROOT_DIR=$INSTALLDIR/gsl -Dmathmore=ON -Dminuit2=ON -DPYTHIA6=ON -DPYTHIA6_LIBRARY=$INSTALLDIR/pythia6/libPythia6.so ../root-source/
-    make -j4
-    make install
-    cd $INSTALLDIR
-    rm -rf root-build root-source
-fi
-source root/bin/thisroot.sh
-export ROOTSYS=$INSTALLDIR/root
-
-# Geant4 Setup
+# Geant4 Setup (Detector Simulation)
 if [ -d "$INSTALLDIR/geant4/" ]
 then
     echo "Geant4 installed"
 else
     echo "Installing Geant4..."
-    wget http://www.hep.ucl.ac.uk/~jtingey/geant4.9.4.p02.tar.gz
+    wget http://www.hep.ucl.ac.uk/~jtingey/geant4.9.4.p02.tar.gz --no-check-certificate
     tar -xzvf geant4.9.4.p02.tar.gz
     rm geant4.9.4.p02.tar.gz
     mkdir geant4
@@ -178,7 +196,7 @@ else
     rm G4NEUTRONXS.1.0.tar.gz
     cd $INSTALLDIR/geant4-build
     cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/geant4 -DGEANT4_VERBOSE_CODE=OFF ../geant4.9.4.p02/
-    make -j4
+    make
     make install
     cd $INSTALLDIR
     rm -rf geant4-build geant4.9.4.p02
@@ -196,6 +214,31 @@ export G4REALSURFACEDATA=$INSTALLDIR/geant4/data/RealSurface1.0
 export G4NEUTRONXSDATA=$INSTALLDIR/geant4/data/G4NEUTRONXS1.0
 export G4PIIDATA=$INSTALLDIR/geant4/data/G4PII1.2
 
+# ROOT setup (Data analysis package)
+if [ -d "$INSTALLDIR/root/" ]
+then
+    echo "ROOT installed"
+else
+    echo "Installing ROOT..."
+    wget https://root.cern.ch/download/root_v5.34.38.source.tar.gz --no-check-certificate
+    tar -xzvf root_v5.34.38.source.tar.gz
+    rm root_v5.34.38.source.tar.gz
+    mv root root-source
+    mkdir root-build
+    mkdir root
+    cd root-build
+    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/root -Dminuit2=ON ../root-source/
+    make
+    make install
+    cd $INSTALLDIR
+    rm -rf root-build root-source
+fi
+cd root
+source bin/thisroot.sh
+export ROOTSYS=$INSTALLDIR/root
+cd $INSTALLDIR
+
+: '
 # GENIE Setup
 if [ -d "$INSTALLDIR/genie/" ]
 then
@@ -217,8 +260,11 @@ export GENIE=$INSTALLDIR/genie
 export LD_LIBRARY_PATH=$INSTALLDIR/genie/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/genie/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/genie/bin:$PATH
+'
 
-echo "chips-genie setup done"
+echo "####################"
+echo "chips-env setup done"
+echo "####################"
 
 # Go back to the user directory
 cd $CURRENTDIR

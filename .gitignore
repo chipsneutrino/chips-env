@@ -1,5 +1,12 @@
-chips-conda/miniconda/
 *sif
-chips-base/software/
 *pyc
-*deps/
+deps/clhep
+deps/cry
+deps/geant4
+deps/globes
+deps/gsl
+deps/lhapdf
+deps/log4cpp
+deps/pythia6
+deps/root
+deps/genie

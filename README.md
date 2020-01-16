@@ -1,36 +1,33 @@
-# env
+# chips-env
 
-Repository for CHIPS software environments and configuration 
+Repository for CHIPS software (gen/sim/map/reco) environment, running and configuration 
 
-## Usage
+## Environment Setup
 
-### UCL(chips-base)
-To use the UCL installation of all the chips-base code (gen/sim/reco)...
-
-```
-$ source chips-base/chips-base-ucl.sh
-```
-
-### Miniconda(chips-conda)
-To install miniconda and the associated "chips-conda" environment or to use an existing one...
+For the simulation, mapper and reconstruction use the environment provided here by running...
 
 ```
-$ cd chips-conda
-$ source setup-chips-conda.sh
+$ source setup.sh
 ```
 
-### Singularity(chips-base)
+### UCL Installation
+To use the UCL installation for event generation use...
+
+```
+$ source setup-ucl.sh
+```
+
+### Singularity (need sudo)
 In order to build the default environment for use with the event generation, simulation, reconstruction and GLoBES studies...
 
 ```
-$ cd chips-base
-$ sudo singularity build chips-base.sif chips-base.def
+$ cd ./deps && sudo singularity build chips-env.sif chips-env.def
 ```
 
-### Singularity(chips-conda)
-In order to build the miniconda environment for use with the CVN...
+## Usage
+
+View the documentation at the top of the run/run.py script for usage instructions, for argument help run...
 
 ```
-$ cd chips-conda
-$ sudo singularity build chips-conda.sif chips-conda.def
+$ cd ./run && python run.py -h
 ```
