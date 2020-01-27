@@ -124,12 +124,10 @@ class CHIPSRunner:
         print("Creating Generation Scripts...")
         jobs = open(path.join(self.dir, "scripts/gen.sh"), "w")
         jobs.write("#!/bin/sh")
-        jobs.write("\nchmod +x " + path.join(self.dir, "scripts/gen/") +
-                   "*gen*.sh")
+        jobs.write("\nchmod +x " + path.join(self.dir, "scripts/gen/") + "*gen*.sh")
         num_jobs = int(ev)/self.config["gen_job_size"]
         for i in range(num_jobs):
-            script_name = path.join(self.dir, "scripts/gen/", "gen_" +
-                                    "{:03d}".format(i) + ".sh")
+            script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["gen_setup"])
@@ -149,14 +147,13 @@ class CHIPSRunner:
             script.write("\ncd " + path.join(self.dir, "scripts/gen/"))
             script.write("\nmkdir gen" + str(i))
             script.write("\ncd gen" + str(i))
-            script.write("\ngevgen -n " + str(self.config["gen_job_size"]) +
+            script.write("\ngevgen -n " +
+                         str(self.config["gen_job_size"]) +
                          " -s -e 0.5,15 -p " + str(pid) +
                          " -t 1000080160[0.95],1000010010[0.05] -r 0 -f " +
                          spec + " > /dev/null")
-            script.write("\ngntpc -i gntp.0.ghep.root -f nuance_tracker -o " +
-                         output_name + " > /dev/null")
-            script.write("\nmv " + output_name + " " +
-                         path.join(self.dir, "gen/all/", output_name))
+            script.write("\ngntpc -i gntp.0.ghep.root -f nuance_tracker -o " + output_name + " > /dev/null")
+            script.write("\nmv " + output_name + " " + path.join(self.dir, "gen/all/", output_name))
             script.write("\ncd ../")
             script.write("\nrm -rf gen" + str(i))
             script.close()
@@ -172,8 +169,7 @@ class CHIPSRunner:
                    "*gen*.sh")
         num_jobs = int(ev)/self.config["gen_job_size"]
         for i in range(num_jobs):
-            script_name = path.join(self.dir, "scripts/gen/", "gen_" +
-                                    "{:03d}".format(i) + ".sh")
+            script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["gen_setup"])
@@ -215,10 +211,8 @@ class CHIPSRunner:
                 break
             name, ext = path.splitext(f)
             base = path.basename(name)
-            script_name = path.join(self.dir, "scripts/sim/", geom + "_" +
-                                    base + "_sim.sh")
-            mac_name = path.join(self.dir, "scripts/sim/", geom + "_" +
-                                 base + "_sim.mac")
+            script_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
+            mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
             script.write("source " + self.config["base_setup"] + "\n")
@@ -232,15 +226,13 @@ class CHIPSRunner:
             text = ("/run/verbose 0\n"
                     "/tracking/verbose 0\n"
                     "/hits/verbose 0\n"
-                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/",
-                                                  f) + "\n"
+                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/", f) + "\n"
                     "/mygen/useXAxisForBeam true\n"
                     "/mygen/enableRandomVtx true\n"
                     "/mygen/fiducialDist 1.0\n"
                     "/mygen/generator muline\n"
                     "/WCSimIO/SaveRootFile true\n"
-                    "/WCSimIO/RootFile " + path.join(self.dir, "sim/", geom,
-                                                     base + "_sim.root") + "\n"
+                    "/WCSimIO/RootFile " + path.join(self.dir, "sim/", geom, base + "_sim.root") + "\n"
                     "/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
@@ -269,10 +261,8 @@ class CHIPSRunner:
                 break
             name, ext = path.splitext(f)
             base = path.basename(name)
-            script_name = path.join(self.dir, "scripts/sim/", geom + "_" +
-                                    base + "_sim.sh")
-            mac_name = path.join(self.dir, "scripts/sim/", geom + "_" +
-                                 base + "_sim.mac")
+            script_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
+            mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
             script.write("source " + self.config["base_setup"] + "\n")
@@ -286,14 +276,12 @@ class CHIPSRunner:
             text = ("/run/verbose 0\n"
                     "/tracking/verbose 0\n"
                     "/hits/verbose 0\n"
-                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/",
-                                                  f) + "\n"
+                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/", f) + "\n"
                     "\n/mygen/useXAxisForBeam false\n"
                     "/mygen/enableRandomVtx false\n"
                     "/mygen/generator muline\n"
                     "/WCSimIO/SaveRootFile true\n"
-                    "/WCSimIO/RootFile " + path.join(self.dir, "sim/", geom,
-                                                     base + "_sim.root") + "\n"
+                    "/WCSimIO/RootFile " + path.join(self.dir, "sim/", geom, base + "_sim.root") + "\n"
                     "\n/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
@@ -309,8 +297,7 @@ class CHIPSRunner:
     def map(self, geom, pdg):
         """Creates the scripts required for hit map generation."""
         print("Creating Mapping Scripts...")
-        jobs = open(path.join(self.dir, "scripts/" + geom + "_map.sh"),
-                    "w")
+        jobs = open(path.join(self.dir, "scripts/" + geom + "_map.sh"), "w")
         jobs.write("#!/bin/sh")
 
         if not os.path.isdir(path.join(self.dir, "map/", geom)):
@@ -319,8 +306,7 @@ class CHIPSRunner:
         for f in os.listdir(path.join(self.dir, "sim", geom)):
             name, ext = path.splitext(f)
             base = path.basename(name)
-            script_name = path.join(self.dir, "scripts/map/", geom + "_" +
-                                    base + "_map.sh")
+            script_name = path.join(self.dir, "scripts/map/", geom + "_" + base + "_map.sh")
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["base_setup"])
             script.write("\nsource " + self.config["sim_setup"])
@@ -375,16 +361,13 @@ def parse_args():
     """Parse the command line arguments."""
     parser = argparse.ArgumentParser(description='Submits Sim/Reco Jobs')
     parser.add_argument('input', help='path to directory')
-    parser.add_argument('-j', '--json', help='path to json config file',
-                        default="config/ucl_config.json")
-    parser.add_argument('-n', '--num', help='number of files to use',
-                        default=1000)
+    parser.add_argument('-j', '--json', help='path to json config file', default="config/ucl_config.json")
+    parser.add_argument('-n', '--num', help='number of files to use', default=1000)
     parser.add_argument('--make', action='store_true')
 
     # Generate arguments
     parser.add_argument('--gen', action='store_true')
-    parser.add_argument('-e', '--ev', help='number of events',
-                        default=100000)
+    parser.add_argument('-e', '--ev', help='number of events', default=100000)
     parser.add_argument('-p', '--par', help='nuel, numu, cosmic')
     parser.add_argument('-t', '--type', help='event type (GEVGL)', default='')
 
@@ -397,8 +380,7 @@ def parse_args():
 
     # Mapping arguments
     parser.add_argument('--map', action='store_true')
-    parser.add_argument('--pdg', help='pdg code to use in truth info',
-                        default=11)
+    parser.add_argument('--pdg', help='pdg code to use in truth info', default=11)
 
     # Reconstruction arguments
     # parser.add_argument('--reco', action='store_true')
@@ -435,6 +417,8 @@ def main():
         runner.map(args.geom, int(args.pdg))
     # elif args.reco:
     #     runner.reco(args.split, args.geom)
+    else:
+        print("Error: you need to select an action!")
 
 
 if __name__ == '__main__':

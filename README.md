@@ -4,21 +4,21 @@ Repository for CHIPS software (gen/sim/map/reco) environment, running and config
 
 ## Environment Setup
 
-For the simulation, mapper and reconstruction use the environment provided here by running...
+For the simulation, event hit mapper and reconstruction use the environment provided here by running...
 
 ```
 $ source setup.sh
 ```
 
 ### UCL Installation
-To use the UCL installation for event generation use...
+To use the UCL installation for event generation(GENIE) use...
 
 ```
 $ source setup-ucl.sh
 ```
 
 ### Singularity (need sudo)
-In order to build the default environment for use with the event generation, simulation, reconstruction and GLoBES studies...
+In order to build the default environment for use with the simulation, event hit mapper and reconstruction use...
 
 ```
 $ cd ./deps && sudo singularity build chips-env.sif chips-env.def
