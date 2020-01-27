@@ -215,10 +215,10 @@ class CHIPSRunner:
             mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
-            script.write("source " + self.config["base_setup"] + "\n")
-            script.write("source " + self.config["sim_setup"] + "\n")
-            script.write("cd $WCSIMHOME\n")
-            script.write("WCSim -g " + self.config[geom] + " " + mac_name)
+            script.write("\nsource " + self.config["base_setup"])
+            script.write("\nsource " + self.config["sim_setup"])
+            script.write("\ncd $WCSIMHOME")
+            script.write("\nWCSim -g " + self.config[geom] + " " + mac_name)
             script.close()
 
             rand = int(base[-3:])
@@ -265,10 +265,10 @@ class CHIPSRunner:
             mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
-            script.write("source " + self.config["base_setup"] + "\n")
-            script.write("source " + self.config["sim_setup"] + "\n")
-            script.write("cd $WCSIMHOME\n")
-            script.write("WCSim -g " + self.config[geom] + " " + mac_name)
+            script.write("\nsource " + self.config["base_setup"])
+            script.write("\nsource " + self.config["sim_setup"])
+            script.write("\ncd $WCSIMHOME\n")
+            script.write("\nWCSim -g " + self.config[geom] + " " + mac_name)
             script.close()
 
             rand = int(base[-3:])
