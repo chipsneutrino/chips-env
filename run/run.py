@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Python script to generate running scripts for gen/sim/map/reco
 
 Author: Josh Tingey
