@@ -130,7 +130,7 @@ class CHIPSRunner:
             script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
-            script.write("\nsource " + self.config["gen_setup"])
+            script.write("\nsource " + self.config["env_setup"])
             if par == "numu":
                 spec = self.config["spec_file"] + ",spectrum-numu"
                 pid = 14
@@ -172,7 +172,7 @@ class CHIPSRunner:
             script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
-            script.write("\nsource " + self.config["gen_setup"])
+            script.write("\nsource " + self.config["env_setup"])
             script.write("\ncosmicGen " + self.config["cosmic_config"] + " " +
                          str(self.config["gen_job_size"]) + " " +
                          self.config["cosmic_geom"] + " > " +
@@ -215,7 +215,7 @@ class CHIPSRunner:
             mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
-            script.write("\nsource " + self.config["base_setup"])
+            script.write("\nsource " + self.config["env_setup"])
             script.write("\nsource " + self.config["sim_setup"])
             script.write("\ncd $WCSIMHOME")
             script.write("\nWCSim -g " + self.config[geom] + " " + mac_name)
@@ -265,7 +265,7 @@ class CHIPSRunner:
             mac_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.mac")
 
             script = self.blank_script(script_name)
-            script.write("\nsource " + self.config["base_setup"])
+            script.write("\nsource " + self.config["env_setup"])
             script.write("\nsource " + self.config["sim_setup"])
             script.write("\ncd $WCSIMHOME\n")
             script.write("\nWCSim -g " + self.config[geom] + " " + mac_name)
@@ -277,12 +277,12 @@ class CHIPSRunner:
                     "/tracking/verbose 0\n"
                     "/hits/verbose 0\n"
                     "/mygen/vecfile " + path.join(self.dir, "gen/filtered/", f) + "\n"
-                    "\n/mygen/useXAxisForBeam false\n"
+                    "/mygen/useXAxisForBeam false\n"
                     "/mygen/enableRandomVtx false\n"
                     "/mygen/generator muline\n"
                     "/WCSimIO/SaveRootFile true\n"
                     "/WCSimIO/RootFile " + path.join(self.dir, "sim/", geom, base + "_sim.root") + "\n"
-                    "\n/WCSimIO/SavePhotonNtuple false\n"
+                    "/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
                     "/WCSim/random/seed " + str(rand) + "\n"
@@ -308,7 +308,7 @@ class CHIPSRunner:
             base = path.basename(name)
             script_name = path.join(self.dir, "scripts/map/", geom + "_" + base + "_map.sh")
             script = self.blank_script(script_name)
-            script.write("\nsource " + self.config["base_setup"])
+            script.write("\nsource " + self.config["env_setup"])
             script.write("\nsource " + self.config["sim_setup"])
             script.write("\nsource " + self.config["analysis_setup"])
             script.write('\nroot -l -q -b "' + self.config["map"] + '(' +
@@ -361,7 +361,10 @@ def parse_args():
     """Parse the command line arguments."""
     parser = argparse.ArgumentParser(description='Submits Sim/Reco Jobs')
     parser.add_argument('input', help='path to directory')
-    parser.add_argument('-j', '--json', help='path to json config file', default="config/ucl_config.json")
+
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    parser.add_argument('-j', '--json', help='path to json config file',
+                        default=script_dir + "/config/config.json")
     parser.add_argument('-n', '--num', help='number of files to use', default=1000)
     parser.add_argument('--make', action='store_true')
 
@@ -380,7 +383,7 @@ def parse_args():
 
     # Mapping arguments
     parser.add_argument('--map', action='store_true')
-    parser.add_argument('--pdg', help='pdg code to use in truth info', default=11)
+    parser.add_argument('--pdg', help='lepton pdg code to use in truth info', default=11)
 
     # Reconstruction arguments
     # parser.add_argument('--reco', action='store_true')

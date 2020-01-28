@@ -1,10 +1,9 @@
 {
-    "gen_setup": "/unix/chips/software/chips-env/ucl-setup.sh",
-    "base_setup": "/unix/chips/software/chips-env/setup.sh",
+    "env_setup": "/unix/chips/software/chips-env/setup.sh",
     "sim_setup": "/unix/chips/software/chips-sim/setup.sh",
     "analysis_setup": "/unix/chips/software/chips-reco/setup.sh",
-    "gen_job_size": 100000,
-    "gen_select_size": 2000,
+    "gen_job_size": 100,
+    "gen_select_size": 100,
     "numu_xsec": "/unix/chips/software/chips-env/run/config/genie_numu_water_xsec.xml",
     "nuel_xsec": "/unix/chips/software/chips-env/run/config/genie_nuel_water_xsec.xml",
     "spec_file": "/unix/chips/software/chips-env/run/config/genie_input_flux.root",
