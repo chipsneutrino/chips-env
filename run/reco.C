@@ -3,13 +3,13 @@ void load_libs()
 	gSystem->Load("libGeom");
 	gSystem->Load("libEve");
 	gSystem->Load("libMinuit");
-	TString libWCSimRoot = TString::Format("%s%s", gSystem->Getenv("WCSIMHOME"), "/libWCSim.so");
-	TString libWCSimAnalysis = TString::Format("%s%s", gSystem->Getenv("WCSIMANAHOME"), "/libWCSimAnalysis.so");
+	TString libWCSimRoot = TString::Format("%s%s", gSystem->Getenv("WCSIMHOME"), "/lib/libWCSim.so");
+	TString libWCSimAnalysis = TString::Format("%s%s", gSystem->Getenv("WCSIMANAHOME"), "/lib/libWCSimAnalysis.so");
 	gSystem->Load(libWCSimRoot.Data());
 	gSystem->Load(libWCSimAnalysis.Data());	
 }
 
-void reco(const char * infile = "", int start = 0, int fit = 20) 
+void reco(const char * infile = "", int start = 0, int fit = 100) 
 {
 	load_libs();
 
@@ -18,7 +18,7 @@ void reco(const char * infile = "", int start = 0, int fit = 20)
 
 	// Set the input file, and say if you are modifying a WCSimAnalysis output file
 	// This loads the data from the corresponding WCSim file appropriately
-	myFitter.SetInputFileName(filename.Data(), false);
+	myFitter.SetInputFileName(infile, false);
 
 	// Set up the fit configuration you want to run...
 	WCSimFitterConfig * config_el = new WCSimFitterConfig();

@@ -321,40 +321,33 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    '''
     def reco(self, split, geom):
         """Creates the scripts required for event reconstruction."""
         print("Creating Reconstruction Scripts...")
-        jobs = open(path.join(self.dir, "scripts/reco.sh"), "w")
+        jobs = open(path.join(self.dir, "scripts/" + geom + "_reco.sh"), "w")
         jobs.write("#!/bin/sh")
 
-        totalFiles = 0
-        for f in os.listdir(path.join(self.dir, "sim/reco.sh")):
+        if not os.path.isdir(path.join(self.dir, "reco/", geom)):
+            os.mkdir(path.join(self.dir, "reco/", geom))
+
+        for f in os.listdir(path.join(self.dir, "sim", geom)):
             name, ext = path.splitext(f)
-            baseName = path.basename(name)
-            for evtCounter in range(0, 1000, int(split)):
-                scriptName = path.join(outputDir, "submit/reco_scripts_" +
-                                       recoName, baseName + "_reco_sub_" +
-                                       recoName + "_" + str(evtCounter) +
-                                       ".sh")
-                f = open(scriptName, "w")
+            base = path.basename(name)
+            for evtCounter in range(0, self.config["gen_select_size"], int(split)):
+                script_name = path.join(self.dir, "scripts/reco/", geom + "_" +
+                                        base + "_" + str(evtCounter) + "_reco.sh")
+                script = self.blank_script(script_name)
+                script.write("\nsource " + self.config["env_setup"])
+                script.write("\nsource " + self.config["sim_setup"])
+                script.write("\nsource " + self.config["reco_setup"])
+                script.write("\ncd " + path.join(self.dir, "reco", geom))
+                script.write('\nroot -l -q -b "' + self.config["reco"] + '(' +
+                             r'\"' + path.join(self.dir, "sim", geom, f) +
+                             r'\",' + str(evtCounter) +
+                             r',' + str(split) + ')"')
+                script.close()
 
-                text = ("#!/bin/sh\n"
-                        "source /unix/chips/jtingey/reco/setup.sh\n"
-                        "cd " + path.join(outputDir, recoName) + "\n"
-                        'root -l -q -b "' + recoType + '(' + r'\"' +
-                        path.join(self.dir, f) + r'\",' +
-                        str(evtCounter) + ')"'
-                        )
-
-                f.write(text)
-                f.close()
-                jobs.write("\nqsub -q medium " + scriptName)
-
-            totalFiles += 1
-            if int(totalFiles) == int(numFiles):
-                break
-    '''
+                jobs.write("\nqsub -q medium " + script_name)
 
 
 def parse_args():
@@ -386,8 +379,8 @@ def parse_args():
     parser.add_argument('--pdg', help='lepton pdg code to use in truth info', default=11)
 
     # Reconstruction arguments
-    # parser.add_argument('--reco', action='store_true')
-    # parser.add_argument('-s', '--split', default=20)
+    parser.add_argument('--reco', action='store_true')
+    parser.add_argument('-s', '--split', default=100)
 
     return parser.parse_args()
 
@@ -418,8 +411,8 @@ def main():
             runner.sim_beam(args.geom, args.num)
     elif args.map:
         runner.map(args.geom, int(args.pdg))
-    # elif args.reco:
-    #     runner.reco(args.split, args.geom)
+    elif args.reco:
+        runner.reco(args.split, args.geom)
     else:
         print("Error: you need to select an action!")
 
