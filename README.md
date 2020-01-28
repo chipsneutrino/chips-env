@@ -4,14 +4,14 @@ Repository for CHIPS software (gen/sim/map/reco) environment, running and config
 
 ## Environment Setup
 
-For the simulation, event hit mapper and reconstruction use the environment provided here by running...
+To setup the environment to use the event generation, simulation, mapper and reconstruction use...
 
 ```
 $ source setup.sh
 ```
 
 ### UCL Installation
-To use the UCL installation for event generation(GENIE) use...
+To use the old UCL installation of everything use...
 
 ```
 $ source setup-ucl.sh
