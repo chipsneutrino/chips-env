@@ -310,7 +310,7 @@ class CHIPSRunner:
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["env_setup"])
             script.write("\nsource " + self.config["sim_setup"])
-            script.write("\nsource " + self.config["analysis_setup"])
+            script.write("\nsource " + self.config["reco_setup"])
             script.write('\nroot -l -q -b "' + self.config["map"] + '(' +
                          r'\"' + path.join(self.dir, "sim", geom, f) +
                          r'\",' + r'\"' + path.join(self.dir, "map", geom,
