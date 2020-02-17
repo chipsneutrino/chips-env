@@ -160,23 +160,26 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    def gen_cosmic(self, ev):
+    def gen_cosmic(self, ev, beamdir):
         """Creates the scripts required for cosmic event generation."""
         print("Creating Generation Scripts...")
         jobs = open(path.join(self.dir, "scripts/gen.sh"), "w")
         jobs.write("#!/bin/sh")
         jobs.write("\nchmod +x " + path.join(self.dir, "scripts/gen/") +
                    "*gen*.sh")
-        num_jobs = int(ev)/self.config["gen_job_size"]
+        num_jobs = int(ev)/self.config["cosmic_job_size"]
         for i in range(num_jobs):
             script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["env_setup"])
+            script.write("\nsource " + self.config["gen_setup"])
             script.write("\ncosmicGen " + self.config["cosmic_config"] + " " +
-                         str(self.config["gen_job_size"]) + " " +
-                         self.config["cosmic_geom"] + " > " +
-                         path.join(self.dir, "gen/all/", output_name))
+                         str(self.config["cosmic_job_size"]) + " " +
+                         self.config["cosmic_geom"])
+            if beamdir:
+                script.write(" 1 ")
+            script.write(" > " + path.join(self.dir, "gen/all/", output_name))
             script.close()
             jobs.write("\nqsub -q long " + script_name)
 
@@ -366,6 +369,7 @@ def parse_args():
     parser.add_argument('-e', '--ev', help='number of events', default=100000)
     parser.add_argument('-p', '--par', help='nuel, numu, cosmic')
     parser.add_argument('-t', '--type', help='event type (GEVGL)', default='')
+    parser.add_argument('--beamdir', action='store_true', help='If cosmic, generate in beam dir')
 
     # Filter arguments
     parser.add_argument('--filter', action='store_true')
@@ -399,7 +403,7 @@ def main():
         runner.make_dir()
     elif args.gen:
         if args.par == "cosmic":
-            runner.gen_cosmic(args.ev)
+            runner.gen_cosmic(args.ev, args.beamdir)
         else:
             runner.gen_beam(args.ev, args.par, args.type)
     elif args.filter:
