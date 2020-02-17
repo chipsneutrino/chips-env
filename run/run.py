@@ -160,34 +160,49 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    def gen_cosmic(self, ev, beamdir):
+    def gen_cosmic(self, ev, detector, beamdir):
         """Creates the scripts required for cosmic event generation."""
         print("Creating Generation Scripts...")
-        jobs = open(path.join(self.dir, "scripts/gen.sh"), "w")
+        jobs = open(path.join(self.dir, "scripts/", detector + "_gen.sh"), "w")
         jobs.write("#!/bin/sh")
         jobs.write("\nchmod +x " + path.join(self.dir, "scripts/gen/") +
                    "*gen*.sh")
+
+        if not os.path.isdir(path.join(self.dir, "gen/all/", detector)):
+            os.mkdir(path.join(self.dir, "gen/all/", detector))
+
         num_jobs = int(ev)/self.config["cosmic_job_size"]
         for i in range(num_jobs):
-            script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
+            script_name = path.join(self.dir, "scripts/gen/", detector + "_gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["env_setup"])
             script.write("\nsource " + self.config["gen_setup"])
             script.write("\ncosmicGen " + self.config["cosmic_config"] + " " +
                          str(self.config["cosmic_job_size"]) + " " +
-                         self.config["cosmic_geom"])
+                         detector + " " + str(i))
             if beamdir:
                 script.write(" 1 ")
-            script.write(" > " + path.join(self.dir, "gen/all/", output_name))
-            script.close()
-            jobs.write("\nqsub -q long " + script_name)
+                jobs.write("\nqsub -q long " + script_name)
+            else:
+                jobs.write("\nqsub -q short " + script_name)
 
-    def filter(self):
+            script.write(" > " + path.join(self.dir, "gen/all/", detector, output_name))
+            script.close()
+
+    def filter(self, detector):
         """Runs the filtering of the generated events and produces plots."""
         print("Running Filter...")
-        input_dir = path.join(self.dir, "gen/all/")
-        output_dir = path.join(self.dir, "gen/filtered/")
+
+        if detector == "":
+            input_dir = path.join(self.dir, "gen/all/")
+            output_dir = path.join(self.dir, "gen/filtered/")
+        else:
+            if not os.path.isdir(path.join(self.dir, "gen/filtered/", detector)):
+                os.mkdir(path.join(self.dir, "gen/filtered/", detector))
+            input_dir = path.join(self.dir, "gen/all/", detector)
+            output_dir = path.join(self.dir, "gen/filtered/", detector)
+
         plot_path = path.join(self.dir, "plots/filtered.root")
 
         req_particles = []  # Require certain particles
@@ -369,6 +384,7 @@ def parse_args():
     parser.add_argument('-e', '--ev', help='number of events', default=100000)
     parser.add_argument('-p', '--par', help='nuel, numu, cosmic')
     parser.add_argument('-t', '--type', help='event type (GEVGL)', default='')
+    parser.add_argument('--cosmicdetector', help='cosmic gen detector defintion', default='')
     parser.add_argument('--beamdir', action='store_true', help='If cosmic, generate in beam dir')
 
     # Filter arguments
@@ -403,14 +419,14 @@ def main():
         runner.make_dir()
     elif args.gen:
         if args.par == "cosmic":
-            runner.gen_cosmic(args.ev, args.beamdir)
+            runner.gen_cosmic(args.ev, args.cosmicdetector, args.beamdir)
         else:
             runner.gen_beam(args.ev, args.par, args.type)
     elif args.filter:
-        runner.filter()
+        runner.filter(args.cosmicdetector)
     elif args.sim:
         if args.par == "cosmic":
-            runner.sim_cosmic(args.geom, args.num)
+            runner.sim_cosmic(args.geom, args.cosmicdetector, args.num)
         else:
             runner.sim_beam(args.geom, args.num)
     elif args.map:

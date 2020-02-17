@@ -3,15 +3,15 @@
     "gen_setup": "/unix/chips/software/chips-gen/setup.sh",
     "sim_setup": "/unix/chips/software/chips-sim/setup.sh",
     "reco_setup": "/unix/chips/software/chips-reco/setup.sh",
+    
     "gen_job_size": 100000,
-    "cosmic_job_size": 10000,
     "gen_select_size": 2000,
     "numu_xsec": "/unix/chips/software/chips-env/run/config/genie_numu_water_xsec.xml",
     "nuel_xsec": "/unix/chips/software/chips-env/run/config/genie_nuel_water_xsec.xml",
     "spec_file": "/unix/chips/software/chips-env/run/config/genie_input_flux.root",
 
     "cosmic_config": "/unix/chips/software/chips-env/run/config/cry_default.conf",
-    "cosmic_geom": "chips5",
+    "cosmic_job_size": 10000,
 
     "reco": "/unix/chips/software/chips-env/run/reco.C",
     "map": "/unix/chips/software/chips-env/run/map.C",
