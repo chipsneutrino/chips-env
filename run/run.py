@@ -197,13 +197,13 @@ class CHIPSRunner:
         if detector == "":
             input_dir = path.join(self.dir, "gen/all/")
             output_dir = path.join(self.dir, "gen/filtered/")
+            plot_path = path.join(self.dir, "plots/", "filtered.root")
         else:
             if not os.path.isdir(path.join(self.dir, "gen/filtered/", detector)):
                 os.mkdir(path.join(self.dir, "gen/filtered/", detector))
             input_dir = path.join(self.dir, "gen/all/", detector)
             output_dir = path.join(self.dir, "gen/filtered/", detector)
-
-        plot_path = path.join(self.dir, "plots/", detector + "_filtered.root")
+            plot_path = path.join(self.dir, "plots/", detector + "_filtered.root")
 
         req_particles = []  # Require certain particles
         req_types = []  # Require certain interaction types

@@ -9,6 +9,7 @@ files of a given size ready for simulation.
 """
 
 import math
+import random
 import os
 from os import listdir
 import ROOT
@@ -68,8 +69,12 @@ class Selector:
         particles_cut_events = 0
         types_cut_events = 0
 
+        event_list = []
+
         # Loop through all files in the input directory
-        for inFile in listdir(self.m_inputDir):
+        files = listdir(self.m_inputDir)
+        random.shuffle(files)
+        for inFile in files:
             if inFile.endswith(".vec"):
                 print("Filtering %s" % inFile)
 
@@ -95,7 +100,7 @@ class Selector:
                         if len(self.m_rParticles) == 0:
                             particlePass = True
 
-                        thresholdPass = False
+                        thresholdPass = 0
 
                         # Loop through event lines
                         for evtLine in event:
@@ -110,49 +115,54 @@ class Selector:
                                     evtLine.endswith(" 0\n")):
                                 particle = int(evtLine.split(' ')[2])
                                 energy = float(evtLine.split(' ')[3])
+                                tempPass = thresholdPass
                                 if particle in [
                                         11, -11] and energy > elThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 if particle in [
                                         13, -13] and energy > muThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 # Charged Pion
                                 if particle in [
                                         211, -211] and energy > cpThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 # Charged Kaon
                                 if particle in [
                                         321, -321] and energy > ckThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 if particle in [2212] and energy > pThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 # Charged Sigma
                                 if particle in [3112] and energy > csThreshold:
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 # Photon, a few pair productions
                                 if particle in [22] and energy > (
                                         20 * electronMass):
-                                    thresholdPass = True
+                                    thresholdPass += 1
                                 # Neutral Pion, a few pair productions
                                 if particle in [111] and energy > (
                                         20 * electronMass):
                                     thresholdPass += 1
 
-                                if particle in self.m_rParticles:
+                                if particle in self.m_rParticles and tempPass < thresholdPass:
                                     particlePass = True
 
                         events += 1  # Increment the total event counter
-                        if typePass and particlePass and thresholdPass:
+                        if typePass and particlePass and (thresholdPass > 0):
                             passed_events += 1
-                            for line in event:  # Write event to the temp file
-                                temp.write(line)
+                            event_list.append(event)
 
                         if not typePass:
                             types_cut_events += 1
                         if not particlePass:
                             particles_cut_events += 1
-                        if not thresholdPass:
+                        if thresholdPass == 0:
                             threshold_cut_events += 1
+
+        random.shuffle(event_list)
+        for single_event in event_list:
+            for line in single_event:  # Write event to the temp file
+                temp.write(line)
 
         temp.close()  # Close the temporary file of passed events
 
