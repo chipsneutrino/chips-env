@@ -203,7 +203,7 @@ class CHIPSRunner:
             input_dir = path.join(self.dir, "gen/all/", detector)
             output_dir = path.join(self.dir, "gen/filtered/", detector)
 
-        plot_path = path.join(self.dir, "plots/filtered.root")
+        plot_path = path.join(self.dir, "plots/", detector + "_filtered.root")
 
         req_particles = []  # Require certain particles
         req_types = []  # Require certain interaction types
@@ -263,7 +263,7 @@ class CHIPSRunner:
 
             count += 1
 
-    def sim_cosmic(self, geom, num):
+    def sim_cosmic(self, geom, detector, num):
         """Creates the scripts required for cosmic detector simulation."""
         print("Creating Simulation Scripts...")
         jobs = open(path.join(self.dir, "scripts/" + geom + "_sim.sh"),
@@ -274,7 +274,7 @@ class CHIPSRunner:
             os.mkdir(path.join(self.dir, "sim/", geom))
 
         count = 0
-        for f in os.listdir(path.join(self.dir, "gen/filtered/")):
+        for f in os.listdir(path.join(self.dir, "gen/filtered/", detector)):
             if count >= int(num):
                 break
             name, ext = path.splitext(f)
@@ -294,7 +294,7 @@ class CHIPSRunner:
             text = ("/run/verbose 0\n"
                     "/tracking/verbose 0\n"
                     "/hits/verbose 0\n"
-                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/", f) + "\n"
+                    "/mygen/vecfile " + path.join(self.dir, "gen/filtered/", detector, f) + "\n"
                     "/mygen/useXAxisForBeam false\n"
                     "/mygen/enableRandomVtx false\n"
                     "/mygen/generator muline\n"
