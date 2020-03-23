@@ -61,6 +61,7 @@ export PYTHONPATH=$INSTALLDIR/lhapdf/lib64/python2.7/site-packages:$PYTHONPATH
 export LD_LIBRARY_PATH=$INSTALLDIR/lhapdf/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/lhapdf/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/lhapdf/bin:$PATH
+export LHAPATH=/unix/lartpc/software/lhapdf/PDFsets  #TODO: Option to download all set here
 
 # log4cpp Setup
 if [ -d "$INSTALLDIR/log4cpp/" ]

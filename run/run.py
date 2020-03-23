@@ -213,20 +213,22 @@ class CHIPSRunner:
                             req_particles, req_types)
         selector.Run()
 
-    def sim_beam(self, geom, num):
+    def sim_beam(self, geom, num, start):
         """Creates the scripts required for beam detector simulation."""
         print("Creating Simulation Scripts...")
-        jobs = open(path.join(self.dir, "scripts/" + geom + "_sim.sh"),
-                    "w")
+        jobs = open(path.join(self.dir, "scripts/" + geom + "_sim.sh"), "w")
         jobs.write("#!/bin/sh")
 
         if not os.path.isdir(path.join(self.dir, "sim/", geom)):
             os.mkdir(path.join(self.dir, "sim/", geom))
 
-        count = 0
-        for f in os.listdir(path.join(self.dir, "gen/filtered/")):
-            if count >= int(num):
+        for i, f in enumerate(os.listdir(path.join(self.dir, "gen/filtered/"))):
+            if i == int(num):
                 break
+
+            if i < int(start):
+                continue
+
             name, ext = path.splitext(f)
             base = path.basename(name)
             script_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
@@ -261,22 +263,22 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-            count += 1
-
-    def sim_cosmic(self, geom, detector, num):
+    def sim_cosmic(self, geom, detector, num, start):
         """Creates the scripts required for cosmic detector simulation."""
         print("Creating Simulation Scripts...")
-        jobs = open(path.join(self.dir, "scripts/" + geom + "_sim.sh"),
-                    "w")
+        jobs = open(path.join(self.dir, "scripts/" + geom + "_sim.sh"), "w")
         jobs.write("#!/bin/sh")
 
         if not os.path.isdir(path.join(self.dir, "sim/", geom)):
             os.mkdir(path.join(self.dir, "sim/", geom))
 
-        count = 0
-        for f in os.listdir(path.join(self.dir, "gen/filtered/", detector)):
-            if count >= int(num):
+        for i, f in enumerate(os.listdir(path.join(self.dir, "gen/filtered/", detector))):
+            if i == int(num):
                 break
+
+            if i < int(start):
+                continue
+
             name, ext = path.splitext(f)
             base = path.basename(name)
             script_name = path.join(self.dir, "scripts/sim/", geom + "_" + base + "_sim.sh")
@@ -309,8 +311,6 @@ class CHIPSRunner:
             mac.close()
 
             jobs.write("\nqsub -q medium " + script_name)
-
-            count += 1
 
     def map(self, geom, pdg):
         """Creates the scripts required for hit map generation."""
@@ -393,6 +393,7 @@ def parse_args():
     # Simulation arguments
     parser.add_argument('--sim', action='store_true')
     parser.add_argument('-g', '--geom', help='geometry .mac file')
+    parser.add_argument('--start', help='filtered file to start at')
 
     # Mapping arguments
     parser.add_argument('--map', action='store_true')
@@ -426,9 +427,9 @@ def main():
         runner.filter(args.cosmicdetector)
     elif args.sim:
         if args.par == "cosmic":
-            runner.sim_cosmic(args.geom, args.cosmicdetector, args.num)
+            runner.sim_cosmic(args.geom, args.cosmicdetector, args.num, args.start)
         else:
-            runner.sim_beam(args.geom, args.num)
+            runner.sim_beam(args.geom, args.num, args.start)
     elif args.map:
         runner.map(args.geom, int(args.pdg))
     elif args.reco:
