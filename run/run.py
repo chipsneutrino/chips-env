@@ -55,7 +55,7 @@ $ cd $(DIR)/scripts/sim
 $ source ../chips_1200_sk1pe_sim.sh
 (wait for simulation jobs to finish)
 $ cd $(RUN)
-$ python run.py $(DIR) --map -g chips_1200_sk1pe --pdg 11
+$ python run.py $(DIR) --map -g chips_1200_sk1pe
 $ cd $(DIR)/scripts/map
 $ source ../chips_1200_sk1pe_map.sh
 
@@ -312,7 +312,7 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    def map(self, geom, pdg):
+    def map(self, geom):
         """Creates the scripts required for hit map generation."""
         print("Creating Mapping Scripts...")
         jobs = open(path.join(self.dir, "scripts/" + geom + "_map.sh"), "w")
@@ -333,8 +333,7 @@ class CHIPSRunner:
                          r'\"' + path.join(self.dir, "sim", geom, f) +
                          r'\",' + r'\"' + path.join(self.dir, "map", geom,
                                                     base + "_map.root") +
-                         r'\",' + str(self.config["gen_select_size"]) +
-                         r',' + str(pdg) + ')"')
+                         r'\",' + str(self.config["gen_select_size"]) + ')"')
             script.close()
 
             jobs.write("\nqsub -q medium " + script_name)
@@ -397,7 +396,6 @@ def parse_args():
 
     # Mapping arguments
     parser.add_argument('--map', action='store_true')
-    parser.add_argument('--pdg', help='lepton pdg code to use in truth info', default=11)
 
     # Reconstruction arguments
     parser.add_argument('--reco', action='store_true')
@@ -431,7 +429,7 @@ def main():
         else:
             runner.sim_beam(args.geom, args.num, args.start)
     elif args.map:
-        runner.map(args.geom, int(args.pdg))
+        runner.map(args.geom)
     elif args.reco:
         runner.reco(args.split, args.geom)
     else:
