@@ -129,16 +129,22 @@ class CHIPSRunner:
         for i in range(num_jobs):
             script_name = path.join(self.dir, "scripts/gen/", "gen_" + "{:03d}".format(i) + ".sh")
             output_name = "gen_" + "{:03d}".format(i) + ".vec"
+            output_root = "gen_" + "{:03d}".format(i) + ".root"
             script = self.blank_script(script_name)
             script.write("\nsource " + self.config["env_setup"])
+            script.write("\nexport GSPLOAD=" + self.config["xsec"])
             if par == "numu":
-                spec = self.config["spec_file"] + ",spectrum-numu"
+                spec = self.config["spec_file"] + ",enufullfine_numu_allpar_NoXSec_CHIPSoffAXIS"
                 pid = 14
-                script.write("\nexport GSPLOAD=" + self.config["numu_xsec"])
+            if par == "anumu":
+                spec = self.config["spec_file"] + ",enufullfine_anumu_allpar_NoXSec_CHIPSoffAXIS"
+                pid = -14
             elif par == "nuel":
-                spec = self.config["spec_file"] + ",spectrum-nuel"
+                spec = self.config["spec_file"] + ",enufullfine_nue_allpar_NoXSec_CHIPSoffAXIS"
                 pid = 12
-                script.write("\nexport GSPLOAD=" + self.config["nuel_xsec"])
+            elif par == "anuel":
+                spec = self.config["spec_file"] + ",enufullfine_anue_allpar_NoXSec_CHIPSoffAXIS"
+                pid = -12
             if type == "":
                 script.write("\nunset GEVGL")
             else:
@@ -150,15 +156,16 @@ class CHIPSRunner:
             script.write("\ngevgen -n " +
                          str(self.config["gen_job_size"]) +
                          " -s -e 0.5,15 -p " + str(pid) +
-                         " -t 1000080160[0.95],1000010010[0.05] -r 0 -f " +
+                         " -t 1000080160[0.8879],1000010010[0.1121] -r 0 -f " +
                          spec + " > /dev/null")
             script.write("\ngntpc -i gntp.0.ghep.root -f nuance_tracker -o " + output_name + " > /dev/null")
             script.write("\nmv " + output_name + " " + path.join(self.dir, "gen/all/", output_name))
+            script.write("\nmv gntp.0.ghep.root " + path.join(self.dir, "gen/all/", output_root))
             script.write("\ncd ../")
             script.write("\nrm -rf gen" + str(i))
             script.close()
 
-            jobs.write("\nqsub -q medium " + script_name)
+            jobs.write("\nqsub -q short " + script_name)
 
     def gen_cosmic(self, ev, detector, beamdir):
         """Creates the scripts required for cosmic event generation."""
@@ -338,7 +345,7 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    def reco(self, split, geom):
+    def reco(self, num, split, geom):
         """Creates the scripts required for event reconstruction."""
         print("Creating Reconstruction Scripts...")
         jobs = open(path.join(self.dir, "scripts/" + geom + "_reco.sh"), "w")
@@ -347,7 +354,10 @@ class CHIPSRunner:
         if not os.path.isdir(path.join(self.dir, "reco/", geom)):
             os.mkdir(path.join(self.dir, "reco/", geom))
 
-        for f in os.listdir(path.join(self.dir, "sim", geom)):
+        for i, f in enumerate(os.listdir(path.join(self.dir, "sim", geom))):
+            if i == int(num):
+                break
+
             name, ext = path.splitext(f)
             base = path.basename(name)
             for evtCounter in range(0, self.config["gen_select_size"], int(split)):
@@ -381,7 +391,7 @@ def parse_args():
     # Generate arguments
     parser.add_argument('--gen', action='store_true')
     parser.add_argument('-e', '--ev', help='number of events', default=100000)
-    parser.add_argument('-p', '--par', help='nuel, numu, cosmic')
+    parser.add_argument('-p', '--par', help='nuel, anuel, numu, anumu, cosmic')
     parser.add_argument('-t', '--type', help='event type (GEVGL)', default='')
     parser.add_argument('--cosmicdetector', help='cosmic gen detector defintion', default='')
     parser.add_argument('--beamdir', action='store_true', help='If cosmic, generate in beam dir')
@@ -431,7 +441,7 @@ def main():
     elif args.map:
         runner.map(args.geom)
     elif args.reco:
-        runner.reco(args.split, args.geom)
+        runner.reco(args.num, args.split, args.geom)
     else:
         print("Error: you need to select an action!")
 
