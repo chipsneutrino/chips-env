@@ -10,3 +10,11 @@ deps/log4cpp
 deps/pythia6
 deps/root
 deps/genie
+
+CMakeCache.txt
+CMakeFiles/
+Makefile
+chips/CMakeFiles/
+chips/Makefile
+chips/cmake_install.cmake
+cmake_install.cmake

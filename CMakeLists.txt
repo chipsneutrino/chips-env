@@ -4,8 +4,8 @@ project(chips-env CXX)
 # Build Configuration
 set(CMAKE_CXX_STANDARD 11)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+#set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 # This is just to have neat colors in Ninja
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." OFF)

@@ -19,7 +19,10 @@ echo "${C_RED}####################"
 echo "Setting up chips-env"
 echo "####################${C_RESET}"
 
-# Geant4 Setup (Detector Simulation)
+# First we build all the required dependencies in ./deps
+# Environments variables for ll deps are also set...
+
+# Geant4 Setup (Detector simulation)
 if [ -d "$INSTALLDIR/geant4/" ]
 then
     echo "Geant4 installed----"
@@ -39,7 +42,7 @@ else
 fi
 source $INSTALLDIR/geant4/bin/geant4.sh
 
-# Pythia 6 setup
+# Pythia 6 setup (Event generation)
 if [ -d "$INSTALLDIR/pythia6/" ]
 then
     echo "Pythia6 installed---"
@@ -58,7 +61,7 @@ else
 fi
 export LD_LIBRARY_PATH=$INSTALLDIR/pythia6:$LD_LIBRARY_PATH
 
-# ROOT setup (Data analysis package)
+# ROOT setup (Data analysis)
 if [ -d "$INSTALLDIR/root/" ]
 then
     echo "ROOT installed------"
@@ -81,7 +84,7 @@ source $INSTALLDIR/root/bin/thisroot.sh
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 export PATH=$ROOTSYS/bin:$PATH
 
-# log4cpp Setup
+# log4cpp Setup (Logging for c++)
 if [ -d "$INSTALLDIR/log4cpp/" ]
 then
     echo "log4cpp installed---"
@@ -103,7 +106,7 @@ export LD_LIBRARY_PATH=$INSTALLDIR/log4cpp/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/log4cpp/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/log4cpp/bin:$PATH
 
-# CRY Setup (Cosmic event generator)
+# CRY Setup (Cosmic event generation)
 if [ -d "$INSTALLDIR/cry/" ]
 then
     echo "CRY installed-------"
@@ -147,7 +150,7 @@ export PATH=$PATH:\$GENIE/bin
 export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
 
-# GENIE Setup
+# GENIE Setup (Neutrino event generation)
 if [ -d "$INSTALLDIR/genie/" ]
 then
     echo "Genie installed-----"
@@ -162,6 +165,31 @@ else
     cd $INSTALLDIR
 fi
 
+export G4VIS_USE=1
+export G4VIS_USE_OPENGLQT=1
+export CHIPSSIM=$DIR/chips/chips-sim
+export LD_LIBRARY_PATH=$CHIPSSIM:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$CHIPSSIM/include:$CPLUS_INCLUDE_PATH
+export PATH=$CHIPSSIM:$PATH
+
+export CHIPSRECO=$DIR/chips/chips-reco
+export LD_LIBRARY_PATH=$CHIPSRECO:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$CHIPSRECO/include:$CPLUS_INCLUDE_PATH
+export PATH=$CHIPSRECO:$PATH
+
+# Now we build all the chips packages
+if [ -f "$DIR/chips/chips-sim/WCSim" ]
+then
+    echo "${C_GREEN}chips software built${C_RESET}"
+else
+    echo "${C_RED}building chips software${C_RESET}"
+    NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+    export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+    cd $DIR
+    cmake .
+    make
+    echo "${C_GREEN}chips software built${C_RESET}"
+fi
 
 echo "${C_GREEN}####################"
 echo "chips-env setup done"
