@@ -5,6 +5,7 @@ CURRENTDIR=$(pwd)
 # If we don't have the deps directory first make it and then cd into it
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+export CHIPSENV=$DIR
 INSTALLDIR=$DIR/deps
 cd $INSTALLDIR
 
