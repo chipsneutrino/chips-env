@@ -6,7 +6,7 @@ Stage: build
     name chips-env
 
 %files
-    ../setup.sh /opt
+    ../env-setup.sh /opt
 
 %post
     # Install chips-env software requirements using apt
@@ -18,9 +18,9 @@ Stage: build
     apt-get clean
     rm -rf /var/lib/apt/lists/*
 
-    # Install chips-env software using the setup.sh script
-    chmod +x /opt/setup.sh
-    ./opt/setup.sh
+    # Install chips-env software using the env-setup.sh script
+    chmod +x /opt/env-setup.sh
+    ./opt/env-setup.sh
 
 %runscript
     echo "chips-env"
