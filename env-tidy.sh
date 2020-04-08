@@ -14,6 +14,9 @@ rm ./chips/cmake_install.cmake
 rm -r ./chips/CMakeFiles
 rm ./chips/Makefile
 
+echo "${C_RED}tidy chips-gen{C_RESET}"
+source chips/chips-gen/gen-tidy.sh
+
 echo "${C_RED}tidy chips-sim${C_RESET}"
 source chips/chips-sim/sim-tidy.sh
 

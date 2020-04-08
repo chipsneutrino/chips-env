@@ -6,3 +6,7 @@
 	path = chips/chips-reco
 	url = https://gitlab.com/chipsneutrino/chips-reco.git
 	branch = new_build
+[submodule "chips/chips-gen"]
+	path = chips/chips-gen
+	url = https://gitlab.com/chipsneutrino/chips-gen.git
+	branch = new_build

@@ -124,6 +124,8 @@ else
 fi
 export CRYDIR=$INSTALLDIR/cry
 export CRYDATA=$INSTALLDIR/cry/data
+export LD_LIBRARY_PATH=$INSTALLDIR/cry/lib:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$INSTALLDIR/cry/src:$CPLUS_INCLUDE_PATH
 
 # GLoBES Setup (Detector sensitivity simulation)
 if [ -d "$INSTALLDIR/globes/" ]
@@ -165,6 +167,9 @@ else
     make
     cd $INSTALLDIR
 fi
+
+export CHIPSGEN=$DIR/chips/chips-gen
+export PATH=$CHIPSGEN:$PATH
 
 export G4VIS_USE=1
 export G4VIS_USE_OPENGLQT=1
