@@ -1,0 +1,23 @@
+{
+    "setup": "/setup.sh",
+
+    "xsec_file": "/data/genie/xsecs_G1802a00000.xml",
+    "flux_file": "/data/genie/chips_location_flux.root",
+    "cry_config": "/config/cry_default.conf",
+
+    "gen_size": 100000,
+    "sim_size": 2000,
+
+    "sim_plots": "/scripts/sim_plots.C",
+    "map_mac": "/scripts/map.C",
+    "reco_mac": "/scripts/reco.C",
+    "reco_plots": "/scripts/reco_plots.C",
+
+    "chips_1200": "/config/geom/chips_1200.mac",
+    "chips_1000": "/config/geom/chips_1000.mac",
+    "chips_800": "/config/geom/chips_800.mac",
+    "chips_600": "/config/geom/chips_600.mac",
+    "chips_400": "/config/geom/chips_400.mac",
+    "chips_275": "/config/geom/chips_275.mac",
+    "chips_real": "/config/geom/chips_real.mac"
+}

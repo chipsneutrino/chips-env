@@ -18,3 +18,6 @@ chips/CMakeFiles/
 chips/Makefile
 chips/cmake_install.cmake
 cmake_install.cmake
+
+data/geant4/
+data/genie/xsecs*

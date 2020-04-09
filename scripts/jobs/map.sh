@@ -1,27 +1,40 @@
 #! /bin/bash
 
-PRODDIR=/unix/chips/production
+PRODDIR=/unix/chips/prod
 
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_all/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_anuel_all/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_all/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_anumu_all/ --map -g chips_1200_sk1pe
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/nuel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anuel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/numu/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anumu/ --map -g chips_1200
 
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_coh_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_coh_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_dis_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_dis_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_qel_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_qel_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_res_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_res_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_coh_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_coh_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_dis_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_dis_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_qel_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_qel_nc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_res_cc/ --map -g chips_1200_sk1pe
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_res_nc/ --map -g chips_1200_sk1pe
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/cccoh/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nccoh/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccmec/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncmec/ --map -g chips_1200
 
-python $CHIPSENV/scripts/run.py $PRODDIR/cosmic_numu_all/ --map -g chips_1200_sk1pe
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/cccoh/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nccoh/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccmec/ --map -g chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncmec/ --map -g chips_1200
+
+python $CHIPSENV/scripts/run.py $PRODDIR/cosmic_all/ --map -g chips_1200

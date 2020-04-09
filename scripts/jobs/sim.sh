@@ -1,27 +1,40 @@
 #! /bin/bash
 
-PRODDIR=/unix/chips/production
+PRODDIR=/unix/chips/prod
 
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_all/ --sim -g chips_1200_sk1pe -n 1000 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_anuel_all/ --sim -g chips_1200_sk1pe -n 1000 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_all/ --sim -g chips_1200_sk1pe -n 1000 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_anumu_all/ --sim -g chips_1200_sk1pe -n 1000 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/nuel/ --sim -g chips_1200 -n 1000 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anuel/ --sim -g chips_1200 -n 1000 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/numu/ --sim -g chips_1200 -n 1000 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anumu/ --sim -g chips_1200 -n 1000 --start 0
 
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_coh_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_coh_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_dis_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_dis_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_qel_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_qel_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_res_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel_res_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_coh_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_coh_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_dis_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_dis_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_qel_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_qel_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_res_cc/ --sim -g chips_1200_sk1pe -n 250 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu_res_nc/ --sim -g chips_1200_sk1pe -n 250 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/cccoh/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nccoh/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccmec/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncmec/ --sim -g chips_1200 -n 100 --start 0
 
-python $CHIPSENV/scripts/run.py $PRODDIR/cosmic_numu_all/ --sim -g chips_1200_sk1pe -n 1000 --start 0 -p cosmic --cosmicdetector chips_1200
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/cccoh/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nccoh/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccmec/ --sim -g chips_1200 -n 100 --start 0
+python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncmec/ --sim -g chips_1200 -n 100 --start 0
+
+python $CHIPSENV/scripts/run.py $PRODDIR/cosmic_all/ --sim -g chips_1200 -n 500 --start 0 -p cosmic --cosmicdetector chips_1200

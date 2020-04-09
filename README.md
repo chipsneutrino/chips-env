@@ -8,14 +8,14 @@ To setup the environment to use the event generation, simulation, mapper and rec
 
 ```
 $ git submodule update --init
-$ source env-setup.sh
+$ source setup.sh
 ```
 
 This will install all the required dependencies, chips software and data. All the required environment variables will also be set.
 For any future uses you just need to call...
 
 ```
-$ source env-setup.sh
+$ source setup.sh
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ $ source env-setup.sh
 View the documentation at the top of the run/run.py script for usage instructions, for argument help run...
 
 ```
-$ cd ./run && python run.py -h
+$ python scripts/run.py -h
 ```
 
 ## Build Singularity Containers
@@ -53,3 +53,7 @@ $ git submodule update --remote
 ```
 
 and then commit the changes to this chips-env repository
+
+## GENIE cross-section files
+
+If you look in the [GENIE manual](https://genie-docdb.pp.rl.ac.uk/DocDB/0000/000002/006/man.pdf) there are descriptions of all the different models and 'tunes' availiable. The data is then located [here](http://scisoft.fnal.gov/scisoft/packages/genie_xsec). Then we just use the gxspl-FNALsmall.xml file as this contains everything we need.

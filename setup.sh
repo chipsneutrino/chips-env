@@ -148,12 +148,12 @@ export LD_LIBRARY_PATH=$INSTALLDIR/globes/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/globes/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/globes/bin:$PATH
 
+
+# GENIE Setup (Neutrino event generation)
 export GENIE=$INSTALLDIR/genie
 export PATH=$PATH:$GENIE/bin
 export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
-
-# GENIE Setup (Neutrino event generation)
 if [ -d "$INSTALLDIR/genie/" ]
 then
     echo "Genie installed-----"
@@ -163,7 +163,7 @@ else
     mv Generator genie
     cd genie
     git checkout R-3_00_06
-    ./configure --enable-fnal --with-pythia6-lib=$INSTALLDIR/pythia6 --disable-lhapdf5
+    ./configure --enable-fnal --with-pythia6-lib=$INSTALLDIR/pythia6/ --disable-lhapdf5 --compiler=gcc
     sed -i 's/genie-config --libs)/genie-config --libs) -lgfortran/g' ./src/Apps/Makefile
     make
     cd $INSTALLDIR
