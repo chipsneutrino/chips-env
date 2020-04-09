@@ -148,7 +148,6 @@ export LD_LIBRARY_PATH=$INSTALLDIR/globes/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/globes/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/globes/bin:$PATH
 
-
 # GENIE Setup (Neutrino event generation)
 export GENIE=$INSTALLDIR/genie
 export PATH=$PATH:$GENIE/bin
