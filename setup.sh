@@ -5,6 +5,7 @@ CURRENTDIR=$(pwd)
 # If we don't have the deps directory first make it and then cd into it
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+export CHIPSENV=$DIR
 INSTALLDIR=$DIR/deps
 cd $INSTALLDIR
 
@@ -19,7 +20,30 @@ echo "${C_RED}####################"
 echo "Setting up chips-env"
 echo "####################${C_RESET}"
 
-# Pythia 6 setup
+# First we build all the required dependencies in ./deps
+# Environments variables for ll deps are also set...
+
+# Geant4 Setup (Detector simulation)
+if [ -d "$INSTALLDIR/geant4/" ]
+then
+    echo "Geant4 installed----"
+else
+    echo "Installing Geant4..."
+    wget http://geant4-data.web.cern.ch/geant4-data/releases/geant4.10.05.p01.tar.gz --no-check-certificate
+    tar -xzvf geant4.10.05.p01.tar.gz
+    rm geant4.10.05.p01.tar.gz
+    mkdir geant4
+    mkdir geant4-build
+    cd geant4-build
+    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/geant4 -DGEANT4_INSTALL_DATADIR=$CHIPSENV/data/geant4 -DGEANT4_INSTALL_DATA=ON -DGEANT4_BUILD_MULTITHREADED=ON -DGEANT4_USE_QT=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_RAYTRACER_X11=ON -DGEANT4_USE_XM=ON ../geant4.10.05.p01/
+    make
+    make install
+    cd $INSTALLDIR
+    rm -rf geant4-build geant4.10.05.p01
+fi
+source $INSTALLDIR/geant4/bin/geant4.sh
+
+# Pythia 6 setup (Event generation)
 if [ -d "$INSTALLDIR/pythia6/" ]
 then
     echo "Pythia6 installed---"
@@ -38,32 +62,30 @@ else
 fi
 export LD_LIBRARY_PATH=$INSTALLDIR/pythia6:$LD_LIBRARY_PATH
 
-# LHAPDF Setup, datasets are external to the container (/usr/local/share/LHAPDF)
-if [ -d "$INSTALLDIR/lhapdf/" ]
+# ROOT setup (Data analysis)
+if [ -d "$INSTALLDIR/root/" ]
 then
-    echo "LHAPDF5 installed---"
+    echo "ROOT installed------"
 else
-    echo "Installing LHAPDF..."
-    wget https://lhapdf.hepforge.org/downloads?f=lhapdf-5.8.7.tar.gz
-    mv downloads?f=lhapdf-5.8.7.tar.gz lhapdf-5.8.7.tar.gz
-    tar -xzvf lhapdf-5.8.7.tar.gz
-    rm -rf lhapdf-5.8.7.tar.gz
-    mkdir lhapdf
-    cd lhapdf-5.8.7
-    ./configure --prefix=$INSTALLDIR/lhapdf
+    echo "Installing ROOT..."
+    wget https://root.cern/download/root_v6.20.04.source.tar.gz --no-check-certificate
+    tar -xzvf root_v6.20.04.source.tar.gz
+    rm root_v6.20.04.source.tar.gz
+    mkdir root
+    mkdir root-build
+    cd root-build
+    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/root -Dminuit2=ON -Dpythia6=ON -DPYTHIA6_LIBRARY=$INSTALLDIR/pythia6/libPythia6.so ../root-6.20.04
     make
     make install
     cd $INSTALLDIR
-    ln -s /usr/lib64/libgfortran.so.3 lhapdf/lib/libg2c.so
-    rm -rf lhapdf-5.8.7
+    rm -rf root-build root-6.20.04
 fi
-export PYTHONPATH=$INSTALLDIR/lhapdf/lib64/python2.7/site-packages:$PYTHONPATH
-export LD_LIBRARY_PATH=$INSTALLDIR/lhapdf/lib:$LD_LIBRARY_PATH
-export CPLUS_INCLUDE_PATH=$INSTALLDIR/lhapdf/include:$CPLUS_INCLUDE_PATH
-export PATH=$INSTALLDIR/lhapdf/bin:$PATH
-export LHAPATH=/unix/lartpc/software/lhapdf/PDFsets  #TODO: Option to download all set here
+export ROOTSYS=$INSTALLDIR/root
+source $INSTALLDIR/root/bin/thisroot.sh
+export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+export PATH=$ROOTSYS/bin:$PATH
 
-# log4cpp Setup
+# log4cpp Setup (Logging for c++)
 if [ -d "$INSTALLDIR/log4cpp/" ]
 then
     echo "log4cpp installed---"
@@ -85,28 +107,7 @@ export LD_LIBRARY_PATH=$INSTALLDIR/log4cpp/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/log4cpp/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/log4cpp/bin:$PATH
 
-# GSL Setup
-if [ -d "$INSTALLDIR/gsl/" ]
-then
-    echo "GSL installed-------"
-else
-    echo "Installing GSL..."
-    wget ftp://ftp.gnu.org/gnu/gsl/gsl-2.6.tar.gz
-    tar -xzvf gsl-2.6.tar.gz
-    rm gsl-2.6.tar.gz
-    mkdir gsl
-    cd gsl-2.6
-    ./configure --prefix=$INSTALLDIR/gsl
-    make
-    make install
-    cd $INSTALLDIR
-    rm -rf gsl-2.6
-fi
-export LD_LIBRARY_PATH=$INSTALLDIR/gsl/lib:$LD_LIBRARY_PATH
-export CPLUS_INCLUDE_PATH=$INSTALLDIR/gsl/include:$CPLUS_INCLUDE_PATH
-export PATH=$INSTALLDIR/gsl/bin:$PATH
-
-# CRY Setup (Cosmic event generator)
+# CRY Setup (Cosmic event generation)
 if [ -d "$INSTALLDIR/cry/" ]
 then
     echo "CRY installed-------"
@@ -123,6 +124,8 @@ else
 fi
 export CRYDIR=$INSTALLDIR/cry
 export CRYDATA=$INSTALLDIR/cry/data
+export LD_LIBRARY_PATH=$INSTALLDIR/cry/lib:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$INSTALLDIR/cry/src:$CPLUS_INCLUDE_PATH
 
 # GLoBES Setup (Detector sensitivity simulation)
 if [ -d "$INSTALLDIR/globes/" ]
@@ -130,124 +133,26 @@ then
     echo "GLoBES installed----"
 else
     echo "Installing GLoBES..."
-    wget https://www.mpi-hd.mpg.de/personalhomes/globes/download/globes-3.0.11.tar.gz --no-check-certificate
-    tar -xzvf globes-3.0.11.tar.gz
-    rm globes-3.0.11.tar.gz
+    wget https://www.mpi-hd.mpg.de/personalhomes/globes/download/globes-3.2.17.tar.gz --no-check-certificate
+    tar -xzvf globes-3.2.17.tar.gz
+    rm globes-3.2.17.tar.gz
     mkdir globes
-    cd globes-3.0.11/
+    cd globes-3.2.17/
     ./configure --prefix=$INSTALLDIR/globes
     make
     make install
     cd $INSTALLDIR
-    rm -rf globes-3.0.11
+    rm -rf globes-3.2.17
 fi
 export LD_LIBRARY_PATH=$INSTALLDIR/globes/lib:$LD_LIBRARY_PATH
 export CPLUS_INCLUDE_PATH=$INSTALLDIR/globes/include:$CPLUS_INCLUDE_PATH
 export PATH=$INSTALLDIR/globes/bin:$PATH
 
-# CLHEP Setup (Geant 4 dependency)
-if [ -d "$INSTALLDIR/clhep/" ]
-then
-    echo "CLHEP installed-----"
-else
-    echo "Installing CLHEP..."
-    wget http://www.hep.ucl.ac.uk/~jtingey/clhep-2.1.0.1.tgz --no-check-certificate
-    tar -xzvf clhep-2.1.0.1.tgz
-    rm clhep-2.1.0.1.tgz
-    mkdir clhep
-    cd 2.1.0.1/CLHEP/
-    ./configure --prefix=$INSTALLDIR/clhep
-    make
-    make install
-    cd $INSTALLDIR
-    rm -rf 2.1.0.1
-fi
-export LD_LIBRARY_PATH=$INSTALLDIR/clhep/lib:$LD_LIBRARY_PATH
-export CPLUS_INCLUDE_PATH=$INSTALLDIR/clhep/include:$CPLUS_INCLUDE_PATH
-export PATH=$INSTALLDIR/clhep/bin:$PATH
-
-# Geant4 Setup (Detector Simulation)
-if [ -d "$INSTALLDIR/geant4/" ]
-then
-    echo "Geant4 installed----"
-else
-    echo "Installing Geant4..."
-    wget http://www.hep.ucl.ac.uk/~jtingey/geant4.9.4.p02.tar.gz --no-check-certificate
-    tar -xzvf geant4.9.4.p02.tar.gz
-    rm geant4.9.4.p02.tar.gz
-    mkdir geant4
-    mkdir geant4/data
-    mkdir geant4-build
-    cd geant4/data/
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4NDL.3.14.tar.gz
-    tar -xzvf G4NDL.3.14.tar.gz
-    rm G4NDL.3.14.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4EMLOW.6.19.tar.gz
-    tar -xzvf G4EMLOW.6.19.tar.gz
-    rm G4EMLOW.6.19.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4PhotonEvaporation.2.1.tar.gz
-    tar -xzvf G4PhotonEvaporation.2.1.tar.gz
-    rm G4PhotonEvaporation.2.1.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4RadioactiveDecay.3.3.tar.gz
-    tar -xzvf G4RadioactiveDecay.3.3.tar.gz
-    rm G4RadioactiveDecay.3.3.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4ABLA.3.0.tar.gz
-    tar -xzvf G4ABLA.3.0.tar.gz
-    rm G4ABLA.3.0.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4PII.1.2.tar.gz
-    tar -xzvf G4PII.1.2.tar.gz
-    rm G4PII.1.2.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/RealSurface.1.0.tar.gz
-    tar -xzvf RealSurface.1.0.tar.gz
-    rm RealSurface.1.0.tar.gz
-    wget http://geant4-data.web.cern.ch/geant4-data/datasets/G4NEUTRONXS.1.0.tar.gz
-    tar -xzvf G4NEUTRONXS.1.0.tar.gz
-    rm G4NEUTRONXS.1.0.tar.gz
-    cd $INSTALLDIR/geant4-build
-    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/geant4 -DGEANT4_VERBOSE_CODE=OFF ../geant4.9.4.p02/
-    make
-    make install
-    cd $INSTALLDIR
-    rm -rf geant4-build geant4.9.4.p02
-fi
-source $INSTALLDIR/geant4/share/geant4-9.4.2/config/geant4-9.4.2.sh
-export LD_LIBRARY_PATH=$INSTALLDIR/geant4/lib:$LD_LIBRARY_PATH
-export CPLUS_INCLUDE_PATH=$INSTALLDIR/geant4/include:$CPLUS_INCLUDE_PATH
-export PATH=$INSTALLDIR/geant4/bin:$PATH
-export G4LEVELGAMMADATA=$INSTALLDIR/geant4/data/PhotonEvaporation2.1
-export G4RADIOACTIVEDATA=$INSTALLDIR/geant4/data/RadioactiveDecay3.3
-export G4LEDATA=$INSTALLDIR/geant4/data/G4EMLOW6.19
-export G4NEUTRONHPDATA=$INSTALLDIR/geant4/data/G4NDL3.14
-export G4ABLADATA=$INSTALLDIR/geant4/data/G4ABLA3.0
-export G4REALSURFACEDATA=$INSTALLDIR/geant4/data/RealSurface1.0
-export G4NEUTRONXSDATA=$INSTALLDIR/geant4/data/G4NEUTRONXS1.0
-export G4PIIDATA=$INSTALLDIR/geant4/data/G4PII1.2
-
-# ROOT setup (Data analysis package)
-if [ -d "$INSTALLDIR/root/" ]
-then
-    echo "ROOT installed------"
-else
-    echo "Installing ROOT..."
-    wget https://root.cern.ch/download/root_v5.34.38.source.tar.gz --no-check-certificate
-    tar -xzvf root_v5.34.38.source.tar.gz
-    rm root_v5.34.38.source.tar.gz
-    mv root root-source
-    mkdir root-build
-    mkdir root
-    cd root-build
-    cmake -DCMAKE_INSTALL_PREFIX=$INSTALLDIR/root -Dminuit2=ON -Dpythia6=ON -DPYTHIA6_LIBRARY=$INSTALLDIR/pythia6/libPythia6.so ../root-source/
-    make
-    make install
-    cd $INSTALLDIR
-    rm -rf root-build root-source
-fi
-cd root
-source bin/thisroot.sh
-export ROOTSYS=$INSTALLDIR/root
-cd $INSTALLDIR
-
-# GENIE Setup
+# GENIE Setup (Neutrino event generation)
+export GENIE=$INSTALLDIR/genie
+export PATH=$PATH:$GENIE/bin
+export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
 if [ -d "$INSTALLDIR/genie/" ]
 then
     echo "Genie installed-----"
@@ -256,52 +161,41 @@ else
     git clone https://github.com/GENIE-MC/Generator.git
     mv Generator genie
     cd genie
-    export GENIE=$INSTALLDIR/genie
-    export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
-    export PATH=$GENIE/bin:$PATH
-    git checkout R-2_6_6
-    ./configure --with-log4cpp-lib=$INSTALLDIR/log4cpp/lib --with-log4cpp-inc=$INSTALLDIR/log4cpp/include --enable-lhapdf5 --with-lhapdf-lib=$INSTALLDIR/lhapdf/lib --with-lhapdf-inc=$INSTALLDIR/lhapdf/include --with-pythia6-lib=$INSTALLDIR/pythia6 --enable-gfortran
-    
-    # We need to fix a few things with GENIE before we build it...
-    sed -i 's/2,n/2,(int)n/g' src/Numerical/Simpson1D.cxx
-    sed -i 's/2,n/2,(int)n/g' src/Numerical/Simpson2D.cxx
-    sed -i '29i#include "Interaction/Interaction.h"' src/EVGCore/InteractionGeneratorMap.h
-    mkdir lib
-    ln -s /usr/lib64/libgfortran.so.3 lib/libg2c.so
-
-    make print-make-info
-	make make-bin-lib-dir
-	make save-build-env
-	make autogenerated-headers
-	make base-framework
-	make utils
-	make evgen-framework
-	make core-medium-energy-range
-	make test-medium-energy-range
-	make vle-extension
-	make vhe-extension
-	make flux-drivers
-	make geom-drivers
-	make reweight
-	make viewer
-	make mueloss
-	make vld-tools
-	make doxygen-doc
-	make generator-test-exe
-	make generator-std-exe
-	make numi-support-softw
-	make t2k-support-softw
-	make atmo-support-softw
-	make reweight-support-softw
-  	make install-scripts
-
+    git checkout R-3_00_06
+    ./configure --enable-fnal --with-pythia6-lib=$INSTALLDIR/pythia6/ --disable-lhapdf5 --compiler=gcc
+    sed -i 's/genie-config --libs)/genie-config --libs) -lgfortran/g' ./src/Apps/Makefile
+    make
     cd $INSTALLDIR
 fi
-export GENIE=$INSTALLDIR/genie
-export LD_LIBRARY_PATH=$INSTALLDIR/genie/lib:$LD_LIBRARY_PATH
-export CPLUS_INCLUDE_PATH=$INSTALLDIR/genie/include:$CPLUS_INCLUDE_PATH
-export PATH=$INSTALLDIR/genie/bin:$PATH
 
+export CHIPSGEN=$DIR/chips/chips-gen
+export PATH=$CHIPSGEN:$PATH
+
+export G4VIS_USE=1
+export G4VIS_USE_OPENGLQT=1
+export CHIPSSIM=$DIR/chips/chips-sim
+export LD_LIBRARY_PATH=$CHIPSSIM:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$CHIPSSIM/include:$CPLUS_INCLUDE_PATH
+export PATH=$CHIPSSIM:$PATH
+
+export CHIPSRECO=$DIR/chips/chips-reco
+export LD_LIBRARY_PATH=$CHIPSRECO:$LD_LIBRARY_PATH
+export CPLUS_INCLUDE_PATH=$CHIPSRECO/include:$CPLUS_INCLUDE_PATH
+export PATH=$CHIPSRECO:$PATH
+
+# Now we build all the chips packages
+if [ -f "$DIR/chips/chips-sim/WCSim" ]
+then
+    echo "${C_GREEN}chips software built${C_RESET}"
+else
+    echo "${C_RED}building chips software${C_RESET}"
+    NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+    export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+    cd $DIR
+    cmake .
+    make
+    echo "${C_GREEN}chips software built${C_RESET}"
+fi
 
 echo "${C_GREEN}####################"
 echo "chips-env setup done"
