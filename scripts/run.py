@@ -174,7 +174,7 @@ class CHIPSRunner:
             script.write("\nrm -rf gen" + str(i))
             script.close()
 
-            jobs.write("\nqsub -q short " + script_name)
+            jobs.write("\nqsub -q medium " + script_name)
 
     def gen_cosmic(self, ev, detector, beamdir):
         """Creates the scripts required for cosmic event generation."""
