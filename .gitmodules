@@ -1,12 +1,12 @@
 [submodule "chips/chips-sim"]
 	path = chips/chips-sim
 	url = https://gitlab.com/chipsneutrino/chips-sim.git
-	branch = new_build
+	branch = master
 [submodule "chips/chips-reco"]
 	path = chips/chips-reco
 	url = https://gitlab.com/chipsneutrino/chips-reco.git
-	branch = new_build
+	branch = master
 [submodule "chips/chips-gen"]
 	path = chips/chips-gen
 	url = https://gitlab.com/chipsneutrino/chips-gen.git
-	branch = new_build
+	branch = master
