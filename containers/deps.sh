@@ -113,6 +113,7 @@ cd Generator
 git checkout R-3_00_06
 ./configure --enable-fnal --with-pythia6-lib=/opt/pythia6/ --disable-lhapdf5
 sed -i 's/genie-config --libs)/genie-config --libs) -lgfortran/g' ./src/Apps/Makefile
+mv /opt/GHepUtils.cxx /opt/Generator/src/Framework/GHEP/GHepUtils.cxx  # CHIPS version for new nuance codes
 make -j$(nproc)
 make install
 cd /opt

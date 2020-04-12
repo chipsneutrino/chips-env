@@ -163,6 +163,7 @@ else
     cd genie
     git checkout R-3_00_06
     ./configure --enable-fnal --with-pythia6-lib=$INSTALLDIR/pythia6/ --disable-lhapdf5 --compiler=gcc
+    cp $CHIPSENV/data/genie/GHepUtils.cxx $INSTALLDIR/genie/src/Framework/GHEP/GHepUtils.cxx  # CHIPS version for new nuance codes
     sed -i 's/genie-config --libs)/genie-config --libs) -lgfortran/g' ./src/Apps/Makefile
     make
     cd $INSTALLDIR

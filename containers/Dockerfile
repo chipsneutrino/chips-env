@@ -4,6 +4,7 @@ FROM centos:7
 # All building is done in the /opt directory
 WORKDIR /opt
 COPY deps.sh /opt
+COPY ../data/genie/GHepUtils.cxx /opt
 
 # We run the deps.sh script to install the dependencies
 RUN /bin/bash -c "source /opt/deps.sh"
