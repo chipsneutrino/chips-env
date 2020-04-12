@@ -16,7 +16,6 @@ cd $PRODDIR/beam_nuel/ccqel/scripts/map/ && source $PRODDIR/beam_nuel/ccqel/scri
 cd $PRODDIR/beam_nuel/ncqel/scripts/map/ && source $PRODDIR/beam_nuel/ncqel/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_nuel/ccres/scripts/map/ && source $PRODDIR/beam_nuel/ccres/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_nuel/ncres/scripts/map/ && source $PRODDIR/beam_nuel/ncres/scripts/chips_1200_map.sh
-cd $PRODDIR/beam_nuel/charmccdis/scripts/map/ && source $PRODDIR/beam_nuel/charmccdis/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_nuel/charmccqel/scripts/map/ && source $PRODDIR/beam_nuel/charmccqel/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_nuel/nueelastic/scripts/map/ && source $PRODDIR/beam_nuel/nueelastic/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_nuel/imd/scripts/map/ && source $PRODDIR/beam_nuel/imd/scripts/chips_1200_map.sh
@@ -31,7 +30,6 @@ cd $PRODDIR/beam_numu/ccqel/scripts/map/ && source $PRODDIR/beam_numu/ccqel/scri
 cd $PRODDIR/beam_numu/ncqel/scripts/map/ && source $PRODDIR/beam_numu/ncqel/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_numu/ccres/scripts/map/ && source $PRODDIR/beam_numu/ccres/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_numu/ncres/scripts/map/ && source $PRODDIR/beam_numu/ncres/scripts/chips_1200_map.sh
-cd $PRODDIR/beam_numu/charmccdis/scripts/map/ && source $PRODDIR/beam_numu/charmccdis/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_numu/charmccqel/scripts/map/ && source $PRODDIR/beam_numu/charmccqel/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_numu/nueelastic/scripts/map/ && source $PRODDIR/beam_numu/nueelastic/scripts/chips_1200_map.sh
 cd $PRODDIR/beam_numu/imd/scripts/map/ && source $PRODDIR/beam_numu/imd/scripts/chips_1200_map.sh

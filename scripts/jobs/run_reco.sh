@@ -16,7 +16,6 @@ cd $PRODDIR/beam_nuel/ccqel/scripts/reco/ && source $PRODDIR/beam_nuel/ccqel/scr
 cd $PRODDIR/beam_nuel/ncqel/scripts/reco/ && source $PRODDIR/beam_nuel/ncqel/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_nuel/ccres/scripts/reco/ && source $PRODDIR/beam_nuel/ccres/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_nuel/ncres/scripts/reco/ && source $PRODDIR/beam_nuel/ncres/scripts/chips_1200_reco.sh
-cd $PRODDIR/beam_nuel/charmccdis/scripts/reco/ && source $PRODDIR/beam_nuel/charmccdis/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_nuel/charmccqel/scripts/reco/ && source $PRODDIR/beam_nuel/charmccqel/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_nuel/nueelastic/scripts/reco/ && source $PRODDIR/beam_nuel/nueelastic/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_nuel/imd/scripts/reco/ && source $PRODDIR/beam_nuel/imd/scripts/chips_1200_reco.sh
@@ -31,7 +30,6 @@ cd $PRODDIR/beam_numu/ccqel/scripts/reco/ && source $PRODDIR/beam_numu/ccqel/scr
 cd $PRODDIR/beam_numu/ncqel/scripts/reco/ && source $PRODDIR/beam_numu/ncqel/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_numu/ccres/scripts/reco/ && source $PRODDIR/beam_numu/ccres/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_numu/ncres/scripts/reco/ && source $PRODDIR/beam_numu/ncres/scripts/chips_1200_reco.sh
-cd $PRODDIR/beam_numu/charmccdis/scripts/reco/ && source $PRODDIR/beam_numu/charmccdis/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_numu/charmccqel/scripts/reco/ && source $PRODDIR/beam_numu/charmccqel/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_numu/nueelastic/scripts/reco/ && source $PRODDIR/beam_numu/nueelastic/scripts/chips_1200_reco.sh
 cd $PRODDIR/beam_numu/imd/scripts/reco/ && source $PRODDIR/beam_numu/imd/scripts/chips_1200_reco.sh

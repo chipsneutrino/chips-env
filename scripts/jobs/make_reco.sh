@@ -15,7 +15,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --reco -n 10 -s 100 -g
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --reco -n 10 -s 100 -g chips_1200
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --reco -n 10 -s 100 -g chips_1200
@@ -30,7 +29,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --reco -n 10 -s 100 -g
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --reco -n 10 -s 100 -g chips_1200
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --reco -n 10 -s 100 -g chips_1200
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --reco -n 10 -s 100 -g chips_1200

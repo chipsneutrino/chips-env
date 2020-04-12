@@ -16,7 +16,6 @@ cd $PRODDIR/beam_nuel/ccqel/scripts/sim/ && source $PRODDIR/beam_nuel/ccqel/scri
 cd $PRODDIR/beam_nuel/ncqel/scripts/sim/ && source $PRODDIR/beam_nuel/ncqel/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_nuel/ccres/scripts/sim/ && source $PRODDIR/beam_nuel/ccres/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_nuel/ncres/scripts/sim/ && source $PRODDIR/beam_nuel/ncres/scripts/chips_1200_sim.sh
-cd $PRODDIR/beam_nuel/charmccdis/scripts/sim/ && source $PRODDIR/beam_nuel/charmccdis/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_nuel/charmccqel/scripts/sim/ && source $PRODDIR/beam_nuel/charmccqel/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_nuel/nueelastic/scripts/sim/ && source $PRODDIR/beam_nuel/nueelastic/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_nuel/imd/scripts/sim/ && source $PRODDIR/beam_nuel/imd/scripts/chips_1200_sim.sh
@@ -31,7 +30,6 @@ cd $PRODDIR/beam_numu/ccqel/scripts/sim/ && source $PRODDIR/beam_numu/ccqel/scri
 cd $PRODDIR/beam_numu/ncqel/scripts/sim/ && source $PRODDIR/beam_numu/ncqel/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_numu/ccres/scripts/sim/ && source $PRODDIR/beam_numu/ccres/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_numu/ncres/scripts/sim/ && source $PRODDIR/beam_numu/ncres/scripts/chips_1200_sim.sh
-cd $PRODDIR/beam_numu/charmccdis/scripts/sim/ && source $PRODDIR/beam_numu/charmccdis/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_numu/charmccqel/scripts/sim/ && source $PRODDIR/beam_numu/charmccqel/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_numu/nueelastic/scripts/sim/ && source $PRODDIR/beam_numu/nueelastic/scripts/chips_1200_sim.sh
 cd $PRODDIR/beam_numu/imd/scripts/sim/ && source $PRODDIR/beam_numu/imd/scripts/chips_1200_sim.sh

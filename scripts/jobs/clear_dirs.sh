@@ -16,7 +16,6 @@ rm -rf $PRODDIR/beam_nuel/ccqel/$DATA
 rm -rf $PRODDIR/beam_nuel/ncqel/$DATA
 rm -rf $PRODDIR/beam_nuel/ccres/$DATA
 rm -rf $PRODDIR/beam_nuel/ncres/$DATA
-rm -rf $PRODDIR/beam_nuel/charmccdis/$DATA
 rm -rf $PRODDIR/beam_nuel/charmccqel/$DATA
 rm -rf $PRODDIR/beam_nuel/nueelastic/$DATA
 rm -rf $PRODDIR/beam_nuel/imd/$DATA
@@ -31,7 +30,6 @@ rm -rf $PRODDIR/beam_numu/ccqel/$DATA
 rm -rf $PRODDIR/beam_numu/ncqel/$DATA
 rm -rf $PRODDIR/beam_numu/ccres/$DATA
 rm -rf $PRODDIR/beam_numu/ncres/$DATA
-rm -rf $PRODDIR/beam_numu/charmccdis/$DATA
 rm -rf $PRODDIR/beam_numu/charmccqel/$DATA
 rm -rf $PRODDIR/beam_numu/nueelastic/$DATA
 rm -rf $PRODDIR/beam_numu/imd/$DATA

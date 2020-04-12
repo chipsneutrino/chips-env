@@ -15,7 +15,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --gen -e 200000 -p nue
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --gen -e 200000 -p nuel -t NCEL
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --gen -e 200000 -p nuel -t CCRES
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --gen -e 200000 -p nuel -t NCRES
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --gen -e 200000 -p nuel -t CharmCCDIS
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --gen -e 200000 -p nuel -t CharmCCQE
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --gen -e 200000 -p nuel -t NuEElastic
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --gen -e 200000 -p nuel -t IMD
@@ -30,7 +29,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --gen -e 200000 -p num
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --gen -e 200000 -p numu -t NCEL
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --gen -e 200000 -p numu -t CCRES
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --gen -e 200000 -p numu -t NCRES
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --gen -e 200000 -p nuel -t CharmCCDIS
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --gen -e 200000 -p nuel -t CharmCCQE
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --gen -e 200000 -p nuel -t NuEElastic
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --gen -e 200000 -p nuel -t IMD

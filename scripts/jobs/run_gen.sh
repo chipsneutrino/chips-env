@@ -16,7 +16,6 @@ cd $PRODDIR/beam_nuel/ccqel/scripts/gen/ && source $PRODDIR/beam_nuel/ccqel/scri
 cd $PRODDIR/beam_nuel/ncqel/scripts/gen/ && source $PRODDIR/beam_nuel/ncqel/scripts/gen.sh
 cd $PRODDIR/beam_nuel/ccres/scripts/gen/ && source $PRODDIR/beam_nuel/ccres/scripts/gen.sh
 cd $PRODDIR/beam_nuel/ncres/scripts/gen/ && source $PRODDIR/beam_nuel/ncres/scripts/gen.sh
-cd $PRODDIR/beam_nuel/charmccdis/scripts/gen/ && source $PRODDIR/beam_nuel/charmccdis/scripts/gen.sh
 cd $PRODDIR/beam_nuel/charmccqel/scripts/gen/ && source $PRODDIR/beam_nuel/charmccqel/scripts/gen.sh
 cd $PRODDIR/beam_nuel/nueelastic/scripts/gen/ && source $PRODDIR/beam_nuel/nueelastic/scripts/gen.sh
 cd $PRODDIR/beam_nuel/imd/scripts/gen/ && source $PRODDIR/beam_nuel/imd/scripts/gen.sh
@@ -31,7 +30,6 @@ cd $PRODDIR/beam_numu/ccqel/scripts/gen/ && source $PRODDIR/beam_numu/ccqel/scri
 cd $PRODDIR/beam_numu/ncqel/scripts/gen/ && source $PRODDIR/beam_numu/ncqel/scripts/gen.sh
 cd $PRODDIR/beam_numu/ccres/scripts/gen/ && source $PRODDIR/beam_numu/ccres/scripts/gen.sh
 cd $PRODDIR/beam_numu/ncres/scripts/gen/ && source $PRODDIR/beam_numu/ncres/scripts/gen.sh
-cd $PRODDIR/beam_numu/charmccdis/scripts/gen/ && source $PRODDIR/beam_numu/charmccdis/scripts/gen.sh
 cd $PRODDIR/beam_numu/charmccqel/scripts/gen/ && source $PRODDIR/beam_numu/charmccqel/scripts/gen.sh
 cd $PRODDIR/beam_numu/nueelastic/scripts/gen/ && source $PRODDIR/beam_numu/nueelastic/scripts/gen.sh
 cd $PRODDIR/beam_numu/imd/scripts/gen/ && source $PRODDIR/beam_numu/imd/scripts/gen.sh

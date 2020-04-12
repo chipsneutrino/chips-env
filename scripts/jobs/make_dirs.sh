@@ -22,7 +22,6 @@ mkdir $PRODDIR/beam_nuel/ccqel/
 mkdir $PRODDIR/beam_nuel/ncqel/
 mkdir $PRODDIR/beam_nuel/ccres/
 mkdir $PRODDIR/beam_nuel/ncres/
-mkdir $PRODDIR/beam_nuel/charmccdis/
 mkdir $PRODDIR/beam_nuel/charmccqel/
 mkdir $PRODDIR/beam_nuel/nueelastic/
 mkdir $PRODDIR/beam_nuel/imd/
@@ -37,7 +36,6 @@ mkdir $PRODDIR/beam_numu/ccqel/
 mkdir $PRODDIR/beam_numu/ncqel/
 mkdir $PRODDIR/beam_numu/ccres/
 mkdir $PRODDIR/beam_numu/ncres/
-mkdir $PRODDIR/beam_numu/charmccdis/
 mkdir $PRODDIR/beam_numu/charmccqel/
 mkdir $PRODDIR/beam_numu/nueelastic/
 mkdir $PRODDIR/beam_numu/imd/
@@ -57,7 +55,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --make
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --make
@@ -72,7 +69,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --make
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --make
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --make

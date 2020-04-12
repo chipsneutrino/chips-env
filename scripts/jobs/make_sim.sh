@@ -15,7 +15,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --sim -g chips_1200 -n
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --sim -g chips_1200 -n 100 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --sim -g chips_1200 -n 100 --start 0
@@ -30,7 +29,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --sim -g chips_1200 -n
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --sim -g chips_1200 -n 100 --start 0
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --sim -g chips_1200 -n 100 --start 0
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --sim -g chips_1200 -n 100 --start 0

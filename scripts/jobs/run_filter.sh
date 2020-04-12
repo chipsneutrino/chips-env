@@ -15,7 +15,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --filter
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccdis/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/charmccqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nueelastic/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/imd/ --filter
@@ -30,7 +29,6 @@ python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --filter
-python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccdis/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/charmccqel/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nueelastic/ --filter
 python $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/imd/ --filter
