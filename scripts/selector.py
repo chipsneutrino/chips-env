@@ -186,10 +186,8 @@ class Selector:
         # Interaction types and names
         # There are many different categories of event
         # 0 	= kOther
-        # QE
         # 1 	= kCCQE
         # 2 	= kNCQE
-        # Resonance states
         # 3 	= kCCNuPtoLPPiPlus
         # 4 	= kCCNuNtoLPPiZero
         # 5 	= kCCNuNtoLNPiPlus
@@ -197,27 +195,110 @@ class Selector:
         # 7 	= kNCNuPtoNuNPiPlus
         # 8 	= kNCNuNtoNuNPiZero
         # 9 	= kNCNuNtoNuPPiMinus
-        # Other
+        # 10    = kCCNuBarNtoLNPiMinus
+        # 11    = kCCNuBarPtoLNPiZero
+        # 12    = kCCNuBarPtoLPPiMinus
+        # 13    = kNCNuBarPtoPPiZero
+        # 14    = kNCNuBarPtoNPiPlus
+        # 15    = kNCNuBarNtoNPiZero
+        # 16    = kNCNuBarNtoPPiMinus
+        # 17    = kOtherResonant (This was introduced by me into GENIE Nuance code generator)
+        # 18    = kCCMEC
+        # 19    = kNCMEC
+        # 20    = kIMD
         # 91 	= kCCDIS
         # 92 	= kNCDIS
         # 97 	= kCCCoh
         # 98 	= kElastic
+        # 99    = kInverseMuDecay
         # 100   = Cosmic Muon
-        evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 91, 92, 96, 97, 98, 100]
+        evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
+                    18, 19, 20, 91, 92, 96, 97, 98, 99, 100]
         evtNames = ["Other", "CCQE", "NCQE",
-                    "CCNuPtoLPPiPlus", "CCNuNtoLPPiZero",
-                    "CCNuNtoLNPiPlus", "NCNuPtoNuPPiZero",
-                    "NCNuPtoNuNPiPlus", "NCNuNtoNuNPiZero",
-                    "NCNuNtoNuPPiMinus", "CCDIS",
-                    "NCDIS", "NCCoh", "CCCoh", "ElasticScattering",
+                    "CCNuPtoLPPiPlus", "CCNuNtoLPPiZero", "CCNuNtoLNPiPlus", 
+                    "NCNuPtoNuPPiZero", "NCNuPtoNuNPiPlus", "NCNuNtoNuNPiZero", "NCNuNtoNuPPiMinus", 
+                    "kCCNuBarNtoLNPiMinus", "kCCNuBarPtoLNPiZero", "kCCNuBarPtoLPPiMinus",
+                    "kNCNuBarPtoNuBarPPiZero", "kNCNuBarPtoNuBarNPiPlus", "kNCNuBarNtoNuBarNPiZero", "kNCNuBarNtoNuBarPPiMinus",
+                    "kOtherResonant", "kCCMEC", "kNCMEC", "kIMD",
+                    "CCDIS", "NCDIS", "NCCoh", "CCCoh", "ElasticScattering", "InverseMuDecay",
                     "CosmicMuon"]
 
         # Particle types and names
-        parTypes = [11,    -11,   12,     13,    -13,   14,
-                    111,   211,   -211,  2212,     2112,      22,       -1]
-        parNames = ["el-", "el+", "nuel", "mu-", "mu+", "numu",
-                    "pi0", "pi+", "pi-", "Proton", "Neutron",
-                    "photon", "Other"]
+        parTypes = [11, -11, 12, -12, 13, -13, 14, -14,
+                    111, 211, -211, 2212, 2112, 22, -1]
+        parNames = ["el-", "el+", "nuel", "anuel", "mu-", "mu+", "numu", "anumu",
+                    "pi0", "pi+", "pi-", "Proton", "Neutron", "photon", "Other"]
+
+        finalStates = [ # Electron, Muon, charged pion, neutral pion, proton, gamma
+            [1, 0, 0, 0, 0, 0], # 1el
+            [0, 1, 0, 0, 0, 0], # 1mu
+            [0, 0, 1, 0, 0, 0], # 1pi+-
+            [0, 0, 0, 1, 0, 0], # 1pi0
+            [0, 0, 0, 0, 1, 0], # 1P
+            [0, 0, 0, 0, 0, 1], # 1gamma
+            [1, 0, 1, 0, 0, 0], # 1el, 1pi+-
+            [1, 0, 0, 1, 0, 0], # 1el, 1pi0
+            [1, 0, 0, 0, 1, 0], # 1el, 1P
+            [1, 0, 0, 0, 0, 1], # 1el, 1gamma
+            [0, 1, 1, 0, 0, 0], # 1mu, 1pi+-
+            [0, 1, 0, 1, 0, 0], # 1mu, 1pi0
+            [0, 1, 0, 0, 1, 0], # 1mu, 1P
+            [0, 1, 0, 0, 0, 1], # 1mu, 1gamma
+            [0, 0, 1, 1, 0, 0], # 1pi+-, 1pi0
+            [0, 0, 1, 0, 1, 0], # 1pi+-, 1P
+            [0, 0, 1, 0, 0, 1], # 1pi+-, 1gamma
+            [0, 0, 0, 1, 1, 0], # 1pi0, 1P
+            [0, 0, 0, 1, 0, 1], # 1pi0, 1gamma
+            [0, 0, 0, 0, 1, 1], # 1P, 1gamma
+            [1, 0, 1, 1, 0, 0], # 1el, 1pi+-, 1pi0
+            [1, 0, 1, 0, 1, 0], # 1el, 1pi+-, 1P
+            [1, 0, 1, 0, 0, 1], # 1el, 1pi+-, 1gamma
+            [1, 0, 0, 1, 1, 0], # 1el, 1pi0, 1P
+            [1, 0, 0, 1, 0, 1], # 1el, 1pi0, 1gamma
+            [1, 0, 0, 0, 1, 1], # 1el, 1P, 1gamma
+            [0, 1, 1, 1, 0, 0], # 1mu, 1pi+-, 1pi0
+            [0, 1, 1, 0, 1, 0], # 1mu, 1pi+-, 1P
+            [0, 1, 1, 0, 0, 1], # 1mu, 1pi+-, 1gamma
+            [0, 1, 0, 1, 1, 0], # 1mu, 1pi0, 1P
+            [0, 1, 0, 1, 0, 1], # 1mu, 1pi0, 1gamma
+            [0, 1, 0, 0, 1, 1], # 1mu, 1P, 1gamma
+        ]
+
+        stateNames = [
+            "1e", 
+            "1#mu", 
+            "1#pi^{#pm}", 
+            "1#pi^{0}", 
+            "1P", 
+            "1#gamma",
+            "1e, 1#pi^{#pm}", 
+            "1e, 1#pi^{0}", 
+            "1e, 1P", 
+            "1e, 1#gamma",
+            "1#mu, 1#pi^{#pm}", 
+            "1#mu, 1#pi^{0}", 
+            "1#mu, 1P", 
+            "1#mu, 1#gamma",
+            "1#pi^{#pm}, 1#pi^{0}", 
+            "1#pi^{#pm}, 1P", 
+            "1#pi^{#pm}, 1#gamma",
+            "1#pi^{0}, 1P", 
+            "1#pi^{0}, 1#gamma", 
+            "1P, 1#gamma",
+            "1e, 1#pi^{#pm}, 1#pi^{0}", 
+            "1e, 1#pi^{#pm}, 1P", 
+            "1e, 1#pi^{#pm}, 1#gamma",
+            "1e, 1#pi^{0}, 1P", 
+            "1e, 1#pi^{0}, 1#gamma", 
+            "1e, 1P, 1#gamma",
+            "1#mu, 1#pi^{#pm}, 1#pi^{0}", 
+            "1#mu, 1#pi^{#pm}, 1P", 
+            "1#mu, 1#pi^{#pm}, 1#gamma",
+            "1#mu, 1#pi^{0}, 1P", 
+            "1#mu, 1#pi^{0}, 1#gamma", 
+            "1#mu, 1P, 1#gamma",
+            "other"
+        ]
 
         # Search for all iteraction types
         h_intTypeSearch = ROOT.TH1F(
@@ -238,6 +319,7 @@ class Selector:
         h_parNum = []
         h_parType = []
         h_parTypePassed = []
+        h_finalStates = []
         for i in range(len(evtTypes)):
             h_nuEnergy.append(
                 ROOT.TH1F(
@@ -264,17 +346,29 @@ class Selector:
             for j in range(1, len(parTypes)+1):
                 h_parType[i].GetXaxis().SetBinLabel(j, parNames[j-1])
                 h_parTypePassed[i].GetXaxis().SetBinLabel(j, parNames[j-1])
+            h_finalStates.append(
+                ROOT.TH1F(
+                    ("h_finalStates_" + evtNames[i]),
+                    ("Final states " + evtNames[i]),
+                    len(stateNames),
+                    0, len(stateNames)))
+            for j in range(1, len(stateNames)+1):
+                h_finalStates[i].GetXaxis().SetBinLabel(j, stateNames[j-1])
 
         # Open the temporary file holding the passed events
         temp = open(os.path.join(self.m_outputDir, "temp.temp"), 'r')
         lines = temp.readlines()
         event = []  # Define array to hold an event
+        total_particles = 0
+        skipped_particles = 0
         for line in lines:
             if line.startswith("$ begin"):  # Find the start of an event
                 event = [line]
             else:  # Add lines including the end of the event
                 event.append(line)
             if line.startswith("$ end"):  # We now inspect the event
+                finalState = [0, 0, 0, 0, 0, 0]
+                finalEnergies = [0, 0, 0, 0, 0, 0]
                 evtType = -1
                 numParticles = 0
                 for evtLine in event:  # Loop through event lines
@@ -288,6 +382,8 @@ class Selector:
                         h_nuEnergy[evtTypes.index(evtType)].Fill(
                             float(evtLine.split(' ')[3]))
 
+                    total_particles += 1
+
                     # Record particles over the detection thresholds
                     # Select final state tracks
                     if evtLine.startswith("$ track") and evtLine.endswith(
@@ -295,56 +391,56 @@ class Selector:
                         particle = int(evtLine.split(' ')[2])
                         energy = float(evtLine.split(' ')[3])
 
-                        if particle in [-12, 130, 311, -311, 321, -321, 411,
-                                        421, 431, -2212, -2112, 3122, 3112, -
-                                        3122, 3222, 3212, 8016, 4212, 4122,
-                                        4222]:
+                        if particle in [12, -12, 14, -14, 130, 311, -311, 321, -321, 411,
+                                        421, 431, -2212, -2112, 3122, 3112, -3122, 3222, 
+                                        3212, 8016, 4212, 4122, 4222]:
                             particle = -1
+                            skipped_particles += 1
 
                         h_parType[evtTypes.index(evtType)].Fill(
                             parTypes.index(particle))
 
-                        if particle in [
-                                11, -11] and energy > elThreshold:
+                        # Electron
+                        if particle in [11, -11] and energy > elThreshold:
                             numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        if particle in [
-                                13, -13] and energy > muThreshold:
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[0] += 1
+                        # Muon
+                        elif particle in [13, -13] and energy > muThreshold:
                             numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        if particle in [
-                                211, -211] and energy > cpThreshold:
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[1] += 1
+                        # Charged Pion
+                        elif particle in [211, -211] and energy > cpThreshold:
                             numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        if particle in [
-                                321, -321] and energy > ckThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        if particle in [2212] and energy > pThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        # Charged Sigma
-                        if particle in [3112] and energy > csThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
-                        # Photon, a few pair productions
-                        if particle in [22] and energy > (20*electronMass):
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[2] += 1
                         # Neutral Pion, a few pair productions
-                        if particle in [111] and energy > (20*electronMass):
+                        elif particle in [111] and energy > (20*electronMass):
                             numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(
-                                parTypes.index(particle))
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[3] += 1
+                        # Proton
+                        elif particle in [2212] and energy > pThreshold:
+                            numParticles += 1
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[4] += 1
+                        # Photon, a few pair productions
+                        elif particle in [22] and energy > (20*electronMass):
+                            numParticles += 1
+                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
+                            finalState[5] += 1
 
                 h_parNum[evtTypes.index(evtType)].Fill(numParticles)
+
+                try:
+                    state = finalStates.index(finalState)
+                except Exception:
+                    state = len(stateNames)-1
+
+                h_finalStates[evtTypes.index(evtType)].Fill(state)
+
+        print("Total Particles: {}, Skipped Particles: {}".format(total_particles, skipped_particles))
 
         h_intTypeSearch.GetXaxis().SetTitle("Interaction Type Code")
         h_intTypeSearch.GetYaxis().SetTitle("Frequency")
@@ -367,6 +463,10 @@ class Selector:
                 "Particle Type Above Threshold")
             h_parTypePassed[i].GetYaxis().SetTitle("Frequency")
             h_parTypePassed[i].Write()
+            h_finalStates[i].GetXaxis().SetTitle(
+                "Final States")
+            h_finalStates[i].GetYaxis().SetTitle("Frequency")
+            h_finalStates[i].Write()
         temp.close()
         plotsFile.Close()
 
