@@ -1,32 +1,11 @@
-#! /bin/bash
-
-# To install singularity
-sudo yum groupinstall -y 'Development Tools'
-sudo yum install -y epel-release
-sudo yum install -y golang libseccomp-devel \
-  squashfs-tools cryptsetup wget openssl-devel libuuid-devel
-mkdir -p ${GOPATH}/src/github.com/sylabs
-cd ${GOPATH}/src/github.com/sylabs
-git clone https://github.com/sylabs/singularity.git
-cd singularity
-git checkout v3.5.3
-cd ${GOPATH}/src/github.com/sylabs/singularity
-./mconfig
-cd ./builddir
-make
-sudo make install
-cd
-
-# Build sandbox and get shell within it
-singularity build --fix-perms --sandbox chips-env/ docker://centos:7
-singularity shell --writable chips-env/
-
 # Install required packages
 yum update -y && yum install -y git gcc-c++ gcc binutils \
-  libX11-devel libXpm-devel libXft-devel libXext-devel \
-  libgsl-dev wget tar dpkg-dev python-dev make openssl-devel \
-  xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libX11-devel libXmu-devel \
-  gcc-gfortran python-devel freeglut-devel libxml2-devel gsl-static
+libX11-devel libXpm-devel libXft-devel libXext-devel \
+libgsl-dev wget tar dpkg-dev python-dev make openssl-devel \
+xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-apps libX11-devel libXmu-devel \
+gcc-gfortran python-devel freeglut-devel libxml2-devel gsl-static
+
+yum clean all
 
 cd /opt  # Go to the /opt directory
 mkdir /opt/data

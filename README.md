@@ -57,3 +57,73 @@ and then commit the changes to this chips-env repository
 ## GENIE cross-section files
 
 If you look in the [GENIE manual](https://genie-docdb.pp.rl.ac.uk/DocDB/0000/000002/006/man.pdf) there are descriptions of all the different models and 'tunes' availiable. The data is then located [here](http://scisoft.fnal.gov/scisoft/packages/genie_xsec). Then we just use the gxspl-FNALsmall.xml file as this contains everything we need.
+
+## chips-env containers
+
+The aim of containerising CHIPS software is to make is easily reproducable and easy to use anywhere. This allows it to be run on any computing resources availiable with little effort.
+
+### Singularity Install (centos7)
+
+To install singularity on centos7 run the following to install the dependencies...
+
+```
+$ sudo yum groupinstall -y 'Development Tools' && \
+	sudo yum install -y epel-release && \
+	sudo yum install -y golang libseccomp-devel \
+  		squashfs-tools cryptsetup wget openssl-devel libuuid-devel
+```
+
+Then run the following to install singularity and test it works...
+
+```
+$ mkdir -p ${GOPATH}/src/github.com/sylabs && \
+	cd ${GOPATH}/src/github.com/sylabs && \
+	git clone https://github.com/sylabs/singularity.git && \
+	cd singularity && git checkout v3.5.3 && \
+	cd ${GOPATH}/src/github.com/sylabs/singularity && \
+	./mconfig && cd ./builddir && make -j$(nproc) && \
+	sudo make install && cd && singularity version
+```
+
+### Dependency Image
+
+We create a docker "dependency" image containing,
+
+ - cmake3 (build tool)
+ - pythia6 (event generator)
+ - GSL (scientific library)
+ - GLoBES (detector sensitivity)
+ - CRY (cosmic event generator)
+ - log4cpp (c++ logging utility)
+ - geant4 (detector simulation)
+ - ROOT (analysis framework)
+ - Genie (beam neutrino event generator)
+
+From this we can then build all the singularity/docker images we want for specific generation, simulation and reconstructions tasks.
+Note, we specify /opt/data/geant4 as the geant4 data path in this image. Therefore, we need to mount the corresponding data there whenever using geant4.
+
+We require 'sudo' to build the image and push it to the gitlab container registry for chips-env using...
+
+```
+$ cd $CHIPSENV/containers
+$ sudo docker build -t registry.gitlab.com/chipsneutrino/chips-env .
+$ sudo docker login registry.gitlab.com
+$ sudo docker push registry.gitlab.com/chipsneutrino/chips-env
+```
+
+### Test Singularity image
+
+Using the test.def singularity definition file we use the dependency docker image at "registry.gitlab.com/chipsneutrino" to create a test container using...
+
+```
+$ cd $CHIPSENV/containers
+$ sudo singularity build test.sif test.def
+```
+
+We don't add any additional software to the image, we just set the 'runscript' to start ROOT within the container, so when we run...
+
+```
+$ sudo singularity run test.sif
+```
+
+you get a ROOT prompt

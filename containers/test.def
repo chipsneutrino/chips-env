@@ -1,0 +1,10 @@
+Bootstrap: docker
+From: registry.gitlab.com/chipsneutrino/chips-env
+Stage: build
+
+%labels
+    name test
+
+%runscript
+    source /usr/local/bin/thisroot.sh
+    root
