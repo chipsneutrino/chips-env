@@ -117,6 +117,7 @@ Using the test.def singularity definition file we use the dependency docker imag
 
 ```
 $ cd $CHIPSENV/containers
+$ cp ../data/genie/GHepUtils.cxx .
 $ sudo singularity build test.sif test.def
 ```
 
