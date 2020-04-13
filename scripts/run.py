@@ -256,7 +256,6 @@ class CHIPSRunner:
             script.write("\nWCSim -g " + self.config[geom] + " " + mac_name)
             script.close()
 
-            rand = int(base[-3:])
             mac = open(mac_name, "w")
             text = ("/run/verbose 0\n"
                     "/tracking/verbose 0\n"
@@ -272,7 +271,6 @@ class CHIPSRunner:
                     "/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
-                    "/WCSim/random/seed " + str(rand) + "\n"
                     "/run/beamOn " + str(self.config["sim_size"]))
             mac.write(text)
             mac.close()
@@ -328,7 +326,7 @@ class CHIPSRunner:
 
             jobs.write("\nqsub -q medium " + script_name)
 
-    def map(self, geom):
+    def map(self, geom, save_extra):
         """Creates the scripts required for hit map generation."""
         print("Creating Mapping Scripts...")
         jobs = open(path.join(self.dir, "scripts/" + geom + "_map.sh"), "w")
@@ -347,7 +345,8 @@ class CHIPSRunner:
                          r'\"' + path.join(self.dir, "sim", geom, f) +
                          r'\",' + r'\"' + path.join(self.dir, "map", geom,
                                                     base + "_map.root") +
-                         r'\",' + str(self.config["sim_size"]) + ')"')
+                         r'\",' + str(self.config["sim_size"]) + 
+                         r',' + str(save_extra) + ')"')
             script.close()
 
             jobs.write("\nqsub -q medium " + script_name)
@@ -410,6 +409,7 @@ def parse_args():
 
     # Mapping arguments
     parser.add_argument('--map', action='store_true')
+    parser.add_arguemtn('--saveextra', action='store_true')
 
     # Reconstruction arguments
     parser.add_argument('--reco', action='store_true')
@@ -443,7 +443,7 @@ def main():
         else:
             runner.sim_beam(args.geom, args.num, args.start)
     elif args.map:
-        runner.map(args.geom)
+        runner.map(args.geom, args.saveextra)
     elif args.reco:
         runner.reco(args.num, args.split, args.geom)
     else:

@@ -9,9 +9,9 @@ void load_libs()
 	gSystem->Load(libWCSimAnalysis.Data());	
 }
 
-void map(const char * in_file = "", const char * out_file = "", int max_events=1000) 
+void map(const char * in_file = "", const char * out_file = "", int max_events=1000, bool save_extra) 
 {
 	load_libs();
-	WCSimMapper mapper = WCSimMapper(in_file, out_file, max_events, false);
+	WCSimMapper mapper = WCSimMapper(in_file, out_file, max_events, save_extra);
 	mapper.run();
 }
