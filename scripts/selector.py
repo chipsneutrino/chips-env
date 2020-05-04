@@ -185,41 +185,42 @@ class Selector:
 
         # Interaction types and names
         # There are many different categories of event
-        # 0 	= kOther
-        # 1 	= kCCQE
-        # 2 	= kNCQE
-        # 3 	= kCCNuPtoLPPiPlus
-        # 4 	= kCCNuNtoLPPiZero
-        # 5 	= kCCNuNtoLNPiPlus
-        # 6 	= kNCNuPtoNuPPiZero
-        # 7 	= kNCNuPtoNuNPiPlus
-        # 8 	= kNCNuNtoNuNPiZero
-        # 9 	= kNCNuNtoNuPPiMinus
-        # 10    = kCCNuBarNtoLNPiMinus
-        # 11    = kCCNuBarPtoLNPiZero
-        # 12    = kCCNuBarPtoLPPiMinus
-        # 13    = kNCNuBarPtoPPiZero
-        # 14    = kNCNuBarPtoNPiPlus
-        # 15    = kNCNuBarNtoNPiZero
-        # 16    = kNCNuBarNtoPPiMinus
-        # 17    = kOtherResonant (This was introduced by me into GENIE Nuance code generator)
-        # 18    = kCCMEC
-        # 19    = kNCMEC
-        # 20    = kIMD
-        # 91 	= kCCDIS
-        # 92 	= kNCDIS
-        # 97 	= kCCCoh
-        # 98 	= kElastic
-        # 99    = kInverseMuDecay
+        # 0     = Other
+        # 1 	= CCQE
+        # 2 	= NCQE
+        # 3 	= CCNuPtoLPPiPlus
+        # 4 	= CCNuNtoLPPiZero
+        # 5 	= CCNuNtoLNPiPlus
+        # 6 	= NCNuPtoNuPPiZero
+        # 7 	= NCNuPtoNuNPiPlus
+        # 8 	= NCNuNtoNuNPiZero
+        # 9 	= NCNuNtoNuPPiMinus
+        # 10    = CCNuBarNtoLNPiMinus
+        # 11    = CCNuBarPtoLNPiZero
+        # 12    = CCNuBarPtoLPPiMinus
+        # 13    = NCNuBarPtoPPiZero
+        # 14    = NCNuBarPtoNPiPlus
+        # 15    = NCNuBarNtoNPiZero
+        # 16    = NCNuBarNtoPPiMinus
+        # 17    = CCOtherResonant
+        # 18    = NCOtherResonant
+        # 19    = CCMEC
+        # 20    = NCMEC
+        # 21    = IMD
+        # 91 	= CCDIS
+        # 92 	= NCDIS
+        # 97 	= CCCoh
+        # 98 	= Elastic
+        # 99    = InverseMuDecay
         # 100   = Cosmic Muon
-        evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
-                    18, 19, 20, 91, 92, 96, 97, 98, 99, 100]
+        evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                    19, 20, 21, 91, 92, 96, 97, 98, 99, 100]
         evtNames = ["Other", "CCQE", "NCQE",
                     "CCNuPtoLPPiPlus", "CCNuNtoLPPiZero", "CCNuNtoLNPiPlus", 
                     "NCNuPtoNuPPiZero", "NCNuPtoNuNPiPlus", "NCNuNtoNuNPiZero", "NCNuNtoNuPPiMinus", 
-                    "kCCNuBarNtoLNPiMinus", "kCCNuBarPtoLNPiZero", "kCCNuBarPtoLPPiMinus",
-                    "kNCNuBarPtoNuBarPPiZero", "kNCNuBarPtoNuBarNPiPlus", "kNCNuBarNtoNuBarNPiZero", "kNCNuBarNtoNuBarPPiMinus",
-                    "kOtherResonant", "kCCMEC", "kNCMEC", "kIMD",
+                    "CCNuBarNtoLNPiMinus", "CCNuBarPtoLNPiZero", "CCNuBarPtoLPPiMinus",
+                    "NCNuBarPtoNuBarPPiZero", "NCNuBarPtoNuBarNPiPlus", "NCNuBarNtoNuBarNPiZero", "NCNuBarNtoNuBarPPiMinus",
+                    "CCOtherResonant", "NCOtherResonant", "CCMEC", "NCMEC", "IMD",
                     "CCDIS", "NCDIS", "NCCoh", "CCCoh", "ElasticScattering", "InverseMuDecay",
                     "CosmicMuon"]
 
@@ -271,33 +272,33 @@ class Selector:
             "1#pi^{0}", 
             "1P", 
             "1#gamma",
-            "1e, 1#pi^{#pm}", 
-            "1e, 1#pi^{0}", 
-            "1e, 1P", 
-            "1e, 1#gamma",
-            "1#mu, 1#pi^{#pm}", 
-            "1#mu, 1#pi^{0}", 
-            "1#mu, 1P", 
-            "1#mu, 1#gamma",
-            "1#pi^{#pm}, 1#pi^{0}", 
-            "1#pi^{#pm}, 1P", 
-            "1#pi^{#pm}, 1#gamma",
-            "1#pi^{0}, 1P", 
-            "1#pi^{0}, 1#gamma", 
-            "1P, 1#gamma",
-            "1e, 1#pi^{#pm}, 1#pi^{0}", 
-            "1e, 1#pi^{#pm}, 1P", 
-            "1e, 1#pi^{#pm}, 1#gamma",
-            "1e, 1#pi^{0}, 1P", 
-            "1e, 1#pi^{0}, 1#gamma", 
-            "1e, 1P, 1#gamma",
-            "1#mu, 1#pi^{#pm}, 1#pi^{0}", 
-            "1#mu, 1#pi^{#pm}, 1P", 
-            "1#mu, 1#pi^{#pm}, 1#gamma",
-            "1#mu, 1#pi^{0}, 1P", 
-            "1#mu, 1#pi^{0}, 1#gamma", 
-            "1#mu, 1P, 1#gamma",
-            "other"
+            "1e1#pi^{#pm}", 
+            "1e1#pi^{0}", 
+            "1e1P", 
+            "1e1#gamma",
+            "1#mu1#pi^{#pm}", 
+            "1#mu1#pi^{0}", 
+            "1#mu1P", 
+            "1#mu1#gamma",
+            "1#pi^{#pm}1#pi^{0}", 
+            "1#pi^{#pm}1P", 
+            "1#pi^{#pm}1#gamma",
+            "1#pi^{0}1P", 
+            "1#pi^{0}1#gamma", 
+            "1P1#gamma",
+            "1e1#pi^{#pm}1#pi^{0}", 
+            "1e1#pi^{#pm}1P", 
+            "1e1#pi^{#pm}1#gamma",
+            "1e1#pi^{0}1P", 
+            "1e1#pi^{0}1#gamma", 
+            "1e1P1#gamma",
+            "1#mu1#pi^{#pm}1#pi^{0}", 
+            "1#mu1#pi^{#pm}1P", 
+            "1#mu1#pi^{#pm}1#gamma",
+            "1#mu1#pi^{0}1P", 
+            "1#mu1#pi^{0}1#gamma", 
+            "1#mu1P1#gamma",
+            "Other"
         ]
 
         # Search for all iteraction types
@@ -377,17 +378,19 @@ class Selector:
                         h_intType.Fill(evtTypes.index(
                             int(evtLine.split(' ')[2])))
                         evtType = int(evtLine.split(' ')[2])
-                    if (evtLine.startswith("$ track 12") or evtLine.startswith(
-                            "$ track 14")) and evtLine.endswith(" -1\n"):
-                        h_nuEnergy[evtTypes.index(evtType)].Fill(
-                            float(evtLine.split(' ')[3]))
+
+
+                    if (evtLine.startswith("$ track 12") or
+                        evtLine.startswith("$ track -12") or
+                        evtLine.startswith("$ track 14") or
+                        evtLine.startswith("$ track -14")) and evtLine.endswith(" -1\n"):
+                        h_nuEnergy[evtTypes.index(evtType)].Fill(float(evtLine.split(' ')[3]))
 
                     total_particles += 1
 
                     # Record particles over the detection thresholds
                     # Select final state tracks
-                    if evtLine.startswith("$ track") and evtLine.endswith(
-                            " 0\n"):
+                    if evtLine.startswith("$ track") and evtLine.endswith(" 0\n"):
                         particle = int(evtLine.split(' ')[2])
                         energy = float(evtLine.split(' ')[3])
 

@@ -1,7 +1,7 @@
 #! /bin/bash
 
 PRODDIR=/unix/chips/prod
-DATA=gen/scripts/gen/*.e*
+DATA=plots/*
 
 rm -rf $PRODDIR/beam_all/nuel/$DATA
 rm -rf $PRODDIR/beam_all/anuel/$DATA

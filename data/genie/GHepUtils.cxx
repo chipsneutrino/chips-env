@@ -295,9 +295,9 @@ int genie::utils::ghep::NuanceReactionCode(const GHepRecord * event)
   const InitialState & init = interaction->InitState();
   if      (proc.IsQuasiElastic()    && proc.IsWeakCC()) evtype =  1;
   else if (proc.IsQuasiElastic()    && proc.IsWeakNC()) evtype =  2;
-  else if (proc.IsMEC()             && proc.IsWeakCC()) evtype = 18;
-  else if (proc.IsMEC()             && proc.IsWeakNC()) evtype = 19;
-  else if (proc.IsIMDAnnihilation() && proc.IsWeakNC()) evtype = 20;
+  else if (proc.IsMEC()             && proc.IsWeakCC()) evtype = 19;
+  else if (proc.IsMEC()             && proc.IsWeakNC()) evtype = 20;
+  else if (proc.IsIMDAnnihilation() && proc.IsWeakNC()) evtype = 21;
   else if (proc.IsDeepInelastic()   && proc.IsWeakCC()) evtype = 91;
   else if (proc.IsDeepInelastic()   && proc.IsWeakNC()) evtype = 92;
   else if (proc.IsCoherent()        && proc.IsWeakNC()) evtype = 96;
@@ -305,7 +305,8 @@ int genie::utils::ghep::NuanceReactionCode(const GHepRecord * event)
   else if (proc.IsNuElectronElastic())                  evtype = 98;
   else if (proc.IsInverseMuDecay())                     evtype = 99;
   else if (proc.IsResonant()) {
-    evtype = 17;
+    if (proc.IsWeakCC()) evtype = 17;
+    else if (proc.IsWeakNC()) evtype = 18;
 
     int nn=0, np=0, npi0=0, npip=0, npim=0; 
     bool nuclear_target = init.Tgt().IsNucleus();
