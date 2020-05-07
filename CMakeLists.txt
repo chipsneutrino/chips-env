@@ -18,25 +18,6 @@ if(${FORCE_COLORED_OUTPUT})
 endif()
 
 # Add the submodule directory
-add_subdirectory(chips)
-
-if(EXISTS $ENV{CHIPSENV}/data/genie/xsecs_G0000b00000.xml)
-  message(STATUS "Already have xsecs_G0000b00000.xml")
-else()
-  message(STATUS "Downloading xsecs_G0000b00000.xml")
-  file(DOWNLOAD http://www.hep.ucl.ac.uk/~jtingey/genie/xsecs_G0000b00000.xml $ENV{CHIPSENV}/data/genie/xsecs_G0000b00000.xml)
-endif()
-
-if(EXISTS $ENV{CHIPSENV}/data/genie/xsecs_G1801a00000.xml)
-  message(STATUS "Already have xsecs_G1801a00000.xml")
-else()
-  message(STATUS "Downloading xsecs_G1801a00000.xml")
-  file(DOWNLOAD http://www.hep.ucl.ac.uk/~jtingey/genie/xsecs_G1801a00000.xml $ENV{CHIPSENV}/data/genie/xsecs_G1801a00000.xml)
-endif()
-
-if(EXISTS $ENV{CHIPSENV}/data/genie/xsecs_G1802a00000.xml)
-  message(STATUS "Already have xsecs_G1802a00000.xml")
-else()
-  message(STATUS "Downloading xsecs_G1802a00000.xml")
-  file(DOWNLOAD http://www.hep.ucl.ac.uk/~jtingey/genie/xsecs_G1802a00000.xml $ENV{CHIPSENV}/data/genie/xsecs_G1802a00000.xml)
-endif()
+add_subdirectory(chips/chips-gen)
+add_subdirectory(chips/chips-sim)
+add_subdirectory(chips/chips-reco)

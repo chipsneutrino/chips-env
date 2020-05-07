@@ -1,31 +1,9 @@
 *sif
 *pyc
-deps/cry
-deps/geant4
-deps/globes
-deps/log4cpp
-deps/pythia6
-deps/root
-deps/genie
 
 CMakeCache.txt
 CMakeFiles/
 Makefile
-chips/CMakeFiles/
-chips/Makefile
-chips/cmake_install.cmake
 cmake_install.cmake
-
-data/geant4/
-data/genie/xsecs*
-
-deps/geant4-build
-deps/geant4.10.05.p01
-deps/root-build
-deps/root-6.20.04
-deps/log4cpp-source
-deps/globes-3.2.17
-
-containers/GHepUtils.cxx
 
 .vscode/

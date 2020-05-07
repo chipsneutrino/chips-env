@@ -1,0 +1,100 @@
+Bootstrap: docker
+From: registry.gitlab.com/chipsneutrino/chips-env:latest
+
+%labels
+    Author Josh Tingey
+    Email j.tingey.16@ucl.ac.uk
+    Version v1.0
+
+%help
+    This is the main chips-env container used to build and run all chips software
+ 
+%post  
+    # Remove the build script left over from the docker build
+    rm /opt/deps.sh
+
+    # Set python3 as the default python
+    ln -sf /usr/bin/python3 /usr/bin/python
+
+%environment
+    # Set the chips-env path that is mounted into the container
+    export CHIPSENV=/opt/chips-env
+
+    # Setup the compiler and activate root
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
+
+    # Setup GENIE
+    export GENIE=/opt/genie
+    export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
+    export PATH=$GENIE/bin:$PATH
+
+    # Add chips-gen, chips-sim and chips-reco paths to environment
+    export CHIPSGEN=$CHIPSENV/chips/chips-gen
+    export CHIPSSIM=$CHIPSENV/chips/chips-sim
+    export CHIPSRECO=$CHIPSENV/chips/chips-reco
+
+    # Append library, includes and bin paths
+    export LD_LIBRARY_PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$CHIPSGEN/include:$CHIPSSIM/include:$CHIPSRECO/include:$CPLUS_INCLUDE_PATH
+    export PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$PATH
+
+    # Set flags so make uses all the cores available
+    NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+    export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+
+    # Need to set CRY environment variables for chips-gen
+    export CRYDIR=/usr/local
+    export CRYDATA=/usr/local/share/cry-data
+    
+    # Need to set these options for chips-sim visualisation
+    export G4VIS_USE=1
+    export G4VIS_USE_OPENGLQT=1
+
+%apprun build
+    cd $CHIPSENV
+    cmake $@ .
+    make
+
+%apprun clean
+    cd $CHIPSENV
+    make clean
+    rm ./cmake_install.cmake
+    rm ./CMakeCache.txt
+    rm -r ./CMakeFiles
+    rm ./Makefile
+    rm ./chips/cmake_install.cmake
+    rm -r ./chips/CMakeFiles
+    rm ./chips/Makefile
+    source chips/chips-gen/gen-tidy.sh
+    source chips/chips-sim/sim-tidy.sh
+    source chips/chips-reco/reco-tidy.sh
+
+%apprun cosmicGen
+    cosmicGen $@
+
+%apprun gevgen
+    gevgen $@
+
+%apprun gntpc
+    gntpc $@
+
+%apprun gspl2root
+    gspl2root $@
+
+%apprun wcsim
+    cd $CHIPSSIM
+    WCSim $@
+
+%apprun root
+    root $@
+
+%apprun python
+    python $@
+    
+
+
+
+

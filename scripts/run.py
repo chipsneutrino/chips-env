@@ -387,7 +387,7 @@ def parse_args():
     parser.add_argument('input', help='path to directory')
 
     parser.add_argument('-j', '--json', help='path to json config file',
-                        default=os.getenv("CHIPSENV") + "/config/config.json")
+                        default=os.getenv("CHIPSENV") + "/scripts/config.json")
     parser.add_argument('-n', '--num', help='number of files to use', default=1000)
     parser.add_argument('--make', action='store_true')
 
