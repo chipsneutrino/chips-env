@@ -5,6 +5,7 @@ FROM centos:7
 WORKDIR /opt
 COPY ./deps.sh /opt
 COPY ./GHepUtils.cxx /opt
+COPY ./gcc-setup.sh /opt
 
 # We run the deps.sh script to install the dependencies
 RUN /bin/bash -c "source /opt/deps.sh"

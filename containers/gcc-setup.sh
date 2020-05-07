@@ -1,0 +1,12 @@
+GCC9=/opt/gcc-9
+export CC=${GCC9}/bin/gcc-9
+export CXX=${GCC9}/bin/g++-9
+export FC=${GCC9}/bin/gfortran-9
+export CMAKE_C_COMPILER=$CC
+export CMAKE_CXX_COMPILER=$CXX
+export CMAKE_Fortran_COMPILER=$FC
+export LD_LIBRARY_PATH="${GCC9}/lib:${LD_LIBRARY_PATH}"
+export LD_RUN_PATH="${LD_RUN_PATH}:${GCC9}/lib"
+export LD_LIBRARY_PATH="${GCC9}/lib64:${LD_LIBRARY_PATH}"
+export LD_RUN_PATH="${GCC9}/lib64:${LD_RUN_PATH}"
+export PATH="${GCC9}/bin:${PATH}"
