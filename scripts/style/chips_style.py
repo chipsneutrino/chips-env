@@ -7,7 +7,7 @@
 import array
 from ROOT import TColor, TLatex, TStyle, gROOT, TGaxis
 
-def chipsplotstyle():
+def chips_style():
     print("\nLet's make it look cheap... \n")
 
     chips_style = TStyle("chips_style", "CHIPS Style")

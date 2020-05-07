@@ -11,7 +11,7 @@
 #include "TROOT.h"
 #include "TStyle.h"
 
-void chipsStyle()
+void chips_style()
 {
     printf("Let's make it look cheap... \n");
 

@@ -16,6 +16,15 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     # Set python3 as the default python
     ln -sf /usr/bin/python3 /usr/bin/python
 
+    # Setup root style
+    echo "Rint.Logon: /opt/chips-env/scripts/style/chips_style.C" >> /usr/local/etc/system.rootrc
+
+    # Locale settings
+    echo 'LANG="en_GB.UTF-8"' >> /etc/environment
+    echo 'LC_ALL="en_GB.UTF-8"' >> /etc/environment
+    echo 'LC_CTYPE="en_GB.UTF-8"' >> /etc/environment
+    echo 'LANGUAGE="en_GB.UTF-8"' >> /etc/environment
+
 %environment
     # Set the chips-env path that is mounted into the container
     export CHIPSENV=/opt/chips-env
@@ -54,9 +63,11 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     export G4VIS_USE_OPENGLQT=1
 
 %apprun build
-    cd $CHIPSENV
     cmake $@ .
     make
+
+%apprun make
+    make $@
 
 %apprun clean
     cd $CHIPSENV
@@ -72,21 +83,69 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     source chips/chips-sim/sim-tidy.sh
     source chips/chips-reco/reco-tidy.sh
 
-%apprun cosmicGen
-    cosmicGen $@
+%apprun cosmicgen
+    cosmicgen $CHIPSGEN/config/default.conf $@ > cosmicgen.vec
 
-%apprun gevgen
-    gevgen $@
+%apphelp cosmicgen
+    cosmicgen - cosmic event generator using CRY
 
-%apprun gntpc
-    gntpc $@
+    Usage:
+        chips cosmicgen [num_events] [geometry] [seed] [beam_dir_cut]
 
-%apprun gspl2root
-    gspl2root $@
+    Example:
+        chips cosmicgen 1000 chips_1200 4 0
 
-%apprun wcsim
-    cd $CHIPSSIM
-    WCSim $@
+    Outputs:
+        A file called cosmicgen.vec in the current directory
+
+%apprun beamgen
+    gevgen -t 1000080160[0.8879],1000010010[0.1121] -r 0 \
+        -f $CHIPSGEN/config/chips_location_flux.root,enufullfine_nue_allpar_NoXSec_CHIPSoffAXIS \
+        --cross-sections $CHIPSGEN/config/xsecs.xml \
+        --message-thresholds $GENIE/config/Messenger_laconic.xml $@
+    chips gntpc -i gntp.0.ghep.root -f nuance_tracker -o beamgen.vec
+
+%apphelp beamgen
+    beamgen - beam event generator using GENIE
+
+    Usage:
+        chips beamgen -n [num_events] -e [energy_range] -e [particle] --seed [seed] --event-generator-list [generation_list]
+
+    Example:
+        chips beamgen -n 100000 -e 0.5,15 -p 12 --seed 4 --event-generator-list Default+CCMEC+NCMEC
+
+    Outputs:
+        A file called beamgen.vec in the current directory
+
+%apprun chipssim
+    chipssim -g $CHIPSSIM/config/geom/$@
+
+%apphelp chipssim
+    chipssim - detector simulation using chips-sim
+
+    Usage:
+        chips chipssim -g [geometry_macro] [command_macro]
+
+    Example:
+        chips chipssim -g chips_1200.mac generic_chips.mac
+
+%apprun simdisplay
+    simdisplay
+
+%apphelp simdisplay
+    simdisplay - simulation event display
+
+    Usage:
+        chips simdisplay
+
+%apprun recodisplay
+    recodisplay
+
+%apphelp recodisplay
+    recodisplay - reconstruction event display
+
+    Usage:
+        chips recodisplay
 
 %apprun root
     root $@

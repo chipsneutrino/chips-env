@@ -1,6 +1,14 @@
 #! /bin/bash
 
 CURRENTDIR=$(pwd)
+
+# Ensure that the script has been sourced rather than just executed
+if [[ "${BASH_SOURCE[0]}" = "${0}" ]]; then
+    echo "Please use 'source' to execute setup.sh!"
+    exit 1
+fi
+
+# Export the environment variable pointing at this directory
 export CHIPSENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Check if singularity is installed
@@ -22,10 +30,9 @@ singularity_run() {
         singularity shell $CHIPSENV/env/chips-env.sif
     else
         if [ $1 == "exec" ]; then
-            CMD="singularity exec $CHIPSENV/env/chips-env.sif ${@:2}"
-            exec $CMD
+            singularity 'exec' $CHIPSENV/env/chips-env.sif ${@:2}
         else
-            singularity run --app $1 $CHIPSENV/env/chips-env.sif
+            singularity run --app $1 $CHIPSENV/env/chips-env.sif ${@:2}
         fi
     fi
 }
