@@ -1,7 +1,6 @@
 #! /bin/bash
 
 CURRENTDIR=$(pwd)
-PRODDIR=/unix/chips/prod
 
 cd $PRODDIR/beam_all/nuel/scripts/gen/ && source $PRODDIR/beam_all/nuel/scripts/gen.sh
 cd $PRODDIR/beam_all/anuel/scripts/gen/ && source $PRODDIR/beam_all/anuel/scripts/gen.sh

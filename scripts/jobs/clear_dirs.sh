@@ -1,6 +1,5 @@
 #! /bin/bash
 
-PRODDIR=/unix/chips/prod
 DATA=plots/*
 
 rm -rf $PRODDIR/beam_all/nuel/$DATA
