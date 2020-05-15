@@ -356,7 +356,7 @@ class ScriptMaker:
                 script_name = path.join(self.prod, "scripts/reco/", detector + "_" +
                                         base + "_" + str(evtCounter) + "_reco.sh")
                 script = self.blank_job_script(script_name)
-                script.write("\ncd " + path.join(self.prod, "reco", detector))
+                script.write("\ncd " + path.join(self.host_prod, "reco", detector))
                 script.write('\n' + self.exec + 'root -l -q -b "' + reco_mac + '(' +
                              r'\"' + path.join(self.prod, "sim", detector, f) +
                              r'\",' + str(evtCounter) +
