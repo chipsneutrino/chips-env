@@ -13,9 +13,20 @@ if [[ "${BASH_SOURCE[0]}" = "${0}" ]]; then
     return
 fi
 
-# Export the environment variables
+# Check if singularity is installed
+if ! [ -x "$(command -v singularity)" ]; then
+    echo "${C_RED}ERROR:${C_RESET}   Singularity is not installed"
+    return
+fi
+
 export CHIPSENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export SINGULARITYENV_HOSTENV=$CHIPSENV
+
+# Check the chips-env.sif image is present if not download it
+if ! [ -f "$CHIPSENV/env/chips-env.sif" ]; then
+    echo "${C_BLUE}INFO:${C_RESET}    Downloading singularity image"
+    singularity pull $CHIPSENV/env/chips-env.sif library://joshtingey/default/chips-env:latest
+fi
 
 export GEANT4DATA=$CHIPSENV/chips/chips-sim/config/geant4
 export SINGULARITYENV_HOSTGEANT4=$GEANT4DATA
@@ -26,18 +37,6 @@ else
     echo "${C_BLUE}INFO:${C_RESET}    Will mount production directory $PRODDIR"
     export SINGULARITY_BIND="$CHIPSENV:/opt/chips-env,$GEANT4DATA:/opt/data/geant4,$PRODDIR:/opt/prod"
     export SINGULARITYENV_HOSTPROD=$PRODDIR
-fi
-
-# Check if singularity is installed
-if ! [ -x "$(command -v singularity)" ]; then
-    echo "${C_RED}ERROR:${C_RESET}   Singularity is not installed"
-    return
-fi
-
-# Check the chips-env.sif image is present if not download it
-if ! [ -f "$CHIPSENV/env/chips-env.sif" ]; then
-    echo "${C_BLUE}INFO:${C_RESET}    Downloading singularity image"
-    singularity pull $CHIPSENV/env/chips-env.sif library://joshtingey/default/chips-env:latest
 fi
 
 # Setup the 'chips' alias

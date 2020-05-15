@@ -1,9 +1,9 @@
-"""Python module to filter events
+"""Python module to select events
 
 Author: Josh Tingey
 Email: j.tingey.16@ucl.ac.uk
 
-This module provides the Selector class that is used to filter
+This module provides the Selector class that is used to select
 beam and cosmic events, plot summary plots and recombine into
 files of a given size ready for simulation.
 """
@@ -15,492 +15,321 @@ from os import listdir
 import ROOT
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
-# Constants
-refracWater = 1.33
-chargedPionMass = 139.570
-chargedKaonMass = 493.677
-protonMass = 938.27231
-chargedSigmaMass = 1189.37
-electronMass = 0.511
-muonMass = 105.658
+# Refractive index of water and charged particle masses
+i_water = 1.33
+m_electron = 0.511
+m_muon = 105.658
+m_pion = 139.570
+m_proton = 938.272
+m_kaon = 493.677
+m_sigma = 1189.37
+m_d = 1869.62
 
-# Calculate all the thresholds we need to apply to charged particles
-cpThreshold = math.sqrt((chargedPionMass*chargedPionMass) /
-                        (1-(1/(refracWater*refracWater))))
-ckThreshold = math.sqrt((chargedKaonMass*chargedKaonMass) /
-                        (1-(1/(refracWater*refracWater))))
-pThreshold = math.sqrt((protonMass*protonMass) /
-                       (1-(1/(refracWater*refracWater))))
-csThreshold = math.sqrt((chargedSigmaMass*chargedSigmaMass) /
-                        (1-(1/(refracWater*refracWater))))
-elThreshold = math.sqrt((electronMass*electronMass) /
-                        (1-(1/(refracWater*refracWater))))
-muThreshold = math.sqrt((muonMass*muonMass) /
-                        (1-(1/(refracWater*refracWater))))
+# Calculate all the Cherenkov thresholds we need to apply to charged particles
+t_electron = math.sqrt((m_electron*m_electron)/(1-(1/(i_water*i_water))))
+t_muon = math.sqrt((m_muon*m_muon)/(1-(1/(i_water*i_water))))
+t_pion = math.sqrt((m_pion*m_pion)/(1-(1/(i_water*i_water))))
+t_proton = math.sqrt((m_proton*m_proton)/(1-(1/(i_water*i_water))))
+t_kaon = math.sqrt((m_kaon*m_kaon)/(1-(1/(i_water*i_water))))
+t_sigma = math.sqrt((m_sigma*m_sigma)/(1-(1/(i_water*i_water))))
+t_d = math.sqrt((m_d*m_d)/(1-(1/(i_water*i_water))))
+
+# Interaction codes and corresponding names
+event_int_codes = [
+    0, 1, 2,
+    3, 4, 5,
+    6, 7, 8, 9,
+    10, 11, 12,
+    13, 14, 15, 16,
+    17, 18, 19, 20, 21,
+    91, 92, 96, 97, 98, 99,
+    100
+]
+int_names = [
+    "Other", "CCQE", "NCQE",
+    "CCNuPtoLPPiPlus", "CCNuNtoLPPiZero", "CCNuNtoLNPiPlus", 
+    "NCNuPtoNuPPiZero", "NCNuPtoNuNPiPlus", "NCNuNtoNuNPiZero", "NCNuNtoNuPPiMinus", 
+    "CCNuBarNtoLNPiMinus", "CCNuBarPtoLNPiZero", "CCNuBarPtoLPPiMinus",
+    "NCNuBarPtoNuBarPPiZero", "NCNuBarPtoNuBarNPiPlus", "NCNuBarNtoNuBarNPiZero", "NCNuBarNtoNuBarPPiMinus",
+    "CCOtherResonant", "NCOtherResonant", "CCMEC", "NCMEC", "IMD",
+    "CCDIS", "NCDIS", "NCCoh", "CCCoh", "ElasticScattering", "InverseMuDecay",
+    "CosmicMuon"
+]
+
+# Particle types and names
+par_codes = [
+    11, -11, 12, -12, 13, -13, 14, -14,
+    111, 211, -211, 2212, 2112, 22, 
+    321, -321, 3112, 3222, 3212,
+    130, 311, -311, 411, 421, 431,
+    -2212, -2112, 3122, -3122,
+    4212, 4122, 4222, 8016
+]
+par_names = [
+    "e^{-}", "e^{+}", "#nu_{e}", "#bar{#nu}_{e}", "#mu^{-}", "#mu^{+}", "#nu_{#mu}", "#bar{#nu}_{#mu}",
+    "#pi^{0}", "#pi^{+}", "#pi^{-}", "P", "N", "#gamma",
+    "K^{+}", "K^{-}", "#Sigma^{-}", "#Sigma^{+}", "#Sigma^{0}",
+    "K^{0}_{L}", "K^{0}", "#bar{K^{0}}", "D^{+}", "D^{0}", "K^{+}_{s}",
+    "#bar{P}", "#bar{N}", "#Lambda", "#bar{#Lambda}",
+    "#Sigma^{+}_{c}", "#Lambda^{+}_{c}", "#Sigma^{++}_{c}", "O16"
+]
+
+# Final state types and corresponding names
+final_codes = [ # Electron, Muon, charged pion, neutral pion, proton, gamma
+    [0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 1, 0], [0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 0, 0], [1, 0, 0, 1, 0, 0], [1, 0, 0, 0, 1, 0], [1, 0, 0, 0, 0, 1],
+    [0, 1, 1, 0, 0, 0], [0, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 0], [0, 1, 0, 0, 0, 1],
+    [0, 0, 1, 1, 0, 0], [0, 0, 1, 0, 1, 0], [0, 0, 1, 0, 0, 1], [0, 0, 0, 1, 1, 0], [0, 0, 0, 1, 0, 1], [0, 0, 0, 0, 1, 1],
+    [1, 0, 1, 1, 0, 0], [1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 0, 1], [1, 0, 0, 1, 1, 0], [1, 0, 0, 1, 0, 1], [1, 0, 0, 0, 1, 1],
+    [0, 1, 1, 1, 0, 0], [0, 1, 1, 0, 1, 0], [0, 1, 1, 0, 0, 1], [0, 1, 0, 1, 1, 0], [0, 1, 0, 1, 0, 1], [0, 1, 0, 0, 1, 1]
+]
+final_names = [
+    "None"
+    "1e", "1#mu", "1#pi^{#pm}", "1#pi^{0}", "1P", "1#gamma",
+    "1e1#pi^{#pm}", "1e1#pi^{0}", "1e1P", "1e1#gamma",
+    "1#mu1#pi^{#pm}", "1#mu1#pi^{0}", "1#mu1P", "1#mu1#gamma",
+    "1#pi^{#pm}1#pi^{0}", "1#pi^{#pm}1P", "1#pi^{#pm}1#gamma", "1#pi^{0}1P", "1#pi^{0}1#gamma", "1P1#gamma",
+    "1e1#pi^{#pm}1#pi^{0}", "1e1#pi^{#pm}1P", "1e1#pi^{#pm}1#gamma", "1e1#pi^{0}1P", "1e1#pi^{0}1#gamma", "1e1P1#gamma",
+    "1#mu1#pi^{#pm}1#pi^{0}", "1#mu1#pi^{#pm}1P", "1#mu1#pi^{#pm}1#gamma", "1#mu1#pi^{0}1P", "1#mu1#pi^{0}1#gamma", "1#mu1P1#gamma",
+    "Other"
+]
 
 
 class Selector:
-    """Class controlling the filtering of events."""
-    def __init__(self, inputDir, outputDir, plotPath, outputSize,
-                 requireParticles, requireTypes):
-        self.m_inputDir = inputDir
-        self.m_outputDir = outputDir
-        self.m_plotPath = plotPath
-        self.m_outputSize = outputSize
-        self.m_rParticles = requireParticles
-        self.m_rTypes = requireTypes
+    """Class controlling the selection of events."""
+    def __init__(self, inputDir, outputDir, plotPath, outputSize, requireParticles, requireTypes):
+        self.input_dir = inputDir
+        self.output_dir = outputDir
+        self.plot_path = plotPath
+        self.output_size = outputSize
+        self.required_particles = requireParticles
+        self.required_types = requireTypes
 
     def Run(self):
-        """Runs the full filtering pipeline."""
-        self.ApplyFilter()
-        self.MakePlots()
-        self.Recombine()
-        self.Cleanup()
+        """Runs the full selection pipeline."""
 
-    def ApplyFilter(self):
-        """Applies the filter to all events and outputs to a temp file."""
-        temp = open(os.path.join(self.m_outputDir, "temp.temp"),
-                    'w')  # Open a temporary file to hold the passed events
-
-        # Event counters
+        # Counters
         events = 0
         passed_events = 0
         threshold_cut_events = 0
         particles_cut_events = 0
         types_cut_events = 0
 
-        event_list = []
+        # Create histograms
+        h_int_types_all = ROOT.TH1F("int_types_all", "Interaction Types All", len(int_names), 0, len(int_names))
+        h_int_types_all.SetFillColor(38)
+        h_int_types_all.SetBarWidth(0.5)
+        h_int_types_all.SetBarOffset(0.25)
+        h_int_types_all.SetStats(0)
+        for i in range(1, len(int_names)+1):
+            h_int_types_all.GetXaxis().SetBinLabel(i, int_names[i-1])
+
+        h_int_types_passed = ROOT.TH1F("int_types_passed", "Interaction Types Passed", len(int_names), 0, len(int_names))
+        h_int_types_passed.SetFillColor(38)
+        h_int_types_passed.SetBarWidth(0.5)
+        h_int_types_passed.SetBarOffset(0.25)
+        h_int_types_passed.SetStats(0)
+        for i in range(1, len(int_names)+1):
+            h_int_types_passed.GetXaxis().SetBinLabel(i, int_names[i-1])
+
+        h_nu_energy_all, h_par_num_all, h_par_type_all  = [], [], []
+        h_nu_energy_passed, h_par_num_passed, h_par_type_passed, h_final_codes_passed = [], [], [], []
+        for i in range(len(int_names)):
+            h_nu_energy_all.append(ROOT.TH1F(
+                    ("nu_energy_all_" + int_names[i]),
+                    ("Neutrino Energy for type " + int_names[i]),
+                    150, 0, 15000))
+            h_par_num_all.append(ROOT.TH1F(
+                    ("par_num_all_" + int_names[i]),
+                    ("Number of particles for type " + int_names[i]),
+                    20, 0, 20))
+            h_par_type_all.append(ROOT.TH1F(
+                    ("par_type_all_" + int_names[i]),
+                    ("Type of particles for type " + int_names[i]),
+                    len(par_codes), 0, len(par_codes)))
+            for j in range(1, len(par_codes)+1):
+                h_par_type_all[i].GetXaxis().SetBinLabel(j, par_names[j-1])
+
+            h_nu_energy_passed.append(ROOT.TH1F(
+                    ("nu_energy_passed_" + int_names[i]),
+                    ("Neutrino Energy for type " + int_names[i]),
+                    150, 0, 15000))
+            h_par_num_passed.append(ROOT.TH1F(
+                    ("par_num_passed_" + int_names[i]),
+                    ("Number of particles for type " + int_names[i]),
+                    20, 0, 20))
+            h_par_type_passed.append(ROOT.TH1F(
+                    ("par_type_passed_" + int_names[i]),
+                    ("Type of particles for type " + int_names[i]),
+                    len(par_codes), 0, len(par_codes)))
+            for j in range(1, len(par_codes)+1):
+                h_par_type_passed[i].GetXaxis().SetBinLabel(j, par_names[j-1])
+            h_final_codes_passed.append(ROOT.TH1F(
+                    ("final_codes_passed_" + int_names[i]),
+                    ("Final states for type" + int_names[i]),
+                    len(final_names), 0, len(final_names)))
+            for j in range(1, len(final_names)+1):
+                h_final_codes_passed[i].GetXaxis().SetBinLabel(j, final_names[j-1])
 
         # Loop through all files in the input directory
-        files = listdir(self.m_inputDir)
+        files = listdir(self.input_dir)
         random.shuffle(files)
-        for inFile in files:
-            if inFile.endswith(".vec"):
-                print("Filtering %s" % inFile)
+        event_list = []
+        for file in files:
+            if not file.endswith(".vec"):
+                continue
+            print("Selecting from {}".format(file))
 
-                # Open file and fill lines with its content
-                lines = []
-                with open(os.path.join(self.m_inputDir, inFile)) as f:
-                    lines = f.readlines()
+            # Open file and fill lines with its content
+            lines = []
+            with open(os.path.join(self.input_dir, file)) as f:
+                lines = f.readlines()
 
-                event = []  # Define array to hold an event
-                for line in lines:
-                    if line.startswith("$ begin"):  # Find the event start
-                        event = [line]
-                    else:  # Add lines including the end of the event
-                        event.append(line)
+            event = []  # Define array to hold an event
+            for line in lines:
+                if line.startswith("$ begin"):  # Find the event start
+                    event = [line]
+                else:  # Add lines including the end of the event
+                    event.append(line)
 
-                    if line.startswith("$ end"):  # We now filter the event
-                        # Set the filter flags
-                        typePass = False
-                        if len(self.m_rTypes) == 0:
-                            typePass = True
+                if line.startswith("$ end"):  # We now see if we want the the event
+                    # Set the selection flags
+                    required_type_event = True if len(self.required_types) == 0 else False
+                    required_particle_event = True if len(self.required_particles) == 0 else False
 
-                        particlePass = False
-                        if len(self.m_rParticles) == 0:
-                            particlePass = True
+                    events += 1  # Increment the total event counter
 
-                        thresholdPass = 0
+                    event_int_code = -1
+                    event_nu_energy = 0.0
+                    final_state = [0, 0, 0, 0, 0, 0]
+                    num_particles = 0
+                    num_particles_passed = 0
 
-                        # Loop through event lines
-                        for evtLine in event:
-                            # Apply the event type filter
-                            if evtLine.startswith("$ nuance") and int(
-                                    evtLine.split(' ')[2]) in self.m_rTypes:
-                                typePass = True
+                    for event_line in event:
+                        # See if event has required interaction type code
+                        if event_line.startswith("$ nuance"):
+                            event_int_code = int(event_line.split(' ')[2])
+                            if event_int_code in self.required_types:
+                                required_type_event = True
 
-                            # Apply the filters
-                            # Select final state tracks
-                            if evtLine.startswith("$ track") and (
-                                    evtLine.endswith(" 0\n")):
-                                particle = int(evtLine.split(' ')[2])
-                                energy = float(evtLine.split(' ')[3])
-                                tempPass = thresholdPass
-                                if particle in [
-                                        11, -11] and energy > elThreshold:
-                                    thresholdPass += 1
-                                if particle in [
-                                        13, -13] and energy > muThreshold:
-                                    thresholdPass += 1
-                                # Charged Pion
-                                if particle in [
-                                        211, -211] and energy > cpThreshold:
-                                    thresholdPass += 1
-                                # Charged Kaon
-                                if particle in [
-                                        321, -321] and energy > ckThreshold:
-                                    thresholdPass += 1
-                                if particle in [2212] and energy > pThreshold:
-                                    thresholdPass += 1
-                                # Charged Sigma
-                                if particle in [3112] and energy > csThreshold:
-                                    thresholdPass += 1
-                                # Photon, a few pair productions
-                                if particle in [22] and energy > (
-                                        20 * electronMass):
-                                    thresholdPass += 1
-                                # Neutral Pion, a few pair productions
-                                if particle in [111] and energy > (
-                                        20 * electronMass):
-                                    thresholdPass += 1
+                        if (event_line.startswith("$ track 12") or
+                            event_line.startswith("$ track -12") or
+                            event_line.startswith("$ track 14") or
+                            event_line.startswith("$ track -14") or
+                            event_line.startswith("$ track 13")) and event_line.endswith(" -1\n"):
+                            event_nu_energy = float(event_line.split(' ')[3])
+                            
+                        # See if final state particle pass Cherenkov threshold
+                        if event_line.startswith("$ track") and (event_line.endswith(" 0\n")):
+                            num_particles += 1
+                            particle = int(event_line.split(' ')[2])
+                            energy = float(event_line.split(' ')[3])
+                            temp_passed = num_particles_passed
+                            # Electron
+                            if particle in [11, -11] and energy > t_electron:
+                                num_particles_passed += 1
+                                final_state[0] += 1
+                            # Muon
+                            elif particle in [13, -13] and energy > t_muon:
+                                num_particles_passed += 1
+                                final_state[1] += 1
+                            # Charged Pion
+                            elif particle in [211, -211] and energy > t_pion:
+                                num_particles_passed += 1
+                                final_state[2] += 1
+                            # Neutral Pion, a few pair productions
+                            elif particle in [111] and energy > (20*m_electron):
+                                num_particles_passed += 1
+                                final_state[3] += 1
+                            # Proton    
+                            elif particle in [2212, -2212] and energy > t_proton:
+                                num_particles_passed += 1
+                                final_state[4] += 1
+                            # Photon, a few pair productions
+                            elif particle in [22] and energy > (20*m_electron):
+                                num_particles_passed += 1
+                                final_state[5] += 1
+                            # Charged Kaon
+                            elif particle in [321, -321] and energy > t_kaon:
+                                num_particles_passed += 1
+                            # Charged Sigma
+                            elif particle in [3112, 3222] and energy > t_sigma:
+                                num_particles_passed += 1
+                            # Charged D-Meson
+                            elif particle in [411] and energy > t_d:
+                                num_particles_passed += 1
+                            # Check we know any other particle
+                            elif particle not in [11, -11, 13, -13, 211, -211, 111, 2212, 22, 321, -321, 3112,
+                                                  12, -12, 14, -14, 130, 311, -311, 411,
+                                                  421, 431, -2212, -2112, 2112, 3122, 3112, -3122, 3222, 
+                                                  3212, 8016, 4212, 4122, 4222]:
+                                print("Don't know particle {}".format(particle))
 
-                                if particle in self.m_rParticles and tempPass < thresholdPass:
-                                    particlePass = True
+                            if temp_passed < num_particles_passed:  # This particle has passed
+                                h_par_type_passed[event_int_codes.index(event_int_code)].Fill(par_codes.index(particle))
+                                if particle in self.required_particles:
+                                    required_particle_event = True
 
-                        events += 1  # Increment the total event counter
-                        if typePass and particlePass and (thresholdPass > 0):
-                            passed_events += 1
-                            event_list.append(event)
+                            h_par_type_all[event_int_codes.index(event_int_code)].Fill(par_codes.index(particle))
 
-                        if not typePass:
-                            types_cut_events += 1
-                        if not particlePass:
-                            particles_cut_events += 1
-                        if thresholdPass == 0:
-                            threshold_cut_events += 1
+                    # Fill histograms
+                    h_int_types_all.Fill(event_int_codes.index(event_int_code))
+                    h_nu_energy_all[event_int_codes.index(event_int_code)].Fill(event_nu_energy)
+                    h_par_num_all[event_int_codes.index(event_int_code)].Fill(num_particles)
+                    h_par_num_passed[event_int_codes.index(event_int_code)].Fill(num_particles_passed)
 
-        random.shuffle(event_list)
-        for single_event in event_list:
-            for line in single_event:  # Write event to the temp file
-                temp.write(line)
+                    try:
+                        state = final_codes.index(final_state)
+                    except Exception:
+                        state = len(final_names)-1
+                    h_final_codes_passed[event_int_codes.index(event_int_code)].Fill(state)
 
-        temp.close()  # Close the temporary file of passed events
+                    if required_type_event and required_particle_event and (num_particles_passed > 0):
+                        h_int_types_passed.Fill(event_int_codes.index(event_int_code))
+                        h_nu_energy_passed[event_int_codes.index(event_int_code)].Fill(event_nu_energy)
+                        passed_events += 1
+                        event_list.append(event)
+                    
+                    if not required_type_event:
+                        types_cut_events += 1
+                    if not required_particle_event:
+                        particles_cut_events += 1
+                    if num_particles_passed == 0:
+                        threshold_cut_events += 1
 
-        name, ext = os.path.splitext(self.m_plotPath)
-        name += ".txt"
-        with open(name, "w") as file:
+        print("Creating output files for total Events: {}, passed: {}...".format(events, len(event_list)))
+
+        # Write plots to file
+        plots_file = ROOT.TFile(self.plot_path, "RECREATE")
+        h_int_types_all.Write()
+        h_int_types_passed.Write()
+        for i in range(len(event_int_codes)):
+            h_nu_energy_all[i].Write()
+            h_par_num_all[i].Write()
+            h_par_type_all[i].Write()
+            h_nu_energy_passed[i].Write()
+            h_par_num_passed[i].Write()
+            h_par_type_passed[i].Write()
+            h_final_codes_passed[i].Write()
+        plots_file.Close()
+
+        summary_name, ext = os.path.splitext(self.plot_path)
+        summary_name += ".txt"
+        with open(summary_name, "w") as file:
             file.write("Events: " + str(events))
             file.write("\nPassed: " + str(passed_events))
             file.write("\nType Cut: " + str(types_cut_events))
             file.write("\nParticle Cut: " + str(particles_cut_events))
             file.write("\nThreshold Cut: " + str(threshold_cut_events))
 
-        print("Saved filter summary to " + name)
-
-    def MakePlots(self):
-        """Generates summary plots from the filtered events."""
-        print("Making Plots...")
-        # Open the file to hold the plots
-        plotsFile = ROOT.TFile(self.m_plotPath, "RECREATE")
-
-        # Interaction types and names
-        # There are many different categories of event
-        # 0     = Other
-        # 1 	= CCQE
-        # 2 	= NCQE
-        # 3 	= CCNuPtoLPPiPlus
-        # 4 	= CCNuNtoLPPiZero
-        # 5 	= CCNuNtoLNPiPlus
-        # 6 	= NCNuPtoNuPPiZero
-        # 7 	= NCNuPtoNuNPiPlus
-        # 8 	= NCNuNtoNuNPiZero
-        # 9 	= NCNuNtoNuPPiMinus
-        # 10    = CCNuBarNtoLNPiMinus
-        # 11    = CCNuBarPtoLNPiZero
-        # 12    = CCNuBarPtoLPPiMinus
-        # 13    = NCNuBarPtoPPiZero
-        # 14    = NCNuBarPtoNPiPlus
-        # 15    = NCNuBarNtoNPiZero
-        # 16    = NCNuBarNtoPPiMinus
-        # 17    = CCOtherResonant
-        # 18    = NCOtherResonant
-        # 19    = CCMEC
-        # 20    = NCMEC
-        # 21    = IMD
-        # 91 	= CCDIS
-        # 92 	= NCDIS
-        # 97 	= CCCoh
-        # 98 	= Elastic
-        # 99    = InverseMuDecay
-        # 100   = Cosmic Muon
-        evtTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                    19, 20, 21, 91, 92, 96, 97, 98, 99, 100]
-        evtNames = ["Other", "CCQE", "NCQE",
-                    "CCNuPtoLPPiPlus", "CCNuNtoLPPiZero", "CCNuNtoLNPiPlus", 
-                    "NCNuPtoNuPPiZero", "NCNuPtoNuNPiPlus", "NCNuNtoNuNPiZero", "NCNuNtoNuPPiMinus", 
-                    "CCNuBarNtoLNPiMinus", "CCNuBarPtoLNPiZero", "CCNuBarPtoLPPiMinus",
-                    "NCNuBarPtoNuBarPPiZero", "NCNuBarPtoNuBarNPiPlus", "NCNuBarNtoNuBarNPiZero", "NCNuBarNtoNuBarPPiMinus",
-                    "CCOtherResonant", "NCOtherResonant", "CCMEC", "NCMEC", "IMD",
-                    "CCDIS", "NCDIS", "NCCoh", "CCCoh", "ElasticScattering", "InverseMuDecay",
-                    "CosmicMuon"]
-
-        # Particle types and names
-        parTypes = [11, -11, 12, -12, 13, -13, 14, -14,
-                    111, 211, -211, 2212, 2112, 22, -1]
-        parNames = ["el-", "el+", "nuel", "anuel", "mu-", "mu+", "numu", "anumu",
-                    "pi0", "pi+", "pi-", "Proton", "Neutron", "photon", "Other"]
-
-        finalStates = [ # Electron, Muon, charged pion, neutral pion, proton, gamma
-            [1, 0, 0, 0, 0, 0], # 1el
-            [0, 1, 0, 0, 0, 0], # 1mu
-            [0, 0, 1, 0, 0, 0], # 1pi+-
-            [0, 0, 0, 1, 0, 0], # 1pi0
-            [0, 0, 0, 0, 1, 0], # 1P
-            [0, 0, 0, 0, 0, 1], # 1gamma
-            [1, 0, 1, 0, 0, 0], # 1el, 1pi+-
-            [1, 0, 0, 1, 0, 0], # 1el, 1pi0
-            [1, 0, 0, 0, 1, 0], # 1el, 1P
-            [1, 0, 0, 0, 0, 1], # 1el, 1gamma
-            [0, 1, 1, 0, 0, 0], # 1mu, 1pi+-
-            [0, 1, 0, 1, 0, 0], # 1mu, 1pi0
-            [0, 1, 0, 0, 1, 0], # 1mu, 1P
-            [0, 1, 0, 0, 0, 1], # 1mu, 1gamma
-            [0, 0, 1, 1, 0, 0], # 1pi+-, 1pi0
-            [0, 0, 1, 0, 1, 0], # 1pi+-, 1P
-            [0, 0, 1, 0, 0, 1], # 1pi+-, 1gamma
-            [0, 0, 0, 1, 1, 0], # 1pi0, 1P
-            [0, 0, 0, 1, 0, 1], # 1pi0, 1gamma
-            [0, 0, 0, 0, 1, 1], # 1P, 1gamma
-            [1, 0, 1, 1, 0, 0], # 1el, 1pi+-, 1pi0
-            [1, 0, 1, 0, 1, 0], # 1el, 1pi+-, 1P
-            [1, 0, 1, 0, 0, 1], # 1el, 1pi+-, 1gamma
-            [1, 0, 0, 1, 1, 0], # 1el, 1pi0, 1P
-            [1, 0, 0, 1, 0, 1], # 1el, 1pi0, 1gamma
-            [1, 0, 0, 0, 1, 1], # 1el, 1P, 1gamma
-            [0, 1, 1, 1, 0, 0], # 1mu, 1pi+-, 1pi0
-            [0, 1, 1, 0, 1, 0], # 1mu, 1pi+-, 1P
-            [0, 1, 1, 0, 0, 1], # 1mu, 1pi+-, 1gamma
-            [0, 1, 0, 1, 1, 0], # 1mu, 1pi0, 1P
-            [0, 1, 0, 1, 0, 1], # 1mu, 1pi0, 1gamma
-            [0, 1, 0, 0, 1, 1], # 1mu, 1P, 1gamma
-        ]
-
-        stateNames = [
-            "1e", 
-            "1#mu", 
-            "1#pi^{#pm}", 
-            "1#pi^{0}", 
-            "1P", 
-            "1#gamma",
-            "1e1#pi^{#pm}", 
-            "1e1#pi^{0}", 
-            "1e1P", 
-            "1e1#gamma",
-            "1#mu1#pi^{#pm}", 
-            "1#mu1#pi^{0}", 
-            "1#mu1P", 
-            "1#mu1#gamma",
-            "1#pi^{#pm}1#pi^{0}", 
-            "1#pi^{#pm}1P", 
-            "1#pi^{#pm}1#gamma",
-            "1#pi^{0}1P", 
-            "1#pi^{0}1#gamma", 
-            "1P1#gamma",
-            "1e1#pi^{#pm}1#pi^{0}", 
-            "1e1#pi^{#pm}1P", 
-            "1e1#pi^{#pm}1#gamma",
-            "1e1#pi^{0}1P", 
-            "1e1#pi^{0}1#gamma", 
-            "1e1P1#gamma",
-            "1#mu1#pi^{#pm}1#pi^{0}", 
-            "1#mu1#pi^{#pm}1P", 
-            "1#mu1#pi^{#pm}1#gamma",
-            "1#mu1#pi^{0}1P", 
-            "1#mu1#pi^{0}1#gamma", 
-            "1#mu1P1#gamma",
-            "Other"
-        ]
-
-        # Search for all iteraction types
-        h_intTypeSearch = ROOT.TH1F(
-            "h_intTypeSearch", "h_intTypeSearch", 200, -100, 100)
-
-        # Make hist of interaction types
-        h_intType = ROOT.TH1F("h_intType", "Interaction Type",
-                              len(evtTypes), 0, len(evtTypes))
-        h_intType.SetFillColor(38)
-        h_intType.SetBarWidth(0.5)
-        h_intType.SetBarOffset(0.25)
-        h_intType.SetStats(0)
-        for i in range(1, len(evtTypes)+1):
-            h_intType.GetXaxis().SetBinLabel(i, evtNames[i-1])
-
-        # Make histograms for each interaction type
-        h_nuEnergy = []
-        h_parNum = []
-        h_parType = []
-        h_parTypePassed = []
-        h_finalStates = []
-        for i in range(len(evtTypes)):
-            h_nuEnergy.append(
-                ROOT.TH1F(
-                    ("h_nuEnergy_" + evtNames[i]),
-                    ("Neutrino Energy for type " + evtNames[i]),
-                    150, 0, 15000))
-            h_parNum.append(
-                ROOT.TH1F(
-                    ("h_parNum_" + evtNames[i]),
-                    ("Number of particles for type " + evtNames[i]),
-                    20, 0, 20))
-            h_parType.append(
-                ROOT.TH1F(
-                    ("h_parType_" + evtNames[i]),
-                    ("Number of particles for type " + evtNames[i]),
-                    len(parTypes),
-                    0, len(parTypes)))
-            h_parTypePassed.append(
-                ROOT.TH1F(
-                    ("h_parTypePassed_" + evtNames[i]),
-                    ("Number of particles Passed for type " + evtNames[i]),
-                    len(parTypes),
-                    0, len(parTypes)))
-            for j in range(1, len(parTypes)+1):
-                h_parType[i].GetXaxis().SetBinLabel(j, parNames[j-1])
-                h_parTypePassed[i].GetXaxis().SetBinLabel(j, parNames[j-1])
-            h_finalStates.append(
-                ROOT.TH1F(
-                    ("h_finalStates_" + evtNames[i]),
-                    ("Final states " + evtNames[i]),
-                    len(stateNames),
-                    0, len(stateNames)))
-            for j in range(1, len(stateNames)+1):
-                h_finalStates[i].GetXaxis().SetBinLabel(j, stateNames[j-1])
-
-        # Open the temporary file holding the passed events
-        temp = open(os.path.join(self.m_outputDir, "temp.temp"), 'r')
-        lines = temp.readlines()
-        event = []  # Define array to hold an event
-        total_particles = 0
-        skipped_particles = 0
-        for line in lines:
-            if line.startswith("$ begin"):  # Find the start of an event
-                event = [line]
-            else:  # Add lines including the end of the event
-                event.append(line)
-            if line.startswith("$ end"):  # We now inspect the event
-                finalState = [0, 0, 0, 0, 0, 0]
-                finalEnergies = [0, 0, 0, 0, 0, 0]
-                evtType = -1
-                numParticles = 0
-                for evtLine in event:  # Loop through event lines
-                    if evtLine.startswith("$ nuance"):
-                        h_intTypeSearch.Fill(int(evtLine.split(' ')[2]))
-                        h_intType.Fill(evtTypes.index(
-                            int(evtLine.split(' ')[2])))
-                        evtType = int(evtLine.split(' ')[2])
-
-
-                    if (evtLine.startswith("$ track 12") or
-                        evtLine.startswith("$ track -12") or
-                        evtLine.startswith("$ track 14") or
-                        evtLine.startswith("$ track -14")) and evtLine.endswith(" -1\n"):
-                        h_nuEnergy[evtTypes.index(evtType)].Fill(float(evtLine.split(' ')[3]))
-
-                    total_particles += 1
-
-                    # Record particles over the detection thresholds
-                    # Select final state tracks
-                    if evtLine.startswith("$ track") and evtLine.endswith(" 0\n"):
-                        particle = int(evtLine.split(' ')[2])
-                        energy = float(evtLine.split(' ')[3])
-
-                        if particle in [12, -12, 14, -14, 130, 311, -311, 321, -321, 411,
-                                        421, 431, -2212, -2112, 3122, 3112, -3122, 3222, 
-                                        3212, 8016, 4212, 4122, 4222]:
-                            particle = -1
-                            skipped_particles += 1
-
-                        h_parType[evtTypes.index(evtType)].Fill(
-                            parTypes.index(particle))
-
-                        # Electron
-                        if particle in [11, -11] and energy > elThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[0] += 1
-                        # Muon
-                        elif particle in [13, -13] and energy > muThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[1] += 1
-                        # Charged Pion
-                        elif particle in [211, -211] and energy > cpThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[2] += 1
-                        # Neutral Pion, a few pair productions
-                        elif particle in [111] and energy > (20*electronMass):
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[3] += 1
-                        # Proton
-                        elif particle in [2212] and energy > pThreshold:
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[4] += 1
-                        # Photon, a few pair productions
-                        elif particle in [22] and energy > (20*electronMass):
-                            numParticles += 1
-                            h_parTypePassed[evtTypes.index(evtType)].Fill(parTypes.index(particle))
-                            finalState[5] += 1
-
-                h_parNum[evtTypes.index(evtType)].Fill(numParticles)
-
-                try:
-                    state = finalStates.index(finalState)
-                except Exception:
-                    state = len(stateNames)-1
-
-                h_finalStates[evtTypes.index(evtType)].Fill(state)
-
-        print("Total Particles: {}, Skipped Particles: {}".format(total_particles, skipped_particles))
-
-        h_intTypeSearch.GetXaxis().SetTitle("Interaction Type Code")
-        h_intTypeSearch.GetYaxis().SetTitle("Frequency")
-        h_intTypeSearch.Write()
-        h_intType.GetXaxis().SetTitle("Interaction Type")
-        h_intType.GetYaxis().SetTitle("Frequency")
-        h_intType.Write()
-        for i in range(len(evtTypes)):
-            h_nuEnergy[i].GetXaxis().SetTitle("Neutrino Energy [GeV]")
-            h_nuEnergy[i].GetYaxis().SetTitle("Frequency")
-            h_nuEnergy[i].Write()
-            h_parNum[i].GetXaxis().SetTitle(
-                "Number of Particles Above Threshold")
-            h_parNum[i].GetYaxis().SetTitle("Frequency")
-            h_parNum[i].Write()
-            h_parType[i].GetXaxis().SetTitle("Particle Type")
-            h_parType[i].GetYaxis().SetTitle("Frequency")
-            h_parType[i].Write()
-            h_parTypePassed[i].GetXaxis().SetTitle(
-                "Particle Type Above Threshold")
-            h_parTypePassed[i].GetYaxis().SetTitle("Frequency")
-            h_parTypePassed[i].Write()
-            h_finalStates[i].GetXaxis().SetTitle(
-                "Final States")
-            h_finalStates[i].GetYaxis().SetTitle("Frequency")
-            h_finalStates[i].Write()
-        temp.close()
-        plotsFile.Close()
-
-    def Recombine(self):
-        """Splits the temp file into may files of a given size."""
-        print("Recombining Files")
-        lines = []
-        thisfile = []
-        eventCounter = 0
-        fileCount = 0
-        with open(os.path.join(self.m_outputDir, "temp.temp")) as f:
-            lines = f.readlines()
-            for line in lines:
-                thisfile.append(line)
-                if line.startswith("$ end"):
-                    eventCounter += 1
-                if (eventCounter == self.m_outputSize):
-                    # Reached the number of events for a sim file
-                    outputName = "filtered_" + str(fileCount).zfill(3) + ".vec"
-                    with open(os.path.join(self.m_outputDir, outputName),
-                              'w') as fout:
-                        for line in thisfile:
-                            fout.write(line)
-                    eventCounter = 0
-                    fileCount += 1
-                    thisfile[:] = []
-
-        print("Total files created -> %s" % fileCount)
-
-    def Cleanup(self):
-        """Cleans up the temporary file."""
-        os.remove(os.path.join(self.m_outputDir, "temp.temp"))
-        print("Deleted temp file %s" %
-              os.path.join(self.m_outputDir, "temp.temp"))
+        random.shuffle(event_list)
+        for file_num, file_event_num in enumerate(range(0, len(event_list), self.output_size)):
+            output_name = "selected_" + str(file_num).zfill(3) + ".vec"
+            with open(os.path.join(self.output_dir, output_name),'w') as output_file:
+                for event_num in range(self.output_size):
+                    try:
+                        for event in event_list[file_event_num+event_num]:
+                            output_file.write(event)
+                    except Exception:
+                        pass

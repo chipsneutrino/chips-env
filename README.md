@@ -58,16 +58,8 @@ The general pipeline we run in CHIPS is...
 
 event-generation -> event-selection -> detector-simulation -> hit-mapping -> network-training
 
-
-
-This gives us access to the CHIPS software in chips-env as well as the 'production directory' if specified to create/modify files
-for use in event generation, detector simulation, hit mapping, reconstruction etc...
-
-The general pipeline we run in CHIPS is... 
-
-
-
-We define a production directory structure to store the files created in this flow for each different type of event...
+In order to help us run this flow on many different event types we define a directory structure for each type 
+of event as follows...
 
 ```
 directory (for every event type)
@@ -97,8 +89,20 @@ directory (for every event type)
         └── _test [testing .tfrecords files]
 ```
 
-The scripts/run.py python script uses this directory structure to generate scripts to run every stage of this pipeline on the batch
-farm. Each directory is designed to contain events of a particular type. For an example of this structure visit /unix/chips/prod at UCL.
+The ./scripts/scripts.py python script is designed to generate bash scripts using this structure that run the
+various jobs on the UCL batch farm. In order to use this functionality you first need to make a directory, set the
+PRODDIR environment variable and call the setup.sh script again. For example...
+
+```
+$ mkdir /unix/chips/jtingey/prod
+$ export PRODDIR=/unix/chips/jtingey/prod
+$ source setup.sh
+```
+
+The PRODDIR will then be mounted inside the container at /opt/prod, which the scripts.py script can use to produce
+the job scripts for the batch farm.
+
+The scripts in ./scripts/jobs/ provide examples for how to use this functionality for many different types of events.
 
 ### Directory layout
 

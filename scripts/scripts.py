@@ -42,12 +42,12 @@ class ScriptMaker:
         self.host_geant4 = os.getenv('HOSTGEANT4')
 
         # Container paths
-        self.env = os.getenv('CHIPSENV')  # ENV
-        self.prod = path.join(os.getenv('PRODDIR'), sub_prod)  # PROD
+        self.env = os.getenv('ENV')
+        self.prod = path.join(os.getenv('PROD'), sub_prod)
 
         # Job settings
-        self.gen_size = 10  # 100000
-        self.sim_size = 10  # 2000
+        self.gen_size = 100000
+        self.sim_size = 2000
 
         # Singularity execution prefix
         container_path = path.join(self.host_env, "env/chips-env.sif")
@@ -136,9 +136,9 @@ class ScriptMaker:
                 " --seed " + str(i) +
                 " --cross-sections " + xsec_file +
                 " --event-generator-list " + event_type +
-                " --message-thresholds /opt/genie/config/Messenger_laconic.xml"
+                " --message-thresholds /opt/genie/config/Messenger_laconic.xml > /dev/null"
             )
-            script.write("\n" + self.exec + "gntpc -i gntp.0.ghep.root -f nuance_tracker -o gen.vec")
+            script.write("\n" + self.exec + "gntpc -i gntp.0.ghep.root -f nuance_tracker -o gen.vec > /dev/null")
             script.write("\nmv gen.vec " + path.join(self.host_prod, "gen/all/", output_name))
             script.write("\nmv gntp.0.ghep.root " + path.join(self.host_prod, "gen/all/", output_root))
             script.write("\ncd ../")
@@ -301,7 +301,6 @@ class ScriptMaker:
                     "/WCSimIO/SavePhotonNtuple false\n"
                     "/WCSimIO/SaveEmissionProfile false\n"
                     "/WCSimTrack/PercentCherenkovPhotonsToDraw 0.0\n"
-                    "/WCSim/random/seed " + str(rand) + "\n"
                     "/run/beamOn " + str(self.sim_size))
             mac.write(text)
             mac.close()
@@ -317,18 +316,22 @@ class ScriptMaker:
         if not os.path.isdir(path.join(self.prod, "map/", detector)):
             os.mkdir(path.join(self.prod, "map/", detector))
 
-        map_mac = path.join(self.env, "scripts/map.C")
+        extra = 'false'
+        if save_extra:
+            extra = 'true'
+
+        map_mac = path.join(self.env, "scripts/hitmapper.C")
         for f in os.listdir(path.join(self.prod, "sim", detector)):
             name, ext = path.splitext(f)
             base = path.basename(name)
             script_name = path.join(self.prod, "scripts/map/", detector + "_" + base + "_map.sh")
             script = self.blank_job_script(script_name)
             script.write('\n' + self.exec + 'root -l -q -b "' + map_mac + '(' +
-                         r'\"' + path.join(self.dir, "sim", detector, f) +
-                         r'\",' + r'\"' + path.join(self.dir, "map", detector,
+                         r'\"' + path.join(self.prod, "sim", detector, f) +
+                         r'\",' + r'\"' + path.join(self.prod, "map", detector,
                                                     base + "_map.root") +
                          r'\",' + str(self.sim_size) + 
-                         r',' + str(save_extra) + ')"')
+                         r',' + extra + ')"')
             script.close()
 
             host_name = path.join(self.host_prod, "scripts/map/", detector + "_" + base + "_map.sh")
@@ -336,14 +339,13 @@ class ScriptMaker:
 
     def reco(self, num, split, detector):
         """Creates the scripts required for event reconstruction."""
-        print("Creating Reconstruction Scripts...")
         jobs = open(path.join(self.prod, "scripts/" + detector + "_reco.sh"), "w")
         jobs.write("#!/bin/sh")
 
         if not os.path.isdir(path.join(self.prod, "reco/", detector)):
             os.mkdir(path.join(self.prod, "reco/", detector))
 
-        reco_mac = path.join(self.env, "scripts/reco.C")
+        reco_mac = path.join(self.env, "scripts/basicreco.C")
         for i, f in enumerate(os.listdir(path.join(self.prod, "sim", detector))):
             if i == int(num):
                 break
@@ -353,10 +355,10 @@ class ScriptMaker:
             for evtCounter in range(0, self.sim_size, int(split)):
                 script_name = path.join(self.prod, "scripts/reco/", detector + "_" +
                                         base + "_" + str(evtCounter) + "_reco.sh")
-                script = self.blank_script(script_name)
+                script = self.blank_job_script(script_name)
                 script.write("\ncd " + path.join(self.prod, "reco", detector))
                 script.write('\n' + self.exec + 'root -l -q -b "' + reco_mac + '(' +
-                             r'\"' + path.join(self.dir, "sim", detector, f) +
+                             r'\"' + path.join(self.prod, "sim", detector, f) +
                              r'\",' + str(evtCounter) +
                              r',' + str(split) + ')"')
                 script.close()
@@ -375,9 +377,10 @@ def parse_args():
     parser.add_argument('-n', '--num', help='number of events to gen or files to use', default=1000)
 
     # Additional job sepcific arguments
-    parser.add_argument('-p', '--particle', help='Event generation particle: nuel, anuel, numu, anumu, cosmic')
+    parser.add_argument('-p', '--particle', help='Event generation particle: nuel, anuel, numu, anumu, cosmic',
+                        default='')
     parser.add_argument('-t', '--type', help='Beam event generation list', default='Default+CCMEC+NCMEC')
-    parser.add_argument('-d', '--detector', help='CHIPS detector geometry name', default='chips_1200')
+    parser.add_argument('-d', '--detector', help='CHIPS detector geometry name', default='')
     parser.add_argument('-s', '--start', help='Selected file to start at', default=0)
     parser.add_argument('--all', action='store_true', help='Save all hit maps to file in mapper')
     parser.add_argument('--split', help='How many events per old reco job', default=100)
@@ -413,7 +416,7 @@ def main():
         maker.sim_beam(args.detector, args.num, args.start)
     elif job == 'sim' and args.particle == 'cosmic':
         print("Making cosmic simulation scripts...")
-        maker.sim_cosmic(args.geom, args.detector, args.num, args.start)
+        maker.sim_cosmic(args.detector, args.num, args.start)
     elif job == 'map':
         print("Making mapping scripts...")
         maker.map(args.detector, args.all)

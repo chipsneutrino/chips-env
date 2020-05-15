@@ -1,18 +1,15 @@
-void load_libs()
-{
-	gSystem->Load("libGeom");
-	gSystem->Load("libEve");
-	gSystem->Load("libMinuit");
-	TString libWCSimRoot = TString::Format("%s%s", gSystem->Getenv("WCSIMHOME"), "/lib/libWCSim.so");
-	TString libWCSimAnalysis = TString::Format("%s%s", gSystem->Getenv("WCSIMANAHOME"), "/lib/libWCSimAnalysis.so");
-	gSystem->Load(libWCSimRoot.Data());
-	gSystem->Load(libWCSimAnalysis.Data());	
-}
+R__LOAD_LIBRARY(libGeom.so)
+R__LOAD_LIBRARY(libEve.so)
+R__LOAD_LIBRARY(libMinuit.so)
+R__LOAD_LIBRARY(libEG.so)
+R__LOAD_LIBRARY(libGui.so)
+R__LOAD_LIBRARY(libSpectrum.so)
+R__LOAD_LIBRARY(libWCSimRoot.so)
+R__LOAD_LIBRARY(libWCSimAnalysisRoot.so)
 
-void reco(const char * infile = "", int start = 0, int fit = 100) 
-{
-	load_libs();
 
+void basicreco(const char * infile = "", int start = 0, int fit = 100) 
+{
 	// Get a fitter interface...
 	WCSimFitterInterface myFitter;
 

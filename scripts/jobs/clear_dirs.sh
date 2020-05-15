@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DATA=plots/*
+DATA=scripts/sim/*
 
 rm -rf $PRODDIR/beam_all/nuel/$DATA
 rm -rf $PRODDIR/beam_all/anuel/$DATA

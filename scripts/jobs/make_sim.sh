@@ -25,4 +25,4 @@ chips scripts beam_numu/ccres/ --job sim -d chips_1200 -n 100 -s 0
 chips scripts beam_numu/ncres/ --job sim -d chips_1200 -n 100 -s 0
 chips scripts beam_numu/ccmec/ --job sim -d chips_1200 -n 100 -s 0
 
-chips scripts cosmic_all/ --job sim -d chips_1200 -n 500 -s 0 -p cosmic --cosmicdetector chips_1200
+chips scripts cosmic_all/ --job sim -d chips_1200 -n 500 -s 0 -p cosmic -d chips_1200
