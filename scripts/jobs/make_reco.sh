@@ -1,28 +1,28 @@
 #! /bin/bash
 
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_all/nuel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anuel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_all/numu/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_all/anumu/ --reco -n 10 -s 100 -g chips_1200
+chips scripts beam_all/nuel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_all/anuel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_all/numu/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_all/anumu/ --job reco -n 10 --split 100 -d chips_1200
 
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/cccoh/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/nccoh/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccdis/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncdis/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccqel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncqel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccres/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ncres/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_nuel/ccmec/ --reco -n 10 -s 100 -g chips_1200
+chips scripts beam_nuel/cccoh/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/nccoh/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ccdis/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ncdis/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ccqel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ncqel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ccres/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ncres/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_nuel/ccmec/ --job reco -n 10 --split 100 -d chips_1200
 
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/cccoh/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/nccoh/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccdis/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncdis/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccqel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncqel/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccres/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ncres/ --reco -n 10 -s 100 -g chips_1200
-python3 $CHIPSENV/scripts/run.py $PRODDIR/beam_numu/ccmec/ --reco -n 10 -s 100 -g chips_1200
+chips scripts beam_numu/cccoh/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/nccoh/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ccdis/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ncdis/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ccqel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ncqel/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ccres/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ncres/ --job reco -n 10 --split 100 -d chips_1200
+chips scripts beam_numu/ccmec/ --job reco -n 10 --split 100 -d chips_1200
 
-python3 $CHIPSENV/scripts/run.py $PRODDIR/cosmic_all/ --reco -n 10 -s 100 -g chips_1200
+chips scripts cosmic_all/ --job reco -n 10 --split 100 -d chips_1200

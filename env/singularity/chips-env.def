@@ -16,9 +16,6 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     # Set python3 as the default python
     ln -sf /usr/bin/python3 /usr/bin/python
 
-    # Setup root style
-    echo "Rint.Logon: /opt/chips-env/scripts/style/chips_style.C" >> /usr/local/etc/system.rootrc
-
     # Locale settings
     echo 'LANG="en_GB.UTF-8"' >> /etc/environment
     echo 'LC_ALL="en_GB.UTF-8"' >> /etc/environment
@@ -27,8 +24,8 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
 
 %environment
     # Set the chips-env path that is mounted into the container
-    export CHIPSENV=/opt/chips-env
-    export PRODDIR=/opt/prod
+    export ENV=/opt/chips-env
+    export PROD=/opt/prod
 
     # Setup the compiler and activate root
     source /opt/gcc-9/activate.sh
@@ -42,9 +39,9 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     export PATH=$GENIE/bin:$PATH
 
     # Add chips-gen, chips-sim and chips-reco paths to environment
-    export CHIPSGEN=$CHIPSENV/chips/chips-gen
-    export CHIPSSIM=$CHIPSENV/chips/chips-sim
-    export CHIPSRECO=$CHIPSENV/chips/chips-reco
+    export CHIPSGEN=$ENV/chips/chips-gen
+    export CHIPSSIM=$ENV/chips/chips-sim
+    export CHIPSRECO=$ENV/chips/chips-reco
 
     # Append library, includes and bin paths
     export LD_LIBRARY_PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$LD_LIBRARY_PATH
@@ -64,16 +61,16 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     export G4VIS_USE_OPENGLQT=1
 
 %apprun build
-    cd $CHIPSENV
+    cd $ENV
     cmake $@ .
-    make
+    make $MAKEFLAGS
 
 %apprun make
-    cd $CHIPSENV
-    make $@
+    cd $ENV
+    make $MAKEFLAGS
 
 %apprun clean
-    cd $CHIPSENV
+    cd $ENV
     make clean
     rm ./cmake_install.cmake
     rm ./CMakeCache.txt
@@ -87,16 +84,4 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     source chips/chips-reco/reco-tidy.sh
 
 %apprun scripts
-    python $CHIPSENV/scripts/scripts.py $@
-
-%apprun simdisplay
-    simdisplay $@
-
-%apprun recodisplay
-    recodisplay $@
-
-%apprun root
-    root $@
-
-%apprun python
-    python $@
+    python $ENV/scripts/scripts.py $@

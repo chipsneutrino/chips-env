@@ -1,50 +1,71 @@
 # chips-env
 
-This repository sets up the CHIPS software environment and everything required to run it at scale. 
+This repository contains the full setup for the CHIPS software environment and everything required to run it at scale.
 
-Based around the use of a pre-built [singularity](https://sylabs.io/guides/3.5/user-guide/introduction.html) container with
-all the up-to-date dependencies required to run the CHIPS software, no user installation of any software (except singularity)
-is required. Additionally, all data files required by either the dependencies or CHIPS software itself are dealt with.
+Based around a pre-build [singularity](https://sylabs.io/guides/3.5/user-guide/introduction.html) container holding
+all the up-to-date dependencies to run CHIPS software, no user installation of any software (except Singularity) is
+required. Additionally, all default data files required by either the dependencies or the CHIPS software itself are
+dealt with.
 
-Apart from ease-of-use this has the added advantage of providing a consistent environment in which to run CHIPS
-software across any machines required (local, UCL, batch farm, grid node, etc...)
+Apart from speeding up development time and the obvious ease-of-use this brings, a main advantage is the ability to
+run a consistent software environment across any machine required (local-node, UCL-node, batch-farm, grid-node, etc...).
 
 Singularity is now widely installed across many of the computing nodes we use, but if you need a local install see
-https://sylabs.io/guides/3.5/user-guide/quick_start.html
+https://sylabs.io/guides/3.5/user-guide/quick_start.html for more info.
 
-## Getting started
+---
+
+## Usage
+
+### Quick Start
 
 To start using the singularity environment and all the CHIPS software run the following commands...
 
 ```
 $ git clone https://gitlab.com/chipsneutrino/chips-cvn.git  # Clone the repository
-$ git submodule update --init								# Get the chips-gen, chips-sim and chips-reco submodules
-$ source setup.sh											# Setup environment (skip inputing production directory for now)
-$ chips build												# Build all the software
+$ git submodule update --init  # Get the chips-gen, chips-sim and chips-reco submodules
+$ source setup.sh  # Setup the environment
+$ chips build  # Build all the software
 ```
 
-Once the build is complete you have a fully working CHIPS software environment to use.
-For example, running...
+Once the build is complete you have a fully working CHIPS software environment to use. To start a bash prompt
+within the Singularity container run the alias...
 
 ```
-$ chips root
+$ chips
 ```
 
-will start the up-to-date(6.20) ROOT installed in the container and preload the 'chips-style' for consistent plotting.
+Once inside the container, you are the same user as you are on the host system, but the file system has been
+switched out for the one inside the container except for a few specific paths that allow you to reach and modify 
+files on the host. These are...
 
-## Usage
+ - The current directory you where in when it started
+ - Your $HOME directory at /home/$USER
+ - The chips-env ($CHIPSENV) directory at /opt/chips-env
+ - The geant4 data directory ($GEANT4DATA) at /opt/data/geant4
 
-Various directories are mounted into the singularity container when it starts, these are...
-	- The chips-env ($CHIPSENV) directory at /opt/chips-env
-	- The geant4 data directory ($GEANT4DATA) at /opt/data/geant4
-	- The production ($PRODDIR) directory at /opt/prod
+You can see all 'chips' alias commands with...
+
+```
+$ chips help
+```
+
+These have been implemented to make common tasks easier using the idea of singularity 'apps'. However, they are restrictive and you may find using the bash prompt within the container with the full flexibility you are used to more productive.
+
+### Running at scale
+
+The general pipeline we run in CHIPS is...
+
+event-generation -> event-selection -> detector-simulation -> hit-mapping -> network-training
+
+
 
 This gives us access to the CHIPS software in chips-env as well as the 'production directory' if specified to create/modify files
 for use in event generation, detector simulation, hit mapping, reconstruction etc...
 
 The general pipeline we run in CHIPS is... 
 
-event generation -> event filtering -> detector simulation -> hit mapping(or reco) -> network training
+
 
 We define a production directory structure to store the files created in this flow for each different type of event...
 
@@ -79,11 +100,21 @@ directory (for every event type)
 The scripts/run.py python script uses this directory structure to generate scripts to run every stage of this pipeline on the batch
 farm. Each directory is designed to contain events of a particular type. For an example of this structure visit /unix/chips/prod at UCL.
 
-## Building the Dependency Docker Container
+### Directory layout
+
+ - ./chips/: the chips software submodules, chips-gen, chips-sim and chips-reco.
+ - ./env/: build files and built containers for both docker and singularity images.
+ - ./scripts/: python and bash scripts to run the chips software, mainly for batch farm use.
+
+---
+
+## Building the containers
+
+### Docker dependency container
 
 We create a docker "dependency" image containing from a base CentOS7 image, containing:
 
- - gcc-9 (ompiler)
+ - gcc-9 (compiler)
  - cmake3 (build tool)
  - pythia6 (event generator)
  - GSL (scientific library)
@@ -96,8 +127,7 @@ We create a docker "dependency" image containing from a base CentOS7 image, cont
  - Geant4 (detector simulation)
 
 From this we can then build all the singularity/docker images we want for specific tasks.
-Note, we specify /opt/data/geant4 as the geant4 data path in this image. Therefore, we need to mount the corresponding data there whenever using Geant4.
-We require 'sudo' to build the image and push it to the gitlab container registry for chips-env using...
+Note, we specify /opt/data/geant4 as the geant4 data path in this image. Therefore, we need to mount the corresponding data there whenever using Geant4. We require 'sudo' to build the image and push it to the gitlab container registry for chips-env using...
 
 ```
 $ cd $CHIPSENV/env/docker/
@@ -106,9 +136,10 @@ $ sudo docker login registry.gitlab.com
 $ sudo docker push registry.gitlab.com/chipsneutrino/chips-env
 ```
 
-The build will take many many hours (~3 on an 8 core machine)!!!
+The build will take many many hours (3ish on an 8 core machine)!!! Note we use an updated version of GHepUtils.cxx when building
+GENIE which contains additional nuance(interaction) codes. All other software implementations are dependent on this change. 
 
-## Build Singularity Containers
+### Singularity containers
 
 In order to build the default singularity container that is used throughout chips-env use the following commands.
 We require 'sudo' to build the image and push it to the singularity container registry using...
@@ -121,29 +152,31 @@ $ sudo singularity sign env/chips-env.sif
 $ sudo singularity push env/chips-env.sif library://joshtingey/default/chips-env:latest
 ```
 
-## The Submodules
+---
+
+## Other
+
+### The Submodules
 
 This repository contains three submodules for chips-gen, chips-sim and chips-reco in the ./chips directory.
 These have been added with...
 
 ```
-$ git submodule add -b new_build https://gitlab.com/chipsneutrino/chips-gen.git chips/chips-gen
-$ git submodule add -b new_build https://gitlab.com/chipsneutrino/chips-sim.git chips/chips-sim
-$ git submodule add -b new_build https://gitlab.com/chipsneutrino/chips-reco.git chips/chips-reco
+$ git submodule add https://gitlab.com/chipsneutrino/chips-gen.git chips/chips-gen
+$ git submodule add https://gitlab.com/chipsneutrino/chips-sim.git chips/chips-sim
+$ git submodule add https://gitlab.com/chipsneutrino/chips-reco.git chips/chips-reco
 $ git submodule init
 ```
 
-To update to the most recent versions use...
+To update to the most recent versions use the following, and then commit the changes to this chips-env repository.
 
 ```
 $ git submodule update --remote
 ```
 
-and then commit the changes to this chips-env repository
-
-## GENIE cross-section files
-
-If you look in the [GENIE manual](https://genie-docdb.pp.rl.ac.uk/DocDB/0000/000002/006/man.pdf) there are descriptions of all the different models and 'tunes' availiable. The data is then located [here](http://scisoft.fnal.gov/scisoft/packages/genie_xsec). Then we just use the gxspl-FNALsmall.xml file as this contains everything we need.
+When making changes to chips-gen, chips-sim or chips-reco you need to make sure to commit these in their respective
+directories, but then also commit their changes to the chips-env repo to keep it up-to-date. Basically, watch out as
+submodules are a different way of working to normal.
 
 ### Singularity Install (centos7)
 
