@@ -1,5 +1,7 @@
 # chips-env
 
+[![Pipeline](https://gitlab.com/chipsneutrino/chips-env/badges/master/pipeline.svg)](https://gitlab.com/chipsneutrino/chips-env/pipelines)
+
 This repository contains the full setup for the CHIPS software environment and everything required to run it at scale.
 
 Based around a pre-build [singularity](https://sylabs.io/guides/3.5/user-guide/introduction.html) container holding
