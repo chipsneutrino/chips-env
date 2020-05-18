@@ -8,7 +8,7 @@ build:
   stage: build
   image:
     name: quay.io/singularity/singularity:v3.5.3
-    entrypoint: ["/bin/sh"]
+    entrypoint: ["/bin/bash", "-l", "-c"]
   variables:
     GIT_SUBMODULE_STRATEGY: none
   script:
@@ -26,7 +26,7 @@ test:
   stage: test
   image:
     name: quay.io/singularity/singularity:v3.5.3
-    entrypoint: ["/bin/sh"]
+    entrypoint: ["/bin/bash", "-l", "-c"]
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script:
