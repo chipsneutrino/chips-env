@@ -1,13 +1,30 @@
 # .gitlab-ci.yml
 
 stages:
-    - test
+  - build
+  - test
+
+build:
+  stage: build
+  image: quay.io/singularity/singularity:v3.5.3
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  script:
+    - singularity build ./env/chips-env.sif ./env/singularity/chips-env.def
+    - echo $SYLABS_CLOUD_TOKEN > sylabs_token.dat
+    - singularity remote login --tokenfile sylabs_token.dat
+    - singularity key newpair --password=$SINGULARITY_KEY_PSD --name=chipsneutrino --email=$SINGULARITY_KEY_EMAIL --push=true
+    - echo $SINGULARITY_KEY_PSD | singularity sign env/chips-env.sif
+    - singularity push env/chips-env.sif library://chipsneutrino/default/chips-env:latest
+  only:
+    - master
     
 test:
   stage: test
-  image: quay.io/singularity/singularity:v3.5.3-slim
+  image: quay.io/singularity/singularity:v3.5.3
+  variables:
+    GIT_SUBMODULE_STRATEGY: normal
   script:
-    - git submodule update --init
     - source setup.sh
     - chips build
   only:

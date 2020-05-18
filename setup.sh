@@ -25,7 +25,7 @@ export SINGULARITYENV_HOSTENV=$CHIPSENV
 # Check the chips-env.sif image is present if not download it
 if ! [ -f "$CHIPSENV/env/chips-env.sif" ]; then
     echo "${C_BLUE}INFO:${C_RESET}    Downloading singularity image"
-    singularity pull $CHIPSENV/env/chips-env.sif library://joshtingey/default/chips-env:latest
+    singularity pull $CHIPSENV/env/chips-env.sif library://chipsneutrino/default/chips-env:latest
 fi
 
 export GEANT4DATA=$CHIPSENV/chips/chips-sim/config/geant4
