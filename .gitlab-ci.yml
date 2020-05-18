@@ -6,8 +6,9 @@ stages:
 
 build:
   stage: build
-  image: quay.io/singularity/singularity:v3.5.3
-  entrypoint: ["/bin/bash"]
+  image:
+    name: quay.io/singularity/singularity:v3.5.3
+    entrypoint: ["/bin/bash"]
   variables:
     GIT_SUBMODULE_STRATEGY: none
   script:
@@ -22,7 +23,9 @@ build:
     
 test:
   stage: test
-  image: quay.io/singularity/singularity:v3.5.3
+  image:
+    name: quay.io/singularity/singularity:v3.5.3
+    entrypoint: ["/bin/bash"]
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script:
