@@ -8,10 +8,11 @@ build:
   stage: build
   image:
     name: quay.io/singularity/singularity:v3.5.3
-    entrypoint: ["/bin/bash"]
+    entrypoint: ["/bin/sh"]
   variables:
     GIT_SUBMODULE_STRATEGY: none
   script:
+    - echo "Starting build process"
     - singularity build ./env/chips-env.sif ./env/singularity/chips-env.def
     - echo $SYLABS_CLOUD_TOKEN > sylabs_token.dat
     - singularity remote login --tokenfile sylabs_token.dat
@@ -25,7 +26,7 @@ test:
   stage: test
   image:
     name: quay.io/singularity/singularity:v3.5.3
-    entrypoint: ["/bin/bash"]
+    entrypoint: ["/bin/sh"]
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script:
