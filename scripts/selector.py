@@ -61,7 +61,7 @@ par_codes = [
     11, -11, 12, -12, 13, -13, 14, -14,
     111, 211, -211, 2212, 2112, 22, 
     321, -321, 3112, 3222, 3212,
-    130, 311, -311, 411, 421, 431,
+    130, 311, -311, 411, -411, 421, -421, 431, -431,
     -2212, -2112, 3122, -3122,
     4212, 4122, 4222, 8016
 ]
@@ -69,7 +69,7 @@ par_names = [
     "e^{-}", "e^{+}", "#nu_{e}", "#bar{#nu}_{e}", "#mu^{-}", "#mu^{+}", "#nu_{#mu}", "#bar{#nu}_{#mu}",
     "#pi^{0}", "#pi^{+}", "#pi^{-}", "P", "N", "#gamma",
     "K^{+}", "K^{-}", "#Sigma^{-}", "#Sigma^{+}", "#Sigma^{0}",
-    "K^{0}_{L}", "K^{0}", "#bar{K^{0}}", "D^{+}", "D^{0}", "K^{+}_{s}",
+    "K^{0}_{L}", "K^{0}", "#bar{K^{0}}", "D^{+}", "D^{-}", "D^{0}", "#bar{D^{0}}", "K^{+}_{s}", "K^{-}_{s}",
     "#bar{P}", "#bar{N}", "#Lambda", "#bar{#Lambda}",
     "#Sigma^{+}_{c}", "#Lambda^{+}_{c}", "#Sigma^{++}_{c}", "O16"
 ]
@@ -257,14 +257,15 @@ class Selector:
                             elif particle in [3112, 3222] and energy > t_sigma:
                                 num_particles_passed += 1
                             # Charged D-Meson
-                            elif particle in [411] and energy > t_d:
+                            elif particle in [411, -411] and energy > t_d:
                                 num_particles_passed += 1
                             # Check we know any other particle
                             elif particle not in [11, -11, 13, -13, 211, -211, 111, 2212, 22, 321, -321, 3112,
-                                                  12, -12, 14, -14, 130, 311, -311, 411,
-                                                  421, 431, -2212, -2112, 2112, 3122, 3112, -3122, 3222, 
+                                                  12, -12, 14, -14, 130, 311, -311, 411, -411,
+                                                  421, -421, 431, -431, -2212, -2112, 2112, 3122, 3112, -3122, 3222, 
                                                   3212, 8016, 4212, 4122, 4222]:
                                 print("Don't know particle {}".format(particle))
+                                continue
 
                             if temp_passed < num_particles_passed:  # This particle has passed
                                 h_par_type_passed[event_int_codes.index(event_int_code)].Fill(par_codes.index(particle))
