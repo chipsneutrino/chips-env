@@ -1,0 +1,14 @@
+# .gitlab-ci.yml
+
+stages:
+    - test
+    
+test:
+  stage: test
+  image: quay.io/singularity/singularity:v3.5.3-slim
+  script:
+    - git submodule update --init
+    - source setup.sh
+    - chips build
+  only:
+    - master
