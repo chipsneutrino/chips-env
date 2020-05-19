@@ -21,7 +21,9 @@ build:
     - singularity push env/chips-env.sif library://chipsneutrino/default/chips-env:latest
   only:
     - master
-    
+    changes:
+      - ./env/singularity/chips-env.def
+  
 test:
   stage: test
   image:
