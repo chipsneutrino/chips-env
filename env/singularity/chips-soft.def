@@ -1,0 +1,111 @@
+Bootstrap: docker
+From: registry.gitlab.com/chipsneutrino/chips-env:latest
+
+%labels
+    Author Josh Tingey
+    Email j.tingey.16@ucl.ac.uk
+    Version v1.0
+
+%help
+    This is the main chips-soft container with all chips software and data files required
+ 
+%post  
+    # Remove the build script left over from the docker build
+    rm /opt/deps.sh
+
+    # Set python3 as the default python
+    ln -sf /usr/bin/python3 /usr/bin/python
+
+    # Locale settings
+    echo 'LANG="en_GB.UTF-8"' >> /etc/environment
+    echo 'LC_ALL="en_GB.UTF-8"' >> /etc/environment
+    echo 'LC_CTYPE="en_GB.UTF-8"' >> /etc/environment
+    echo 'LANGUAGE="en_GB.UTF-8"' >> /etc/environment
+
+    # Set the chips-env path that is mounted into the container
+    export CHIPSENV=/opt/chips-env
+    export PROD=/opt/prod
+
+    # Get chips-env repo and submodules
+    cd /opt
+    git clone https://gitlab.com/chipsneutrino/chips-env.git
+    cd $CHIPSENV
+    git submodule update --init
+    rm -rf /opt/data/geant4
+    ln -s $CHIPSENV/chips/chips-sim/config/geant4 /opt/data/
+
+    # Setup the compiler and activate root
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
+
+    # Setup GENIE
+    export GENIE=/opt/genie
+    export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
+    export PATH=$GENIE/bin:$PATH
+
+    # Add chips-gen, chips-sim and chips-reco paths to environment
+    export CHIPSGEN=$CHIPSENV/chips/chips-gen
+    export CHIPSSIM=$CHIPSENV/chips/chips-sim
+    export CHIPSRECO=$CHIPSENV/chips/chips-reco
+
+    # Append library, includes and bin paths
+    export LD_LIBRARY_PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$CHIPSGEN/include:$CHIPSSIM/include:$CHIPSRECO/include:$CPLUS_INCLUDE_PATH
+    export PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$PATH
+
+    # Set flags so make uses all the cores available
+    NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+    export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+
+    # Need to set CRY environment variables for chips-gen
+    export CRYDIR=/usr/local
+    export CRYDATA=/usr/local/share/cry-data
+    
+    # Need to set these options for chips-sim visualisation
+    export G4VIS_USE=1
+    export G4VIS_USE_OPENGLQT=1
+
+    # Get chips-env
+    cd $CHIPSENV
+    cmake .
+    make $MAKEFLAGS
+
+%environment
+    # Set the chips-env path that is mounted into the container
+    export CHIPSENV=/opt/chips-env
+    export PROD=/opt/prod
+
+    # Setup the compiler and activate root
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
+
+    # Setup GENIE
+    export GENIE=/opt/genie
+    export LD_LIBRARY_PATH=$GENIE/lib:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$GENIE/include:$CPLUS_INCLUDE_PATH
+    export PATH=$GENIE/bin:$PATH
+
+    # Add chips-gen, chips-sim and chips-reco paths to environment
+    export CHIPSGEN=$CHIPSENV/chips/chips-gen
+    export CHIPSSIM=$CHIPSENV/chips/chips-sim
+    export CHIPSRECO=$CHIPSENV/chips/chips-reco
+
+    # Append library, includes and bin paths
+    export LD_LIBRARY_PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$LD_LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$CHIPSGEN/include:$CHIPSSIM/include:$CHIPSRECO/include:$CPLUS_INCLUDE_PATH
+    export PATH=$CHIPSGEN:$CHIPSSIM:$CHIPSRECO:$PATH
+
+    # Set flags so make uses all the cores available
+    NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+    export MAKEFLAGS="-j$((NB_CORES+1)) -l${NB_CORES}"
+
+    # Need to set CRY environment variables for chips-gen
+    export CRYDIR=/usr/local
+    export CRYDATA=/usr/local/share/cry-data
+    
+    # Need to set these options for chips-sim visualisation
+    export G4VIS_USE=1
+    export G4VIS_USE_OPENGLQT=1
