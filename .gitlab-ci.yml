@@ -20,7 +20,8 @@ build:
     - echo $SINGULARITY_KEY_PSD | singularity sign env/chips-env.sif
     - singularity push env/chips-env.sif library://chipsneutrino/default/chips-env:latest
   only:
-    - master
+    refs:
+      - master
     changes:
       - ./env/singularity/chips-env.def
   
@@ -36,4 +37,5 @@ test:
     - export SINGULARITY_BIND=".:/opt/chips-env"
     - singularity run --app build ./env/chips-env.sif
   only:
-    - master
+    refs:
+      - master
