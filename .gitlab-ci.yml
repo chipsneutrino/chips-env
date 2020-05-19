@@ -30,8 +30,8 @@ test:
   variables:
     GIT_SUBMODULE_STRATEGY: normal
   script:
-    - apk add ncurses
-    - source setup.sh
-    - chips build
+    - singularity pull ./env/chips-env.sif library://chipsneutrino/default/chips-env:latest
+    - export SINGULARITY_BIND=".:/opt/chips-env"
+    - singularity run --app build ./env/chips-env.sif
   only:
     - master
