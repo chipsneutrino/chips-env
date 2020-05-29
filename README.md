@@ -24,7 +24,8 @@ https://sylabs.io/guides/3.5/user-guide/quick_start.html for more info.
 To start using the singularity environment and all the CHIPS software run the following commands...
 
 ```
-$ git clone https://gitlab.com/chipsneutrino/chips-cvn.git  # Clone the repository
+$ git clone https://gitlab.com/chipsneutrino/chips-env.git  # Clone the repository
+$ cd chips-env  # Go to the directory
 $ git submodule update --init  # Get the chips-gen, chips-sim and chips-reco submodules
 $ source setup.sh  # Setup the environment
 $ chips build  # Build all the software
@@ -156,6 +157,13 @@ $ sudo singularity remote login
 $ sudo singularity key newpair
 $ sudo singularity sign env/chips-env.sif
 $ sudo singularity push env/chips-env.sif library://joshtingey/default/chips-env:latest
+```
+
+You can also build a chips-soft container that contains all the chips software prebuilt and bundles all the required
+data files within the container so everything is completely contained...
+
+```
+$ sudo singularity build ./env/chips-soft.sif ./env/singularity/chips-soft.def
 ```
 
 ---
