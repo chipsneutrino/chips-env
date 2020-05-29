@@ -308,7 +308,7 @@ class ScriptMaker:
             host_name = path.join(self.host_prod, "scripts/sim/", detector + "_" + base + "_sim.sh")
             jobs.write("\nqsub -q medium " + host_name)
 
-    def map(self, detector, save_extra):
+    def map(self, detector, save_extra, height, radius):
         """Creates the scripts required for hit map generation."""
         jobs = open(path.join(self.prod, "scripts/" + detector + "_map.sh"), "w")
         jobs.write("#!/bin/sh")
@@ -331,7 +331,9 @@ class ScriptMaker:
                          r'\",' + r'\"' + path.join(self.prod, "map", detector,
                                                     base + "_map.root") +
                          r'\",' + str(self.sim_size) + 
-                         r',' + extra + ')"')
+                         r',' + extra +
+                         r',' + str(height) +
+                         r',' + str(radius) + ')"')
             script.close()
 
             host_name = path.join(self.host_prod, "scripts/map/", detector + "_" + base + "_map.sh")
@@ -384,6 +386,8 @@ def parse_args():
     parser.add_argument('-s', '--start', help='Selected file to start at', default=0)
     parser.add_argument('--all', action='store_true', help='Save all hit maps to file in mapper')
     parser.add_argument('--split', help='How many events per old reco job', default=100)
+    parser.add_argument('--height', help='Detector height in cm', default=1200)
+    parser.add_argument('--radius', help='Detector radius in cm', default=1250)
 
     return parser.parse_args()
 
@@ -419,7 +423,7 @@ def main():
         maker.sim_cosmic(args.detector, args.num, args.start)
     elif job == 'map':
         print("Making mapping scripts...")
-        maker.map(args.detector, args.all)
+        maker.map(args.detector, args.all, args.height, args.radius)
     elif job == 'reco':
         print("Making reconstruction scripts...")
         maker.reco(args.num, args.split, args.detector)

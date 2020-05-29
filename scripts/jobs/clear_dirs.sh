@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DATA=scripts/sim/*
+DATA=scripts/map/*
 
 rm -rf $PRODDIR/beam_all/nuel/$DATA
 rm -rf $PRODDIR/beam_all/anuel/$DATA
