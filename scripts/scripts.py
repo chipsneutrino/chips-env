@@ -339,7 +339,7 @@ class ScriptMaker:
             host_name = path.join(self.host_prod, "scripts/map/", detector + "_" + base + "_map.sh")
             jobs.write("\nqsub -q medium " + host_name)
 
-    def reco(self, num, split, detector):
+    def reco(self, num, split, detector, height):
         """Creates the scripts required for event reconstruction."""
         jobs = open(path.join(self.prod, "scripts/" + detector + "_reco.sh"), "w")
         jobs.write("#!/bin/sh")
@@ -362,7 +362,8 @@ class ScriptMaker:
                 script.write('\n' + self.exec + 'root -l -q -b "' + reco_mac + '(' +
                              r'\"' + path.join(self.prod, "sim", detector, f) +
                              r'\",' + str(evtCounter) +
-                             r',' + str(split) + ')"')
+                             r',' + str(split) +
+                             r',' + str(height) +')"')
                 script.close()
 
                 host_name = path.join(self.host_prod, "scripts/reco/", detector + "_" +
@@ -426,7 +427,7 @@ def main():
         maker.map(args.detector, args.all, args.height, args.radius)
     elif job == 'reco':
         print("Making reconstruction scripts...")
-        maker.reco(args.num, args.split, args.detector)
+        maker.reco(args.num, args.split, args.detector, args.height)
 
 
 if __name__ == '__main__':

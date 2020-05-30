@@ -8,7 +8,7 @@ R__LOAD_LIBRARY(libWCSimRoot.so)
 R__LOAD_LIBRARY(libWCSimAnalysisRoot.so)
 
 
-void basicreco(const char * infile = "", int start = 0, int fit = 100) 
+void basicreco(const char * infile = "", int start = 0, int fit = 100, double detector_height = 1200) 
 {
 	// Get a fitter interface...
 	WCSimFitterInterface myFitter;
@@ -23,7 +23,7 @@ void basicreco(const char * infile = "", int start = 0, int fit = 100)
 	config_el->SetTrackType(0, "ElectronLike");
 	config_el->SetParameter(0, "kVtxX", -1200, 1200, 0.0, 10.0, false);
 	config_el->SetParameter(0, "kVtxY", -1200, 1200, 0.0, 10.0, false);
-	config_el->SetParameter(0, "kVtxZ", -600, 600, 0.0, 10.0, false);
+	config_el->SetParameter(0, "kVtxZ", -(detector_height/2.0), (detector_height/2.0), 0.0, 10.0, false);
 	config_el->SetParameter(0, "kVtxT", -100, 10100, 5000, 1.0, false);
 	config_el->SetParameter(0, "kDirTh", 0.0, TMath::Pi(), 0.5 * TMath::Pi(), 0.01, false);
 	config_el->SetParameter(0, "kDirPhi", -1.0 * TMath::Pi(), 1.0 * TMath::Pi(), 0, 0.02, false);
@@ -37,7 +37,7 @@ void basicreco(const char * infile = "", int start = 0, int fit = 100)
 	config_mu->SetTrackType(0, "MuonLike");
 	config_mu->SetParameter(0, "kVtxX", -1200, 1200, 0.0, 10.0, false);
 	config_mu->SetParameter(0, "kVtxY", -1200, 1200, 0.0, 10.0, false);
-	config_mu->SetParameter(0, "kVtxZ", -600, 600, 0.0, 10.0, false);
+	config_mu->SetParameter(0, "kVtxZ", -(detector_height/2.0), (detector_height/2.0), 0.0, 10.0, false);
 	config_mu->SetParameter(0, "kVtxT", -100, 10100, 5000, 1.0, false);
 	config_mu->SetParameter(0, "kDirTh", 0.0, TMath::Pi(), 0.5 * TMath::Pi(), 0.01, false);
 	config_mu->SetParameter(0, "kDirPhi", -1.0 * TMath::Pi(), 1.0 * TMath::Pi(), 0, 0.02, false);
