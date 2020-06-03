@@ -222,7 +222,7 @@ class ScriptMaker:
             os.mkdir(path.join(self.prod, "sim/", detector))
 
         for i, f in enumerate(os.listdir(path.join(self.prod, "gen/selected/"))):
-            if i == int(num):
+            if i == (int(num) + int(start)):
                 break
 
             if i < int(start):
@@ -270,7 +270,7 @@ class ScriptMaker:
             os.mkdir(path.join(self.prod, "sim/", detector))
 
         for i, f in enumerate(os.listdir(path.join(self.prod, "gen/selected/", detector))):
-            if i == int(num):
+            if i == (int(num) + int(start)):
                 break
 
             if i < int(start):
@@ -339,7 +339,7 @@ class ScriptMaker:
             host_name = path.join(self.host_prod, "scripts/map/", detector + "_" + base + "_map.sh")
             jobs.write("\nqsub -q medium " + host_name)
 
-    def reco(self, num, split, detector, height):
+    def reco(self, num, split, start, detector, height):
         """Creates the scripts required for event reconstruction."""
         jobs = open(path.join(self.prod, "scripts/" + detector + "_reco.sh"), "w")
         jobs.write("#!/bin/sh")
@@ -349,8 +349,11 @@ class ScriptMaker:
 
         reco_mac = path.join(self.env, "scripts/basicreco.C")
         for i, f in enumerate(os.listdir(path.join(self.prod, "sim", detector))):
-            if i == int(num):
+            if i == (int(num) + int(start)):
                 break
+
+            if i < int(start):
+                continue
 
             name, ext = path.splitext(f)
             base = path.basename(name)
@@ -386,7 +389,7 @@ def parse_args():
     parser.add_argument('-d', '--detector', help='CHIPS detector geometry name', default='')
     parser.add_argument('-s', '--start', help='Selected file to start at', default=0)
     parser.add_argument('--all', action='store_true', help='Save all hit maps to file in mapper')
-    parser.add_argument('--split', help='How many events per old reco job', default=100)
+    parser.add_argument('--split', help='How many events per old reco job', default=25)
     parser.add_argument('--height', help='Detector height in cm', default=1200)
     parser.add_argument('--radius', help='Detector radius in cm', default=1250)
 
@@ -427,7 +430,7 @@ def main():
         maker.map(args.detector, args.all, args.height, args.radius)
     elif job == 'reco':
         print("Making reconstruction scripts...")
-        maker.reco(args.num, args.split, args.detector, args.height)
+        maker.reco(args.num, args.split, args.start, args.detector, args.height)
 
 
 if __name__ == '__main__':
