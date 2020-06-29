@@ -13,7 +13,7 @@ Apart from speeding up development time and the obvious ease-of-use this brings,
 run a consistent software environment across any machine required (local-node, UCL-node, batch-farm, grid-node, etc...).
 
 Singularity is now widely installed across many of the computing nodes we use, but if you need a local install see
-https://sylabs.io/guides/3.5/user-guide/quick_start.html for more info.
+https://sylabs.io/guides/3.5/user-guide/quick_start.html for more info (**version >3.5.3 required**).
 
 ---
 
@@ -43,7 +43,7 @@ switched out for the one inside the container except for a few specific paths th
 files on the host. These are...
 
  - The current directory you where in when it started
- - Your $HOME directory at /home/$USER
+ - Your HOME directory at /home/USER
  - The chips-env ($CHIPSENV) directory at /opt/chips-env
  - The geant4 data directory ($GEANT4DATA) at /opt/data/geant4
 
@@ -121,18 +121,20 @@ The scripts in ./scripts/jobs/ provide examples for how to use this functionalit
 
 We create a docker "dependency" image containing from a base CentOS7 image, containing:
 
- - gcc-9 (compiler)
- - cmake3 (build tool)
- - pythia6 (event generator)
- - GSL (scientific library)
- - log4cpp (c++ logging utility)
- - ROOT (analysis framework)
- - Genie (beam neutrino event generator)
- - BOOST (c++ libraries)
- - GLoBES (detector sensitivity framework)
- - CRY (cosmic event generator)
- - Geant4 (detector simulation)
-
+| Name    | Version     | Description                    |
+| :------ | :---------- | :----------------------------- |
+| gcc     | 9.3.0       | compiler                       |
+| cmake   | 3.17.2      | build tool                     |
+| pythia  | 6.4.28      | event generator                |
+| GSL     | 2.6         | scientific library             |
+| log4cpp | 1.1.3       | c++ logging utility            |
+| ROOT    | 6.20.04     | analysis framework             |
+| Genie   | 3.00.06     | beam neutrino event generator  |
+| BOOST   | 1.73.0      | c++ libraries                  |
+| GLoBES  | 3.2.17      | detector sensitivity framework |
+| CRY     | 1.7         | cosmic event generator         |
+| Geant4  | 4.10.05.p01 | detector simulation            |
+    
 From this we can then build all the singularity/docker images we want for specific tasks.
 Note, we specify /opt/data/geant4 as the geant4 data path in this image. Therefore, we need to mount the corresponding data there whenever using Geant4. We require 'sudo' to build the image and push it to the gitlab container registry for chips-env using...
 

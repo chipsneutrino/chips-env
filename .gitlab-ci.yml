@@ -24,18 +24,3 @@ build:
       - master
     changes:
       - ./env/singularity/chips-env.def
-  
-test:
-  stage: test
-  image:
-    name: quay.io/singularity/singularity:v3.5.3
-    entrypoint: ["/bin/bash", "-l", "-c"]
-  variables:
-    GIT_SUBMODULE_STRATEGY: normal
-  script:
-    - singularity pull ./env/chips-env.sif library://chipsneutrino/default/chips-env:latest
-    - export SINGULARITY_BIND=".:/opt/chips-env"
-    - singularity run --app build ./env/chips-env.sif
-  only:
-    refs:
-      - master
