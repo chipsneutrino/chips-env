@@ -23,7 +23,7 @@ chips scripts beam_numu/ccqel/ --job gen -n 200000 -p numu -t CCQE
 chips scripts beam_numu/ncqel/ --job gen -n 200000 -p numu -t NCEL
 chips scripts beam_numu/ccres/ --job gen -n 200000 -p numu -t CCRES
 chips scripts beam_numu/ncres/ --job gen -n 200000 -p numu -t NCRES
-chips scripts beam_numu/ccmec/ --job gen -n 200000 -p nuel -t CCMEC
+chips scripts beam_numu/ccmec/ --job gen -n 200000 -p numu -t CCMEC
 
 chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_1200
 chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_1000

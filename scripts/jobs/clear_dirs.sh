@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DATA=scripts/map/*
+DATA=scripts/gen/*.o*
 
 rm -rf $PRODDIR/beam_all/nuel/$DATA
 rm -rf $PRODDIR/beam_all/anuel/$DATA
@@ -35,9 +35,4 @@ rm -rf $PRODDIR/beam_numu/imd/$DATA
 rm -rf $PRODDIR/beam_numu/ccmec/$DATA
 rm -rf $PRODDIR/beam_numu/ncmec/$DATA
 
-rm -rf $PRODDIR/cosmic_all/$DATA
-rm -rf $PRODDIR/cosmic_all/$DATA
-rm -rf $PRODDIR/cosmic_all/$DATA
-rm -rf $PRODDIR/cosmic_all/$DATA
-rm -rf $PRODDIR/cosmic_all/$DATA
 rm -rf $PRODDIR/cosmic_all/$DATA

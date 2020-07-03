@@ -69,7 +69,6 @@ class ScriptMaker:
             os.mkdir(path.join(self.prod, "gen/selected/"))
             os.mkdir(path.join(self.prod, "sim/"))
             os.mkdir(path.join(self.prod, "map/"))
-            os.mkdir(path.join(self.prod, "tf/"))
             os.mkdir(path.join(self.prod, "reco/"))
             os.mkdir(path.join(self.prod, "plots/"))
             os.mkdir(path.join(self.prod, "scripts/"))
