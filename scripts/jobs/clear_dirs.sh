@@ -1,30 +1,28 @@
 #! /bin/bash
 
-DATA=scripts/gen/*.o*
+DATA=scripts/sim/*.o*
 
-rm -rf $PRODDIR/beam_all/nuel/$DATA
-rm -rf $PRODDIR/beam_all/anuel/$DATA
-rm -rf $PRODDIR/beam_all/numu/$DATA
-rm -rf $PRODDIR/beam_all/anumu/$DATA
-
-rm -rf $PRODDIR/beam_nuel/cccoh/$DATA
-rm -rf $PRODDIR/beam_nuel/nccoh/$DATA
-rm -rf $PRODDIR/beam_nuel/ccdis/$DATA
-rm -rf $PRODDIR/beam_nuel/ncdis/$DATA
-rm -rf $PRODDIR/beam_nuel/ccqel/$DATA
-rm -rf $PRODDIR/beam_nuel/ncqel/$DATA
-rm -rf $PRODDIR/beam_nuel/ccres/$DATA
-rm -rf $PRODDIR/beam_nuel/ncres/$DATA
-rm -rf $PRODDIR/beam_nuel/ccmec/$DATA
-
-rm -rf $PRODDIR/beam_numu/cccoh/$DATA
-rm -rf $PRODDIR/beam_numu/nccoh/$DATA
-rm -rf $PRODDIR/beam_numu/ccdis/$DATA
-rm -rf $PRODDIR/beam_numu/ncdis/$DATA
-rm -rf $PRODDIR/beam_numu/ccqel/$DATA
-rm -rf $PRODDIR/beam_numu/ncqel/$DATA
-rm -rf $PRODDIR/beam_numu/ccres/$DATA
-rm -rf $PRODDIR/beam_numu/ncres/$DATA
-rm -rf $PRODDIR/beam_numu/ccmec/$DATA
-
-rm -rf $PRODDIR/cosmic_all/$DATA
+rm -rf $PRODDIR/numu_all_numuflux/$DATA
+rm -rf $PRODDIR/nuel_all_numuflux/$DATA
+rm -rf $PRODDIR/numu_cccoh_numuflux/$DATA
+rm -rf $PRODDIR/numu_nccoh_numuflux/$DATA
+rm -rf $PRODDIR/numu_ccdis_numuflux/$DATA
+rm -rf $PRODDIR/numu_ncdis_numuflux/$DATA
+rm -rf $PRODDIR/numu_ccqel_numuflux/$DATA
+rm -rf $PRODDIR/numu_ncqel_numuflux/$DATA
+rm -rf $PRODDIR/numu_ccres_numuflux/$DATA
+rm -rf $PRODDIR/numu_ncres_numuflux/$DATA
+rm -rf $PRODDIR/numu_ccmec_numuflux/$DATA
+rm -rf $PRODDIR/nuel_cccoh_numuflux/$DATA
+rm -rf $PRODDIR/nuel_nccoh_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ccdis_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ncdis_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ccqel_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ncqel_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ccres_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ncres_numuflux/$DATA
+rm -rf $PRODDIR/nuel_ccmec_numuflux/$DATA
+rm -rf $PRODDIR/nuel_all_nuelflux/$DATA
+rm -rf $PRODDIR/anumu_all_anumuflux/$DATA
+rm -rf $PRODDIR/anuel_all_anuelflux/$DATA
+rm -rf $PRODDIR/cosmics/$DATA

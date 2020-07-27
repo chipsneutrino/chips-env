@@ -1,35 +1,30 @@
 #! /bin/bash
 
-chips scripts beam_all/nuel/ --job gen -n 2000000 -p nuel
-chips scripts beam_all/anuel/ --job gen -n 2000000 -p anuel
-chips scripts beam_all/numu/ --job gen -n 2000000 -p numu
-chips scripts beam_all/anumu/ --job gen -n 2000000 -p anumu
-
-chips scripts beam_nuel/cccoh/ --job gen -n 200000 -p nuel -t CCCOH
-chips scripts beam_nuel/nccoh/ --job gen -n 200000 -p nuel -t NCCOH
-chips scripts beam_nuel/ccdis/ --job gen -n 200000 -p nuel -t CCDIS
-chips scripts beam_nuel/ncdis/ --job gen -n 200000 -p nuel -t NCDIS
-chips scripts beam_nuel/ccqel/ --job gen -n 200000 -p nuel -t CCQE
-chips scripts beam_nuel/ncqel/ --job gen -n 200000 -p nuel -t NCEL
-chips scripts beam_nuel/ccres/ --job gen -n 200000 -p nuel -t CCRES
-chips scripts beam_nuel/ncres/ --job gen -n 200000 -p nuel -t NCRES
-chips scripts beam_nuel/ccmec/ --job gen -n 200000 -p nuel -t CCMEC
-
-chips scripts beam_numu/cccoh/ --job gen -n 200000 -p numu -t CCCOH
-chips scripts beam_numu/nccoh/ --job gen -n 200000 -p numu -t NCCOH
-chips scripts beam_numu/ccdis/ --job gen -n 200000 -p numu -t CCDIS
-chips scripts beam_numu/ncdis/ --job gen -n 200000 -p numu -t NCDIS
-chips scripts beam_numu/ccqel/ --job gen -n 200000 -p numu -t CCQE
-chips scripts beam_numu/ncqel/ --job gen -n 200000 -p numu -t NCEL
-chips scripts beam_numu/ccres/ --job gen -n 200000 -p numu -t CCRES
-chips scripts beam_numu/ncres/ --job gen -n 200000 -p numu -t NCRES
-chips scripts beam_numu/ccmec/ --job gen -n 200000 -p numu -t CCMEC
-
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_1200
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_1000
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_800
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_600
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_400
-chips scripts cosmic_all/ --job gen -n 1000000 -p cosmic -d chips_275
-
-
+chips scripts numu_all_numuflux --job gen -n 1500000 -p numu -f numu
+chips scripts nuel_all_numuflux --job gen -n 1500000 -p nuel -f numu
+chips scripts numu_cccoh_numuflux --job gen -n 250000 -p numu -f numu -t CCCOH
+chips scripts numu_nccoh_numuflux --job gen -n 250000 -p numu -f numu -t NCCOH
+chips scripts numu_ccdis_numuflux --job gen -n 250000 -p numu -f numu -t CCDIS
+chips scripts numu_ncdis_numuflux --job gen -n 250000 -p numu -f numu -t NCDIS
+chips scripts numu_ccqel_numuflux --job gen -n 250000 -p numu -f numu -t CCQE
+chips scripts numu_ncqel_numuflux --job gen -n 250000 -p numu -f numu -t NCEL
+chips scripts numu_ccres_numuflux --job gen -n 250000 -p numu -f numu -t CCRES
+chips scripts numu_ncres_numuflux --job gen -n 250000 -p numu -f numu -t NCRES
+chips scripts numu_ccmec_numuflux --job gen -n 250000 -p numu -f numu -t CCMEC
+chips scripts nuel_cccoh_numuflux --job gen -n 250000 -p nuel -f numu -t CCCOH
+chips scripts nuel_nccoh_numuflux --job gen -n 250000 -p nuel -f numu -t NCCOH
+chips scripts nuel_ccdis_numuflux --job gen -n 250000 -p nuel -f numu -t CCDIS
+chips scripts nuel_ncdis_numuflux --job gen -n 250000 -p nuel -f numu -t NCDIS
+chips scripts nuel_ccqel_numuflux --job gen -n 250000 -p nuel -f numu -t CCQE
+chips scripts nuel_ncqel_numuflux --job gen -n 250000 -p nuel -f numu -t NCEL
+chips scripts nuel_ccres_numuflux --job gen -n 250000 -p nuel -f numu -t CCRES
+chips scripts nuel_ncres_numuflux --job gen -n 250000 -p nuel -f numu -t NCRES
+chips scripts nuel_ccmec_numuflux --job gen -n 250000 -p nuel -f numu -t CCMEC
+chips scripts nuel_all_nuelflux --job gen -n 250000 -p nuel -f nuel
+chips scripts anumu_all_anumuflux --job gen -n 250000 -p anumu -f anumu
+chips scripts anuel_all_anuelflux --job gen -n 250000 -p anuel -f anuel
+chips scripts cosmics --job gen -n 2500000 -p cosmic -d chips_1200
+chips scripts cosmics --job gen -n 2500000 -p cosmic -d chips_1000
+chips scripts cosmics --job gen -n 2500000 -p cosmic -d chips_800
+chips scripts cosmics --job gen -n 2500000 -p cosmic -d chips_600
+chips scripts cosmics --job gen -n 2500000 -p cosmic -d chips_400

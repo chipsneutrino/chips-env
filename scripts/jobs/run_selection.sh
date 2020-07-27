@@ -1,33 +1,30 @@
 #! /bin/bash
 
-chips scripts beam_all/nuel/ --job select
-chips scripts beam_all/anuel/ --job select
-chips scripts beam_all/numu/ --job select
-chips scripts beam_all/anumu/ --job select
-
-chips scripts beam_nuel/cccoh/ --job select
-chips scripts beam_nuel/nccoh/ --job select
-chips scripts beam_nuel/ccdis/ --job select
-chips scripts beam_nuel/ncdis/ --job select
-chips scripts beam_nuel/ccqel/ --job select
-chips scripts beam_nuel/ncqel/ --job select
-chips scripts beam_nuel/ccres/ --job select
-chips scripts beam_nuel/ncres/ --job select
-chips scripts beam_nuel/ccmec/ --job select
-
-chips scripts beam_numu/cccoh/ --job select
-chips scripts beam_numu/nccoh/ --job select
-chips scripts beam_numu/ccdis/ --job select
-chips scripts beam_numu/ncdis/ --job select
-chips scripts beam_numu/ccqel/ --job select
-chips scripts beam_numu/ncqel/ --job select
-chips scripts beam_numu/ccres/ --job select
-chips scripts beam_numu/ncres/ --job select
-chips scripts beam_numu/ccmec/ --job select
-
-chips scripts cosmic_all/ --job select -d chips_1200
-chips scripts cosmic_all/ --job select -d chips_1000
-chips scripts cosmic_all/ --job select -d chips_800
-chips scripts cosmic_all/ --job select -d chips_600
-chips scripts cosmic_all/ --job select -d chips_400
-chips scripts cosmic_all/ --job select -d chips_275
+chips scripts numu_all_numuflux --job select
+chips scripts nuel_all_numuflux --job select
+chips scripts numu_cccoh_numuflux --job select
+chips scripts numu_nccoh_numuflux --job select
+chips scripts numu_ccdis_numuflux --job select
+chips scripts numu_ncdis_numuflux --job select
+chips scripts numu_ccqel_numuflux --job select
+chips scripts numu_ncqel_numuflux --job select
+chips scripts numu_ccres_numuflux --job select
+chips scripts numu_ncres_numuflux --job select
+chips scripts numu_ccmec_numuflux --job select
+chips scripts nuel_cccoh_numuflux --job select
+chips scripts nuel_nccoh_numuflux --job select
+chips scripts nuel_ccdis_numuflux --job select
+chips scripts nuel_ncdis_numuflux --job select
+chips scripts nuel_ccqel_numuflux --job select
+chips scripts nuel_ncqel_numuflux --job select
+chips scripts nuel_ccres_numuflux --job select
+chips scripts nuel_ncres_numuflux --job select
+chips scripts nuel_ccmec_numuflux --job select
+chips scripts nuel_all_nuelflux --job select
+chips scripts anumu_all_anumuflux --job select
+chips scripts anuel_all_anuelflux --job select
+chips scripts cosmics --job select -d chips_1200
+chips scripts cosmics --job select -d chips_1000
+chips scripts cosmics --job select -d chips_800
+chips scripts cosmics --job select -d chips_600
+chips scripts cosmics --job select -d chips_400

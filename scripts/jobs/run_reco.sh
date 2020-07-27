@@ -2,7 +2,7 @@
 
 CURRENTDIR=$(pwd)
 
-cd $PRODDIR/beam_all/nuel/scripts/reco/ && source $PRODDIR/beam_all/nuel/scripts/chips_1200_reco.sh
-cd $PRODDIR/beam_all/numu/scripts/reco/ && source $PRODDIR/beam_all/numu/scripts/chips_1200_reco.sh
+cd $PRODDIR/numu_all_numuflux/scripts/reco/ && source ../chips_1200_reco.sh
+cd $PRODDIR/nuel_all_numuflux/scripts/reco/ && source ../chips_1200_reco.sh
 
 cd $CURRENTDIR

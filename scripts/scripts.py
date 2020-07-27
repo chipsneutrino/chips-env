@@ -25,6 +25,9 @@ import sys
 from selector import Selector
 import argparse
 import json
+from random import seed
+from random import randint
+from datetime import datetime
 
 
 class ScriptMaker:
@@ -88,7 +91,7 @@ class ScriptMaker:
         script.write("#!/bin/bash")
         return script
 
-    def gen_beam(self, num_events, particle, event_type):
+    def gen_beam(self, num_events, particle, event_type, flux):
         """Creates the scripts required for beam event generation.
         Args:
             num_events (int): Number of events to generate
@@ -97,7 +100,7 @@ class ScriptMaker:
         """
         jobs = open(path.join(self.prod, "scripts/gen.sh"), "w")
         jobs.write("#!/bin/sh")
-
+        seed(datetime.now())
         # Loop through all the generation scripts we need to make
         for i in range(int(int(num_events)/int(self.gen_size))):
             # Create the options required
@@ -106,18 +109,26 @@ class ScriptMaker:
             output_root = "gen_" + "{:03d}".format(i) + ".root"
             flux_file = path.join(self.env, 'chips/chips-gen/config/flux.root')
             xsec_file = path.join(self.env, 'chips/chips-gen/config/xsecs.xml')
+
+            pid = 14
             if particle == "numu":
-                spec = flux_file + ",enufullfine_numu_allpar_NoXSec_CHIPSoffAXIS"
                 pid = 14
-            if particle == "anumu":
-                spec = flux_file + ",enufullfine_anumu_allpar_NoXSec_CHIPSoffAXIS"
+            elif particle == "anumu":
                 pid = -14
             elif particle == "nuel":
-                spec = flux_file + ",enufullfine_nue_allpar_NoXSec_CHIPSoffAXIS"
                 pid = 12
             elif particle == "anuel":
-                spec = flux_file + ",enufullfine_anue_allpar_NoXSec_CHIPSoffAXIS"
                 pid = -12
+
+            spec = flux_file + ",enufullfine_numu_allpar_NoXSec_CHIPSoffAXIS"
+            if flux == "numu":
+                spec = flux_file + ",enufullfine_numu_allpar_NoXSec_CHIPSoffAXIS"
+            elif flux == "anumu":
+                spec = flux_file + ",enufullfine_anumu_allpar_NoXSec_CHIPSoffAXIS"
+            elif flux == "nuel":
+                spec = flux_file + ",enufullfine_nue_allpar_NoXSec_CHIPSoffAXIS"
+            elif flux == "anuel":
+                spec = flux_file + ",enufullfine_anue_allpar_NoXSec_CHIPSoffAXIS"
 
             # Create the script
             script = self.blank_job_script(script_name)
@@ -132,7 +143,7 @@ class ScriptMaker:
                 " -t 1000080160[0.8879],1000010010[0.1121]" +
                 " -r 0" +
                 " -f " + spec +
-                " --seed " + str(i) +
+                " --seed " + str(randint(0, 100000)) +
                 " --cross-sections " + xsec_file +
                 " --event-generator-list " + event_type +
                 " --message-thresholds /opt/genie/config/Messenger_laconic.xml > /dev/null"
@@ -384,6 +395,7 @@ def parse_args():
     # Additional job sepcific arguments
     parser.add_argument('-p', '--particle', help='Event generation particle: nuel, anuel, numu, anumu, cosmic',
                         default='')
+    parser.add_argument('-f', '--flux', help='Event generation flux: nuel, anuel, numu, anumu', default='')                     
     parser.add_argument('-t', '--type', help='Beam event generation list', default='Default+CCMEC+NCMEC')
     parser.add_argument('-d', '--detector', help='CHIPS detector geometry name', default='')
     parser.add_argument('-s', '--start', help='Selected file to start at', default=0)
@@ -411,7 +423,7 @@ def main():
         maker.make_dir()
     elif job == 'gen' and args.particle != 'cosmic':
         print("Making beam generation scripts...")
-        maker.gen_beam(args.num, args.particle, args.type)
+        maker.gen_beam(args.num, args.particle, args.type, args.flux)
     elif job == 'gen' and args.particle == 'cosmic':
         print("Making cosmic generation scripts...")
         maker.gen_cosmic(args.num, args.detector)
