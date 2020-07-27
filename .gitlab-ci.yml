@@ -7,7 +7,7 @@ stages:
 build:
   stage: build
   image:
-    name: quay.io/singularity/singularity:v3.5.3
+    name: quay.io/singularity/singularity:v3.6.1
     entrypoint: ["/bin/bash", "-l", "-c"]
   variables:
     GIT_SUBMODULE_STRATEGY: none

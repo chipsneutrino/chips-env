@@ -4,7 +4,7 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
 %labels
     Author Josh Tingey
     Email j.tingey.16@ucl.ac.uk
-    Version v1.0
+    Version v2.0
 
 %help
     This is the main chips-env container used to build and run all chips software
