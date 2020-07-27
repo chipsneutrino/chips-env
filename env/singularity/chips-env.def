@@ -27,10 +27,11 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     export ENV=/opt/chips-env
     export PROD=/opt/prod
 
-    # Setup the compiler and activate root
+    # Source some setup scripts
     source /opt/gcc-9/activate.sh
-    source /usr/local/bin/thisroot.sh
-    source /usr/local/bin/geant4.sh
+    cd /usr/local/bin/
+    source thisroot.sh
+    source geant4.sh
 
     # Setup GENIE
     export GENIE=/opt/genie
@@ -61,15 +62,24 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     export G4VIS_USE_OPENGLQT=1
 
 %apprun build
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
     cd $ENV
     cmake $@ .
     make $MAKEFLAGS
 
 %apprun make
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
     cd $ENV
     make $MAKEFLAGS
 
 %apprun clean
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
     cd $ENV
     make clean
     rm ./cmake_install.cmake
@@ -84,4 +94,7 @@ From: registry.gitlab.com/chipsneutrino/chips-env:latest
     source chips/chips-reco/reco-tidy.sh
 
 %apprun scripts
+    source /opt/gcc-9/activate.sh
+    source /usr/local/bin/thisroot.sh
+    source /usr/local/bin/geant4.sh
     python $ENV/scripts/scripts.py $@
