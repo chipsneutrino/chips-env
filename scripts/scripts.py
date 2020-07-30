@@ -55,7 +55,8 @@ class ScriptMaker:
         # Singularity execution prefix
         container_path = path.join(self.host_env, "env/chips-env.sif")
         self.exec = (
-            "singularity exec -B " +
+            "singularity exec --no-home -B " +
+            ".:/home/jtingey," +
             self.host_env + ":" + self.env + "," +
             self.host_geant4 + ":/opt/data/geant4," +
             self.host_prod + ":" + self.prod + " " +
