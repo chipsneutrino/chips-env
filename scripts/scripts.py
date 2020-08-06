@@ -317,7 +317,7 @@ class ScriptMaker:
             mac.close()
 
             host_name = path.join(self.host_prod, "scripts/sim/", detector + "_" + base + "_sim.sh")
-            jobs.write("\nqsub -q medium " + host_name)
+            jobs.write("\nqsub -q long " + host_name)
 
     def map(self, detector, save_extra, height, radius):
         """Creates the scripts required for hit map generation."""
